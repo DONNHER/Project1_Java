@@ -8,7 +8,7 @@ import java.util.ArrayList;
 An abstract account class that has comparators to compare itself with different account objects.
  */
 
-public abstract class Account{
+public abstract class Account extends Bank{
     // A constant bank object associated to this account.
     Bank bank = new Bank();
 
