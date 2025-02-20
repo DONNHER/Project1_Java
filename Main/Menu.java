@@ -10,7 +10,7 @@ public enum Menu {
      */
     MainMenu(new String[]{ "Accounts Login", "Bank Login", "Create New Bank", "Exit" }, 1),
     /**
-     * Accounts.Account Login menu options.
+     * Account.Account Login menu options.
      */
     AccountLogin(new String[]{ "Accounts Login", "Go Back" }, 2),
     /**
@@ -27,7 +27,7 @@ public enum Menu {
     ShowAccounts(new String[]{ "Credit Accounts", "Savings Accounts", "All Accounts", "Go Back" }, 32),
 
     /**
-     * Accounts.Account type selection menu. Used when creating New Accounts for every Bank.Bank.
+     * Account.Account type selection menu. Used when creating New Accounts for every Bank.Bank.
      */
     AccountTypeSelection(new String[]{ "Credit Account", "Savings Account" }, 33),
     /**

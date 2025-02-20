@@ -1,5 +1,7 @@
 package Accounts;
 
+import Account.Account;
+
 public interface Payment {
 
     /**
