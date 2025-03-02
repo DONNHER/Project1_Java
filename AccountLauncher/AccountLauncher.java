@@ -91,6 +91,7 @@ public class AccountLauncher {
      */
     private void setLoggedSession(){
         //Complete this method
+        System.out.println("Session created for " + loggedAccount.getOwnerFullName());
     }
 
     /*
@@ -98,6 +99,12 @@ public class AccountLauncher {
      */
     private void destroyLogSession(){
         //Complete this method
+        if (loggedAccount != null) {
+            System.out.println("Session ended for " + loggedAccount.getOwnerFullName());
+            loggedAccount = null;
+        } else {
+            System.out.println("No active session to destroy");
+        }
     }
 
     /*
