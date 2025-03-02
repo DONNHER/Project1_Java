@@ -2,6 +2,7 @@ package AccountLauncher;
 
 import Account.Account;
 import Bank.Bank;
+import Main.Field;
 
 public class AccountLauncher {
 
@@ -36,7 +37,7 @@ public class AccountLauncher {
      */
     private boolean isLoggedIn(){
         //Complete this method
-        return false;
+        return loggedAccount != null;
     }
 
     /*
@@ -45,6 +46,31 @@ public class AccountLauncher {
      */
     public void accountLogin(){
         //Complete this method
+        if (assocBank == null) {
+            System.out.println("Please select a bank first.");
+            assocBank = selectBank();
+        }
+
+        if (assocBank == null) {
+            System.out.println("Bank selection failed. Cannot proceed with login.");
+            return;
+        }
+
+        Field<String, String> accountNumberField = new Field<String, String>("Account Number", String.class, "", new Field.StringFieldValidator());
+        Field<String, String> pinField = new Field<String,  String>("PIN", String.class, "", new Field.StringFieldValidator());
+
+        accountNumberField.setFieldValue("Enter Account Number: ");
+        pinField.setFieldValue("Enter 4-digit PIN: ");
+
+        Account account = checkCredentials(accountNumberField.getFieldValue(), pinField.getFieldValue());
+        if (account != null) {
+            setLoggedAccount(account);
+            setLoggedSession();
+            System.out.println("Login successful! Welcome, " + loggedAccount.getOwnerFullName() + ".");
+        } else {
+            System.out.println("Invalid credentials. Login failed. ");
+
+        }
     }
 
     /*
