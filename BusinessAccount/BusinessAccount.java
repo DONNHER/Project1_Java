@@ -7,9 +7,9 @@ import Accounts.IllegalAccountType;
 import Accounts.Withdrawal;
 import Bank.Bank;
 
-public class BussnessAccount extends Account implements Deposit, Withdrawal, FundTransfer {
+public class BusinessAccount extends Account implements Deposit, Withdrawal, FundTransfer {
     private double balance = 0;
-    public BussnessAccount(Bank bank, String accountNumber, String firstName, String lastName, String email, String pin,double balance) {
+    public BusinessAccount(Bank bank, String accountNumber, String firstName, String lastName, String email, String pin,double balance) {
         super(bank, accountNumber, firstName, lastName, email, pin);
         this.balance = balance;
     }

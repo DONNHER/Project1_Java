@@ -2,7 +2,7 @@ package Bank;
 
 import Account.Account;
 import Account.AccountLauncher;
-import BusinessAccount.BussnessAccount;
+import BusinessAccount.BusinessAccount;
 import Main.Field;
 import CreditAccount.CreditAccount;
 import SavingsAccount.SavingsAccount;
@@ -55,6 +55,8 @@ public class Bank implements Comparator{
     State of the Bank if updated or changed
      */
     private boolean isNew = false;
+    private  ArrayList<CreditAccount> CreditAccounts = new ArrayList<>();
+    private  ArrayList<SavingsAccount> SavingsAccounts = new ArrayList<>();
 
 
     public Bank(int ID, String name , String passcode){
@@ -96,6 +98,12 @@ public class Bank implements Comparator{
     }
     public ArrayList<Account> getBankAccounts() {
         return bankAccounts;
+    }
+    public ArrayList<CreditAccount> getCreditAccounts() {
+        return CreditAccounts;
+    }
+    public ArrayList<SavingsAccount> getSavingsAccounts() {
+        return SavingsAccounts;
     }
     public boolean getIsNew(){
         return this.isNew;
@@ -285,6 +293,7 @@ public class Bank implements Comparator{
         SavingsAccount newsavingsAccount = new SavingsAccount(bank,this.accountNField.getFieldValue(),this.fnameField.getFieldValue(),
                 this.lnameField.getFieldValue(),this.emailField.getFieldValue(),this.pinField.getFieldValue(),this.BalanceField.getFieldValue());
         addNewAccount(newsavingsAccount);
+        addSavingsAccount(newsavingsAccount);
         s_count += 1;
         return newsavingsAccount;
     }
@@ -301,12 +310,13 @@ public class Bank implements Comparator{
         CreditAccount newCreditAccount = new CreditAccount(bank,this.accountNField.getFieldValue(),this.fnameField.getFieldValue(),
                 this.lnameField.getFieldValue(),this.emailField.getFieldValue(),this.pinField.getFieldValue(),this.laonField.getFieldValue());
         addNewAccount(newCreditAccount);
+        addCreditAccount(newCreditAccount);
         c_count += 1;
         return newCreditAccount;
     }
     /*
     Create a new credit account. Utilizes the createNewAccount() method.
-    @Returns New credit account.
+    @Returns New Student account.
      */
     public StudentAccount createStudentAccount(Bank bank){
         //Complete this method
@@ -315,21 +325,19 @@ public class Bank implements Comparator{
         StudentAccount newStudentAccount = new StudentAccount(bank,this.accountNField.getFieldValue(),this.fnameField.getFieldValue(),
                 this.lnameField.getFieldValue(),this.emailField.getFieldValue(),this.pinField.getFieldValue(),this.BalanceField.getFieldValue());
         addNewAccount(newStudentAccount);
-        c_count += 1;
         return newStudentAccount;
     }
     /*
     Create a new credit account. Utilizes the createNewAccount() method.
-    @Returns New credit account.
+    @Returns New Business account.
      */
-    public BussnessAccount createBusinessAccount(Bank bank){
+    public BusinessAccount createBusinessAccount(Bank bank){
         //Complete this method
         this.BalanceField.setFieldValue("Enter balance: ");
         createNewAccount();
-        BussnessAccount newBusinessAccount = new BussnessAccount(bank,this.accountNField.getFieldValue(),this.fnameField.getFieldValue(),
+        BusinessAccount newBusinessAccount = new BusinessAccount(bank,this.accountNField.getFieldValue(),this.fnameField.getFieldValue(),
                 this.lnameField.getFieldValue(),this.emailField.getFieldValue(),this.pinField.getFieldValue(),this.BalanceField.getFieldValue());
         addNewAccount(newBusinessAccount);
-        c_count += 1;
         return newBusinessAccount;
     }
 
@@ -343,6 +351,13 @@ public class Bank implements Comparator{
             int index = findIndexInsertion(this.bankAccounts, account);
             this.bankAccounts.add(index, account);
         }
+    }
+
+    public void addCreditAccount(CreditAccount ca){
+        this.CreditAccounts.add(ca);
+    }
+    public void addSavingsAccount(SavingsAccount ca){
+        this.SavingsAccounts.add(ca);
     }
 
     /*

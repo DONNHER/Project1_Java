@@ -110,7 +110,12 @@ public class Main
                 bankdb.saveBanksToDatabase(bl.getBanks());
                 System.out.println(bl.bankSize());
                 bankdb.deleteMultipleBanksFromDatabase(bl.getBankids());
-                System.out.println(bl.getBankids().size());
+                for (Bank bank : bl.getBanks()){
+                    bankdb.saveCreditsAccount(bank.getCreditAccounts());
+                    System.out.println(bank.getCreditAccounts().size());
+                    bankdb.saveSavingsAccount(bank.getSavingsAccounts());
+                    System.out.println(bank.getSavingsAccounts().size());
+                }
                 System.out.println("Exiting. Thank you for banking!");
                 break;
             }

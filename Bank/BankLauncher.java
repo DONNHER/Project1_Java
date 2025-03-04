@@ -235,7 +235,7 @@ public class BankLauncher {
      */
     private void addBank (Bank b){
         //Complete this method
-        if (getBank(bankIdComparator,b) == null) {
+        if (getBank(this.BankCredentials,b) == null) {
             int index = findIndexInsertion(this.banks, b);
             this.banks.add(index, b);
         }

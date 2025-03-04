@@ -59,10 +59,10 @@ public class BankAccountTest {
         bl.publicAddBank(b6);
         assertEquals("A", bl.getBanks().get(0).getName());
         assertEquals("B", bl.getBanks().get(1).getName());
-        assertEquals("C", bl.getBanks().get(2).getName());
-        assertEquals("Bank Commerce", bl.getBanks().get(3).getName());
+        assertEquals("Bank Commerce", bl.getBanks().get(2).getName());
+        assertEquals("Bank of the Philippines", bl.getBanks().get(3).getName());
 
-        assertEquals("Bank of the Philippines", bl.getBanks().get(4).getName());
+        assertEquals("C", bl.getBanks().get(4).getName());
         assertEquals("Land Bank", bl.getBanks().get(5).getName());
 
     }
