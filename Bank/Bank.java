@@ -141,7 +141,7 @@ public class Bank implements Comparator{
     /*
         A comparator that compares if two bank objects are the same.
          */
-     public static class  BankComparator implements Comparator {
+    public static class  BankComparator implements Comparator {
         @Override
         public int compare(Object o1, Object o2) {
             //Complete this method

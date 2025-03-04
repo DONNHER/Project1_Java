@@ -121,15 +121,14 @@ amount – Amount of money to be withdrawn.
         //Complete this method
         return false;
     }
-
     @Override
     public double loan_balance() {
         return this.balance;
     }
 
     /*
-        Return Str
-         */
+    Return Str
+     */
     public String toString(){
         //Complete this method
         return "Name: " + this.getOwnerFullName() +"\nBalance: " + this.getBalance() +"\n";

@@ -1,14 +1,15 @@
+
 package Database;
 
 import Account.Account;
 import Bank.*;
-import CreditAccount.CreditAccount;
+        import CreditAccount.CreditAccount;
 import Main.Field;
 import Main.FieldValidator;
 import SavingsAccount.SavingsAccount;
 
 import java.sql.*;
-import java.util.ArrayList;
+        import java.util.ArrayList;
 
 public class BankDB {
     private static final String path = "jdbc:sqlite:Database/bank.db";// SQLite file in project directory
@@ -156,27 +157,27 @@ public class BankDB {
                             pstmt1.executeUpdate();
                             pstmt1.close();
                         } else if (account.getClass().getName().equals("SavingsAccount")) {
-                                if (account.getIsNew()) {
-                                    pstmt2 = conn2.prepareStatement(updateSqlSavings);// New CreditAccount
-                                    pstmt2.setString(1, account.getOwnerFirstName());
-                                    pstmt2.setString(2, account.getOwnerLastName());
-                                    pstmt2.setDouble(3, account.loan_balance());  // Check if it's loan_balance() or another method
-                                    pstmt2.setString(4, account.getPin());
-                                    pstmt2.setInt(5, account.getBank().getID());
-                                    pstmt2.setString(6, account.getOwnerEmail());
-                                    pstmt2.setString(7, account.getAccountNumber());
-                                } else {
-                                    pstmt2 = conn2.prepareStatement(insertSqlSavings);  // Update CreditAccount
-                                    pstmt2.setString(7, account.getAccountNumber());
-                                    pstmt2.setString(1, account.getOwnerFirstName());
-                                    pstmt2.setString(2, account.getOwnerLastName());
-                                    pstmt2.setDouble(3, account.loan_balance());
-                                    pstmt2.setString(4, account.getPin());
-                                    pstmt2.setInt(5, account.getBank().getID());
-                                    pstmt2.setString(6, account.getOwnerEmail());
-                                }
-                                pstmt2.executeUpdate();
-                                pstmt2.close();
+                            if (account.getIsNew()) {
+                                pstmt2 = conn2.prepareStatement(updateSqlSavings);// New CreditAccount
+                                pstmt2.setString(1, account.getOwnerFirstName());
+                                pstmt2.setString(2, account.getOwnerLastName());
+                                pstmt2.setDouble(3, account.loan_balance());  // Check if it's loan_balance() or another method
+                                pstmt2.setString(4, account.getPin());
+                                pstmt2.setInt(5, account.getBank().getID());
+                                pstmt2.setString(6, account.getOwnerEmail());
+                                pstmt2.setString(7, account.getAccountNumber());
+                            } else {
+                                pstmt2 = conn2.prepareStatement(insertSqlSavings);  // Update CreditAccount
+                                pstmt2.setString(7, account.getAccountNumber());
+                                pstmt2.setString(1, account.getOwnerFirstName());
+                                pstmt2.setString(2, account.getOwnerLastName());
+                                pstmt2.setDouble(3, account.loan_balance());
+                                pstmt2.setString(4, account.getPin());
+                                pstmt2.setInt(5, account.getBank().getID());
+                                pstmt2.setString(6, account.getOwnerEmail());
+                            }
+                            pstmt2.executeUpdate();
+                            pstmt2.close();
                         }
                     }
                     conn1.commit();

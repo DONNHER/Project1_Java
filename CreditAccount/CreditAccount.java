@@ -26,7 +26,7 @@ public class CreditAccount extends Account implements Payment, Recompense {
         Loan statement of this credit account.
         @Returns - String loan statement.
          */
-    public Double getLoanStatement(){
+    public double getLoanStatement(){
         //Complete this method
         return this.loan;
     }
@@ -70,7 +70,6 @@ public class CreditAccount extends Account implements Payment, Recompense {
         //Complete this method
         return false;
     }
-
     @Override
     public double loan_balance() {
         return this.loan;

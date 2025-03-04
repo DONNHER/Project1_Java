@@ -15,6 +15,11 @@ public class StudentAccount extends Account implements Deposit, Withdrawal, Fund
     }
 
     @Override
+    public double loan_balance() {
+        return this.balance;
+    }
+
+    @Override
     public boolean cashDeposit(double amount) {
         return false;
     }
@@ -38,12 +43,6 @@ public class StudentAccount extends Account implements Deposit, Withdrawal, Fund
     public void getAccountBalanceStatement() {
 
     }
-
-    @Override
-    public double loan_balance() {
-        return this.balance;
-    }
-
     public String toString(){
         return "Name: " + this.getOwnerFullName();
     }

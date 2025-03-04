@@ -20,7 +20,7 @@ public abstract class Account {
     // Account OWNER EMAIL of this account object. Cannot be modified once set
     private String ownerEmail ;
     //Password of owner
-    private final String pin;
+    private String pin;
     // Transactions refer to the transaction logs recorded in this account.
     // A successful withdrawal; deposit; payment; transfer.
     private ArrayList<Transaction>transactions = new ArrayList<>();
@@ -58,6 +58,7 @@ public abstract class Account {
     public boolean getIsNew(){
         return this.isNew;
     }
+
     //Setters
     public void setBank(Bank bank) {
         this.bank = bank;
@@ -76,6 +77,7 @@ public abstract class Account {
     }
 
     public abstract double loan_balance();
+
 
     /*
     @Return Fullname of owner
@@ -99,6 +101,7 @@ public abstract class Account {
     public  ArrayList<Transaction> getTransactionsInfo(){
         return transactions;
     }
+
     public String toString(){
         //Complete this method
         return "";
