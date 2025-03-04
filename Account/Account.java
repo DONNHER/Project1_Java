@@ -1,5 +1,4 @@
 package Account;
-
 import Accounts.*;
 import Bank.Bank;
 
@@ -11,28 +10,72 @@ An abstract account class that has comparators to compare itself with different 
 
 public abstract class Account {
     // A constant bank object associated to this account.
-    protected Bank bank;
+    private Bank bank;
     // Account number of this account object. Cannot be modified once set
-    protected final String accountNumber ;
+    private final String accountNumber ;
     // Account OWNER FIRSTNAME of this account object.
-    protected String ownerFirstName ;
+    private String ownerFirstName ;
     // Account OWNER LASTNAME of this account object. Cannot be modified once set
-    protected String ownerLastName ;
+    private String ownerLastName ;
     // Account OWNER EMAIL of this account object. Cannot be modified once set
-    protected String ownerEmail ;
+    private String ownerEmail ;
+    //Password of owner
+    private final String pin;
     // Transactions refer to the transaction logs recorded in this account.
     // A successful withdrawal; deposit; payment; transfer.
-    protected ArrayList<Transaction>transactions;
+    private ArrayList<Transaction>transactions = new ArrayList<>();
+    //Utilize when updating
+    private boolean isNew = false;
 
     // Constructor of Abstract class
-    public Account(Bank bank, String accountNumber, ArrayList<Transaction> transactions,String firstName,String lastName, String email){
+    public Account( Bank bank,String accountNumber,String firstName,String lastName, String email,String pin){
         this.bank = bank;
         this.accountNumber = accountNumber;
-        this.transactions = transactions;
         this.ownerFirstName = firstName;
         this.ownerLastName = lastName;
         this.ownerEmail = email;
+        this.pin = pin;
     }
+
+    //Getters
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+    public String getOwnerLastName(){
+        return this.ownerLastName;
+    }
+    public String getOwnerFirstName(){
+        return this.ownerLastName;
+    }
+    public Bank getBank() {
+        return bank;
+    }
+    public String getPin(){return this.pin;}
+    public String getOwnerEmail(){
+        return this.ownerEmail;
+    }
+    public boolean getIsNew(){
+        return this.isNew;
+    }
+    //Setters
+    public void setBank(Bank bank) {
+        this.bank = bank;
+    }
+    public void setOwnerFirstName(String fname){
+        this.ownerFirstName = fname;
+    }
+    public void setOwnerLastName(String lname){
+        this.ownerLastName = lname;
+    }
+    public void setOwnerEmail(String email){
+        this.ownerEmail = email;
+    }
+    public void setIsNew(boolean newState){
+        this.isNew = newState;
+    }
+
+    public abstract double loan_balance();
 
     /*
     @Return Fullname of owner

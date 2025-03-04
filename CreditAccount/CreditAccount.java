@@ -1,22 +1,15 @@
 package CreditAccount;
 
 import Account.Account;
-import Accounts.IllegalAccountType;
-import Accounts.Payment;
-import Accounts.Recompense;
-import Accounts.Transaction;
+import Accounts.*;
 import Bank.Bank;
-
-import java.util.ArrayList;
 
 public class CreditAccount extends Account implements Payment, Recompense {
     private double loan = 0.0;
 
-    public CreditAccount(Bank bank, String accountNumber, ArrayList<Transaction> transactions, String firstName, String lastName, String email, double loan) {
-        super(bank, accountNumber, transactions, firstName, lastName, email);
-
-        this.loan = Math.max(loan, 0.0);
-
+    public CreditAccount(Bank bank, String accountNumber, String firstName, String lastName, String email,String pin,double loan) {
+        super(bank, accountNumber, firstName, lastName, email,pin);
+        this.loan = loan;
     }
 
     // Getters
@@ -24,13 +17,18 @@ public class CreditAccount extends Account implements Payment, Recompense {
         return this.loan;
     }
 
+    //Setters
+    public void setLoan(Double newLoan){
+        this.loan = newLoan;
+    }
+
     /*
         Loan statement of this credit account.
         @Returns - String loan statement.
          */
-    public String getLoanStatement(){
+    public Double getLoanStatement(){
         //Complete this method
-        return "";
+        return this.loan;
     }
 
     /*
@@ -73,8 +71,13 @@ public class CreditAccount extends Account implements Payment, Recompense {
         return false;
     }
 
+    @Override
+    public double loan_balance() {
+        return this.loan;
+    }
+
     public String toString(){
         //Complete this method
-        return "";
+        return "Name: "+ this.getOwnerFullName() +"\nLoan statement: "+this.getLoanStatement() + "\n";
     }
 }

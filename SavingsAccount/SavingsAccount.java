@@ -3,16 +3,15 @@ package SavingsAccount;
 import Account.Account;
 import Accounts.*;
 import Bank.Bank;
-import java.util.ArrayList;
 
 public class SavingsAccount extends Account implements Withdrawal, Deposit, FundTransfer {
     // Balance of this bank account
     private double balance = 0.0;
 
     // Constructor call
-    public SavingsAccount(Bank bank, String accountNumber, ArrayList<Transaction> transactions,
-                          String fname, String lname, String email, double balance) {
-        super(bank, accountNumber, transactions, fname, lname, email);
+    public SavingsAccount(Bank bank, String accountNumber,
+                          String firstname, String lastname, String email,String pin, double balance) {
+        super(bank, accountNumber, firstname, lastname, email,pin);
         this.balance = Math.max(balance, 0.0); // Ensure non-negative balance
     }
 
@@ -123,11 +122,16 @@ amount – Amount of money to be withdrawn.
         return false;
     }
 
+    @Override
+    public double loan_balance() {
+        return this.balance;
+    }
+
     /*
-    Return Str
-     */
+        Return Str
+         */
     public String toString(){
         //Complete this method
-        return "";
+        return "Name: " + this.getOwnerFullName() +"\nBalance: " + this.getBalance() +"\n";
     }
 }
