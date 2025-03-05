@@ -14,6 +14,9 @@ public class SavingsAccountLauncher extends AccountLauncher {
          */
     public void savingsAccountInit(){
         //Complete this method
+        while (true){
+
+        }
     }
 
     /*
@@ -43,6 +46,6 @@ public class SavingsAccountLauncher extends AccountLauncher {
     @Override
     public SavingsAccount getLoggedAccount() {
         //Complete this method
-        return null;
+        return this.getLoggedAccount();
     }
 }

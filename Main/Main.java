@@ -4,8 +4,10 @@ import Account.AccountLauncher;
 import Bank.Bank;
 import Bank.BankLauncher;
 import CreditAccount.CreditAccount;
+import CreditAccountLauncher.CreditAccountLauncher;
 import Database.*;
 import SavingsAccount.SavingsAccount;
+import SavingsAccountLauncher.SavingsAccountLauncher;
 
 import java.io.File;
 import java.util.Scanner;
@@ -29,6 +31,8 @@ public class Main
     public static void main(String[] args) throws Exception {
         BankLauncher bl = new BankLauncher();
         AccountLauncher al = new AccountLauncher(bl);
+        CreditAccountLauncher cl = new CreditAccountLauncher();
+        SavingsAccountLauncher sl = new SavingsAccountLauncher();
         BankDB bankdb = new BankDB();
         bankdb.loadBanksFromDatabase(bl);
         while (true)
@@ -52,60 +56,17 @@ public class Main
                         showMenuHeader("All registered banks");
                         bl.showBanksMenu();
                         al.accountLogin();
-                        while (al.isLoggedIn()) {
-                            if(al.getLoggedAccount() instanceof CreditAccount) {
-                                while (true) {
-                                    showMenu(41, 2);
-                                    setOption();
-                                    if (getOption() == 1) {
-                                        // Complete this portion
-                                        break;
-                                    } else if (getOption() == 2) {
-                                        // Complete this portion
-                                        break;
-                                    } else if (getOption() == 3) {
-                                        // Complete this portion
-                                        break;
-                                    } else if (getOption() == 4) {
-                                        // Complete this portion
-                                        break;
-                                    } else if (getOption() == 5) {
-                                        // Complete this portion
-                                        break;
-                                    } else if (getOption() == 6) {
-                                        al.logoutAccount();
-                                        break;
-                                    } else {
-                                        System.out.println("Invalid option!");
-                                    }
-                                }
-                            }else if (al.getLoggedAccount() instanceof SavingsAccount){
-                                while (true) {
-                                    showMenu(51, 2);
-                                    setOption();
-                                    if (getOption() == 1) {
-                                        // Complete this portion
-                                        break;
-                                    } else if (getOption() == 2) {
-                                        // Complete this portion
-                                        break;
-                                    } else if (getOption() == 3) {
-                                        // Complete this portion
-                                        break;
-                                    } else if (getOption() == 4) {
-                                        break;// Complete this portion
-                                    } else if (getOption() == 5) {
-                                        break;// Complete this portion
-                                    } else if (getOption() == 6) {
-                                        al.logoutAccount();
-                                        break;
-                                    } else {
-                                        System.out.println("Invalid option!");
-                                    }
-                                }
+                        if (al.isLoggedIn()) {
+                            if (al.getLoggedAccount() instanceof CreditAccount) {
+                                cl.creditAccountInit();
+                            }else if (al.getLoggedAccount() instanceof SavingsAccount) {
+                                sl.savingsAccountInit();
                             }
+                        } else {
+                            System.out.println("Logout, login first...");
                         }
                     }
+
                 }
                 else {
                     System.out.println("No bank exist, create first...");
