@@ -27,17 +27,18 @@ public class CreditAccount extends Account implements Payment, Recompense {
         @Returns - String loan statement.
          */
     public double getLoanStatement(){
-        //Complete this method
-        return this.loan;
+        System.out.println("Loan Statement:\nOutstanding Balance: ₱");
+        return  this.loan;
     }
 
-    /*
-    Checks if this credit account can do additional credit transactions if the amount to credit will not exceed the credit limit set by the bank associated to this Credit Account.
-    @Param amountAdjustment – The amount of credit to be adjusted once the said transaction is processed.
-    @Return - Flag if this account can continue with the credit transaction.
-     */
+        /*
+        Checks if this credit account can do additional credit transactions if the amount to credit will not exceed the credit limit set by the bank associated to this Credit Account.
+        @Param amountAdjustment – The amount of credit to be adjusted once the said transaction is processed.
+        @Return - Flag if this account can continue with the credit transaction.
+         */
     private boolean canCredit(double amountAdjustment){
         //Complete this method
+
         return false;
     }
 
