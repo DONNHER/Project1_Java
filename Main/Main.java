@@ -4,10 +4,10 @@ import Account.AccountLauncher;
 import Bank.Bank;
 import Bank.BankLauncher;
 import CreditAccount.CreditAccount;
-import CreditAccountLauncher.CreditAccountLauncher;
+import CreditAccount.*;
 import Database.*;
 import SavingsAccount.SavingsAccount;
-import SavingsAccountLauncher.SavingsAccountLauncher;
+import SavingsAccount.*;
 
 import java.io.File;
 import java.util.Scanner;
@@ -31,8 +31,8 @@ public class Main
     public static void main(String[] args) throws Exception {
         BankLauncher bl = new BankLauncher();
         AccountLauncher al = new AccountLauncher(bl);
-        CreditAccountLauncher cl = new CreditAccountLauncher();
-        SavingsAccountLauncher sl = new SavingsAccountLauncher();
+        CreditAccountLauncher cl = new CreditAccountLauncher(bl);
+        SavingsAccountLauncher sl = new SavingsAccountLauncher(bl);
         BankDB bankdb = new BankDB();
         bankdb.loadBanksFromDatabase(bl);
         while (true)
