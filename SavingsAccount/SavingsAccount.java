@@ -32,7 +32,7 @@ String balance statement.
     @Override
     public void getAccountBalanceStatement() {
         //Complete this method
-
+        System.out.println("Account Balance: " + this.balance);
     }
 
     /*
@@ -42,7 +42,7 @@ String balance statement.
      */
     private boolean hasEnoughBalance(double amount){
         //Complete this method
-        return false;
+        return this.balance >= amount;
     }
 
     /*
@@ -51,6 +51,12 @@ successfully.
      */
     private void insufficientBalance() {
         //Complete this method
+        if (this.balance < amount){
+            System.out.println("Insufficient balance for this transaction.")
+        }
+        else{
+            System.out.println("Sufficient balance for this transaction.")
+        }
     }
 
     /*
@@ -61,6 +67,10 @@ amount – Amount to be added or subtracted from the account balance.
      */
     private void adjustAccountBalance(double amount){
         //Complete this method
+        this.balance += amount;
+        if (this.balance < 0.0) {
+            this.balance = 0.0;
+        }
     }
 
     /*
@@ -78,7 +88,17 @@ CreditAccount.
     @Override
     public boolean transfer(Account account, double amount) throws IllegalAccountType {
         //Complete this method
-        return false;
+        if (!(account instanceof SavingsAccount)) {
+            throw new IllegalAccountType("Cannot transfer funds to a non-savings account.");
+        }
+        if (hasEnoughBalance(amount)) {
+            adjustAccountBalance(-amount);
+            ((SavingsAccount) account).adjustAccountBalance(amount);
+            return true;
+        } else {
+            insufficientBalance();
+            return false;
+        }
     }
     /*
     Transfers an amount of money from this account to another savings account. Should be used
@@ -97,7 +117,7 @@ CreditAccount.
     @Override
     public boolean transfer(Bank bank, Account account, double amount) throws IllegalAccountType {
         //Complete this method
-        return false;
+        return transfer(account, amount);
     }
 
     /*
@@ -108,6 +128,10 @@ amount – Amount of money to be deposited.
     @Override
     public boolean cashDeposit(double amount) {
         //Complete this method
+        if (amount > 0) {
+            adjustAccountBalance(amount);
+            return true;
+        }
         return false;
     }
 
@@ -120,7 +144,13 @@ amount – Amount of money to be withdrawn.
     @Override
     public boolean withdrawal(double amount) {
         //Complete this method
-        return false;
+        if (hasEnoughBalance(amount)) {
+            adjustAccountBalance(-amount);
+            return true;
+        } else {
+            insufficientBalance();
+            return false;
+        }
     }
     @Override
     public double loan_balance() {
