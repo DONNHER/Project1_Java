@@ -3,6 +3,7 @@ package CreditAccount;
 import Account.Account;
 import Accounts.*;
 import Bank.Bank;
+import SavingsAccount.SavingsAccount;
 
 public class CreditAccount extends Account implements Payment, Recompense {
     private double loan = 0.0;
@@ -56,9 +57,23 @@ public class CreditAccount extends Account implements Payment, Recompense {
     @Throws IllegalAccountType – Credit Accounts cannot pay to other Credit Accounts as they do not hold account money balance but rather, credits. As such, in this scenario, only Savings Accounts can receive payment from Credit Accounts.
      */
     @Override
-    public boolean pay(Account account, double amount) throws IllegalAccountType {
+    public synchronized boolean pay(Account account, double amount) throws IllegalAccountType {
         //Complete this method
-        return false;
+        if (account instanceof CreditAccount) {
+            addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Payment,"Credit Accounts cannot pay to other Credit Accounts as they do not hold account money balance.");
+            // Throw an exception if it's a CreditAccount
+            throw new IllegalAccountType("Credit Accounts cannot pay to other Credit Accounts as they do not hold account money balance.");
+        }
+
+        // If it's a valid SavingsAccount (or other type), perform the payment
+        // Assuming there's a method to deposit the money in the account
+        SavingsAccount payed = (SavingsAccount) account;
+        boolean payment = payed.cashDeposit(amount);
+        if (payment){
+            addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Payment,"Credit Accounts cannot pay to other Credit Accounts as they do not hold account money balance.");
+
+        }
+        return payed.cashDeposit(amount);
     }
     /*
     Recompense some amount of money to the bank and reduce the value of loan recorded in this account. Must not be greater than the current credit.
@@ -66,9 +81,15 @@ public class CreditAccount extends Account implements Payment, Recompense {
     @Return - Flag if compensation was successful.
      */
     @Override
-    public boolean recompense(double amount) {
+    public synchronized boolean recompense(double amount) {
         //Complete this method
-        return false;
+        if (amount > this.loan) {
+            addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Recompense, "Recompense failed: Amount exceeds current loan balance. Current loan balance: " + loan);
+            return false;
+        }
+        this.loan -= amount;
+            addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Recompense, "Recompense successful. Amount: " + amount + ". Remaining loan balance: " + loan);
+        return true;
     }
     @Override
     public double loan_balance() {

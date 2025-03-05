@@ -26,11 +26,10 @@ public class SavingsAccount extends Account implements Withdrawal, Deposit, Fund
 
     /*
     Get the account balance statement of this savings account.
-Returns:
-String balance statement.
+    @Returns String balance statement.
      */
     @Override
-    public void getAccountBalanceStatement() {
+    public synchronized void getAccountBalanceStatement() {
         //Complete this method
 
     }
@@ -42,7 +41,8 @@ String balance statement.
      */
     private boolean hasEnoughBalance(double amount){
         //Complete this method
-        return false;
+        adjustAccountBalance(amount);
+        return balance == 0;
     }
 
     /*
@@ -51,6 +51,9 @@ successfully.
      */
     private void insufficientBalance() {
         //Complete this method
+        if (balance < 0){
+            System.out.println("Insufficient Balance!");
+        }
     }
 
     /*
@@ -61,6 +64,11 @@ amount – Amount to be added or subtracted from the account balance.
      */
     private void adjustAccountBalance(double amount){
         //Complete this method
+        if  ((balance -= amount) < 0){
+            balance += 0.0;
+        }else {
+            balance -= amount;
+        }
     }
 
     /*
@@ -76,7 +84,7 @@ IllegalAccountType – Cannot fund transfer when the other account is of type
 CreditAccount.
      */
     @Override
-    public boolean transfer(Account account, double amount) throws IllegalAccountType {
+    public synchronized boolean transfer(Account account, double amount) throws IllegalAccountType {
         //Complete this method
         return false;
     }
@@ -95,7 +103,7 @@ CreditAccount.
      */
 
     @Override
-    public boolean transfer(Bank bank, Account account, double amount) throws IllegalAccountType {
+    public synchronized boolean transfer(Bank bank, Account account, double amount) throws IllegalAccountType {
         //Complete this method
         return false;
     }
@@ -106,7 +114,7 @@ CreditAccount.
 amount – Amount of money to be deposited.
      */
     @Override
-    public boolean cashDeposit(double amount) {
+    public synchronized boolean cashDeposit(double amount) {
         //Complete this method
         return false;
     }
@@ -118,12 +126,22 @@ Params:
 amount – Amount of money to be withdrawn.
      */
     @Override
-    public boolean withdrawal(double amount) {
+    public synchronized boolean withdrawal(double amount) {
         //Complete this method
-        return false;
+        String s = "";
+//        with self.lock:  # Ensures only one thread modifies the balance at a time
+//        print(f"{user} is attempting to withdraw ${amount}...")
+//        time.sleep(random.uniform(0.1, 0.5))  # Simulate processing delay
+//
+//        if self.balance >= amount:
+//        self.balance -= amount
+//        print(f"{user} successfully withdrew ${amount}. Remaining balance: ${self.balance}")
+//            else:
+//        print(f"{user} failed to withdraw ${amount}. Insufficient funds!")
+
     }
     @Override
-    public double loan_balance() {
+    public synchronized double loan_balance() {
         return this.balance;
     }
 

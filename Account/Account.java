@@ -93,6 +93,8 @@ public abstract class Account {
      @param description - Description of the Transaction.
      */
     public void addNewTransaction(String account, Transaction.Transactions type, String description){
+        Transaction newTransaction = new Transaction(account,type,description);
+        transactions.add(newTransaction);
     }
 
     /*

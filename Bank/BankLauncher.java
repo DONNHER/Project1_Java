@@ -99,7 +99,7 @@ public class BankLauncher {
     private void showAccounts() {
         //Complete this method
         boolean exit = false;
-        while (true){
+        do {
             Main.showMenuHeader("Show Account options");
             Main.showMenu(32, 1);
             user.setFieldValue("Enter option: ");
@@ -116,10 +116,7 @@ public class BankLauncher {
                     exit = true;
                 }
             }
-            if (exit){
-                break;
-            }
-        }
+        } while (!exit);
     }
     /*
     Bank interaction when creating new accounts for the currently logged in bank.
