@@ -60,7 +60,14 @@ public class SavingsAccountLauncher extends AccountLauncher {
     private void depositProcess(){
 
         // Complete this method
-
+        System.out.print("Enter amount to deposit: ");
+        double amount = scanner.nextDouble();
+        SavingsAccount account = getLoggedAccount();
+        if (account != null && account.cashDeposit(amount)) {
+            System.out.println("Deposit successful. New balance: " + account.getBalance());
+        } else {
+            System.out.println("Deposit failed. Please try again.");
+        }
     }
 
     /*
@@ -69,6 +76,14 @@ public class SavingsAccountLauncher extends AccountLauncher {
     private void withdrawProcess(){
 
         // Complete this method
+        System.out.print("Enter amount to withdraw: ");
+        double amount = scanner.nextDouble();
+        SavingsAccount account = getLoggedAccount();
+        if (account != null && account.withdrawal(amount)) {
+            System.out.println("Withdrawal successful. New balance: " + account.getBalance());
+        } else {
+            System.out.println("Withdrawal failed. Insufficient funds or invalid input.");
+        }
     }
 
     /*
