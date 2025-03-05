@@ -1,4 +1,5 @@
 package Main;
+import Bank.BankLauncher;
 
 /**
  * An enumeration of menu options for every different menu in the
@@ -10,7 +11,7 @@ public enum Menu {
      */
     MainMenu(new String[]{ "Accounts Login", "Bank Login", "Create New Bank", "Exit" }, 1),
     /**
-     * Account.Account Login menu options.
+     * Account.Account.Account Login menu options.
      */
     AccountLogin(new String[]{ "Accounts Login", "Go Back" }, 2),
     /**
@@ -27,7 +28,7 @@ public enum Menu {
     ShowAccounts(new String[]{ "Credit Accounts", "Savings Accounts", "All Accounts", "Go Back" }, 32),
 
     /**
-     * Account.Account type selection menu. Used when creating New Accounts for every Bank.Bank.
+     * Account.Account.Account type selection menu. Used when creating New Accounts for every Bank.Bank.
      */
     AccountTypeSelection(new String[]{ "Credit Account", "Savings Account" }, 33),
     /**

@@ -1,6 +1,7 @@
 package Accounts;
 import Account.Account;
 import Bank.Bank;
+
 public interface FundTransfer{
     /**
      * Cross-transferring of money from one account of one bank, and another account of another bank.
