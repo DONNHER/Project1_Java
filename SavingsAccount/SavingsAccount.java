@@ -138,7 +138,7 @@ amount – Amount of money to be withdrawn.
 //        print(f"{user} successfully withdrew ${amount}. Remaining balance: ${self.balance}")
 //            else:
 //        print(f"{user} failed to withdraw ${amount}. Insufficient funds!")
-
+        return false;
     }
     @Override
     public synchronized double loan_balance() {
