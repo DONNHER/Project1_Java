@@ -49,6 +49,11 @@ public class CreditAccount extends Account implements Payment, Recompense {
      */
     private void adjustLoanAmount(double amountAdjustment){
         //Complete this method
+
+         double res = loan - amountAdjustment;
+        if (res > 0){
+            this.loan = res;
+        }
     }
 
     /*
@@ -61,7 +66,6 @@ public class CreditAccount extends Account implements Payment, Recompense {
     public synchronized boolean pay(Account account, double amount) throws IllegalAccountType {
         //Complete this method
         if (account instanceof CreditAccount) {
-            addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Payment,"Credit Accounts cannot pay to other Credit Accounts as they do not hold account money balance.");
             // Throw an exception if it's a CreditAccount
             throw new IllegalAccountType("Credit Accounts cannot pay to other Credit Accounts as they do not hold account money balance.");
         }
@@ -71,10 +75,10 @@ public class CreditAccount extends Account implements Payment, Recompense {
         SavingsAccount payed = (SavingsAccount) account;
         boolean payment = payed.cashDeposit(amount);
         if (payment){
-            addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Payment,"Credit Accounts cannot pay to other Credit Accounts as they do not hold account money balance.");
-
+            addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Payment,"Payment successful: $["+amount+"] transferred to ["+account.getOwnerFullName()+"].");
+            return true;
         }
-        return payed.cashDeposit(amount);
+        return false;
     }
     /*
     Recompense some amount of money to the bank and reduce the value of loan recorded in this account. Must not be greater than the current credit.
@@ -85,7 +89,6 @@ public class CreditAccount extends Account implements Payment, Recompense {
     public synchronized boolean recompense(double amount) {
         //Complete this method
         if (amount > this.loan) {
-            addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Recompense, "Recompense failed: Amount exceeds current loan balance. Current loan balance: " + loan);
             return false;
         }
         this.loan -= amount;

@@ -51,12 +51,8 @@ successfully.
      */
     private void insufficientBalance() {
         //Complete this method
-        if (this.balance < amount){
-            System.out.println("Insufficient balance for this transaction.")
-        }
-        else{
-            System.out.println("Sufficient balance for this transaction.")
-        }
+        System.out.println("Insufficient balance for this transaction.");
+
     }
 
     /*
@@ -128,7 +124,7 @@ amount – Amount of money to be deposited.
     @Override
     public boolean cashDeposit(double amount) {
         //Complete this method
-        if (amount > 0) {
+        if (amount > 0 && amount < getBank().getDepositLimit()) {
             adjustAccountBalance(amount);
             return true;
         }
