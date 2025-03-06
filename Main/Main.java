@@ -77,22 +77,6 @@ public class Main
                         setOption();
                         if (getOption() == 1) {
                             bl.bankLogin();//Call for bankLogin method
-                            while (bl.isLogged()) {
-                                showMenuHeader("Bank Accounts Menu");
-                                showMenu(31, 1);
-                                setOption();
-                                if (getOption() == 1) {
-                                    bl.bankInit();
-                                } else if (getOption() == 2) {
-                                    showMenuHeader("New Account options");
-                                    showMenu(33, 1);
-                                    bl.GetNewAccounts();
-                                } else if (getOption() == 3) {
-                                    break;
-                                } else {
-                                    System.out.println("Invalid option!");
-                                }
-                            }
                         }else if( getOption() == 2){
                             break;
                         } else {

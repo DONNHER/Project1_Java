@@ -1,6 +1,7 @@
 package Bank;
 
 import Account.Account;
+import Accounts.Transaction;
 import CreditAccount.CreditAccount;
 import Main.Field;
 import Main.Field.*;
@@ -87,11 +88,24 @@ public class BankLauncher {
      */
     public void bankInit() {
         //Complete this method
-        if (isLogged()) {
-            showAccounts();
-            return;
+        while (true) {
+            Main.showMenuHeader("Welcome to the Bank Account Portal!");
+            Main.showMenu(31, 1);
+            Main.setOption();
+            switch (Main.getOption()) {
+                case 1:
+                    showAccounts();
+                    break;
+                case 2:
+                    this.newAccounts();
+                    break;
+                case 3:
+                    System.out.println("Logging out...");
+                    return;  // Exit the method and break the loop
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
         }
-        System.out.println("Login first!");
     }
 
     /*
@@ -147,6 +161,7 @@ public class BankLauncher {
         if (searchBank != null){
             this.setLoggedBank(searchBank);
             System.out.println("Login successful! Welcome to " + searchBank.getName());
+            this.bankInit();
         }else {
             System.out.println("Login failed. Invalid credentials.");
         }
