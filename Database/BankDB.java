@@ -29,9 +29,7 @@ public class BankDB {
              PreparedStatement preStatements2 = conn.prepareStatement(table2);
              PreparedStatement checkPstmt = conn.prepareStatement(sql)) {
 
-            ResultSet rs = checkPstmt.executeQuery();
-            ResultSet res1 = preStatements1.executeQuery();  // Credit Accounts
-            ResultSet res2 = preStatements2.executeQuery();  // Savings Accounts
+            ResultSet rs = checkPstmt.executeQuery();// Savings Accounts
 
             // Load banks and their accounts
             while (rs.next()) {
@@ -44,8 +42,10 @@ public class BankDB {
                         rs.getDouble("Credit_Limit"),
                         rs.getDouble("Processing_Fee"));
                 banks.publicAddBank(bank);
+                try {
+                    ResultSet res1 = preStatements1.executeQuery();
 
-                // Add Credit Accounts
+                    // Add Credit Accounts
                 while (res1.next()) {
                     if (rs.getString("ID").equals(res1.getString("Bank"))) {
                         CreditAccount creditAccount = new CreditAccount(
@@ -60,7 +60,11 @@ public class BankDB {
                         bank.addCreditAccount(creditAccount);
                     }
                 }
-
+                    res1.close();
+                }catch (Exception e) {
+                    // Credit Accounts
+                }
+                ResultSet res2 = preStatements2.executeQuery();
                 // Add Savings Accounts
                 while (res2.next()) {
                     if (rs.getString("ID").equals(res2.getString("Bank"))) {
@@ -76,11 +80,10 @@ public class BankDB {
                         bank.addSavingsAccount(savingsAccount);
                     }
                 }
+                res2.close();
             }
 
             rs.close();
-            res1.close();
-            res2.close();
         } catch (Exception e) {
             e.printStackTrace();  // Log the error
             throw new Exception("Error loading data from the database", e);
@@ -97,7 +100,7 @@ public class BankDB {
             conn.setAutoCommit(false);  // Start transaction
             for (Bank bank : lists) {
                 PreparedStatement pstmt;
-                if (bank.getIsNew()) {  // For new banks, insert
+                if (!(bank.getIsNew())){  // For existing banks, update
                     pstmt = conn.prepareStatement(updateSql);
                     pstmt.setString(1, bank.getName());
                     pstmt.setString(2, bank.getPasscode());
@@ -106,7 +109,7 @@ public class BankDB {
                     pstmt.setDouble(5, bank.getCreditLimit());
                     pstmt.setDouble(6, bank.getProcessingFee());
                     pstmt.setInt(7, bank.getID());
-                } else {  // For existing banks, update
+                } else {  // For new banks, insert
                     pstmt = conn.prepareStatement(insertSql);
                     pstmt.setInt(1, bank.getID());
                     pstmt.setString(2, bank.getName());

@@ -96,6 +96,7 @@ public class Main
             }
             else if (getOption() == 4)
             {
+                System.out.println(bl.getBanks().size());
                 bankdb.saveBanksToDatabase(bl.getBanks());
                 bankdb.deleteMultipleBanksFromDatabase(bl.getBankids());
                 for (Bank bank : bl.getBanks()){

@@ -264,8 +264,8 @@ public class Bank implements Comparator{
     public ArrayList<Field<String, ?>> createNewAccount(){
         //Complete this code
         this.accountNField.setFieldValue("Enter account number: ");
-        this.fnameField.setFieldValue("Enter first name: ");
-        this.lnameField.setFieldValue("Enter last name: ");
+        this.fnameField.setFieldValue("Enter first name: ",false);
+        this.lnameField.setFieldValue("Enter last name: ",false);
         this.pinField.setFieldValue("Enter pin password: ");
         this.emailField.setFieldValue("Enter email address: ");
 
@@ -393,6 +393,6 @@ public class Bank implements Comparator{
      */
     public String toString(){
         //Complete this method
-        return "Bank: " + this.getName();
+        return this.getName();
     }
 }
