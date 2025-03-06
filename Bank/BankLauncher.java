@@ -153,7 +153,7 @@ public class BankLauncher {
     public void bankLogin () {
         //Complete this method
         this.idField.setFieldValue("Enter bank ID: ");
-        this.nameField.setFieldValue("Enter bank name: ");
+        this.nameField.setFieldValue("Enter bank name: ",false);
         this.passcodeField.setFieldValue("Enter bank passcode: ");
         Bank bank = new Bank(this.idField.getFieldValue(),this.nameField.getFieldValue(),this.passcodeField.getFieldValue());
 
@@ -200,11 +200,8 @@ public class BankLauncher {
         this.withdrawLimitField.setFieldValue("Enter withdraw limit: ");
         this.creditLimitField.setFieldValue("Enter credit limit: ");
         this.processingFeeField.setFieldValue("Enter processing fee: ");
-        System.out.println(nameField.getFieldValue());
         Bank newbank = new Bank(this.idField.getFieldValue(), this.nameField.getFieldValue(), this.passcodeField.getFieldValue(), this.depositLimitField.getFieldValue(),
                 this.withdrawLimitField.getFieldValue(), this.creditLimitField.getFieldValue(), this.processingFeeField.getFieldValue());
-        System.out.println(newbank);
-        System.out.println(newbank.getName());
         newbank.setIsNew(true);
         addBank(newbank);
         this.size += 1;
