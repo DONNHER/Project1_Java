@@ -26,12 +26,13 @@ public class SavingsAccount extends Account implements Withdrawal, Deposit, Fund
 
     /*
     Get the account balance statement of this savings account.
-    @Returns String balance statement.
+Returns:
+String balance statement.
      */
     @Override
-    public synchronized void getAccountBalanceStatement() {
+    public void getAccountBalanceStatement() {
         //Complete this method
-
+        System.out.println("Account Balance: " + this.balance);
     }
 
     /*
@@ -41,8 +42,7 @@ public class SavingsAccount extends Account implements Withdrawal, Deposit, Fund
      */
     private boolean hasEnoughBalance(double amount){
         //Complete this method
-        adjustAccountBalance(amount);
-        return balance == 0;
+        return this.balance >= amount;
     }
 
     /*
@@ -51,8 +51,11 @@ successfully.
      */
     private void insufficientBalance() {
         //Complete this method
-        if (balance < 0){
-            System.out.println("Insufficient Balance!");
+        if (this.balance < amount){
+            System.out.println("Insufficient balance for this transaction.")
+        }
+        else{
+            System.out.println("Sufficient balance for this transaction.")
         }
     }
 
@@ -64,10 +67,9 @@ amount – Amount to be added or subtracted from the account balance.
      */
     private void adjustAccountBalance(double amount){
         //Complete this method
-        if  ((balance -= amount) < 0){
-            balance += 0.0;
-        }else {
-            balance -= amount;
+        this.balance += amount;
+        if (this.balance < 0.0) {
+            this.balance = 0.0;
         }
     }
 
@@ -84,9 +86,19 @@ IllegalAccountType – Cannot fund transfer when the other account is of type
 CreditAccount.
      */
     @Override
-    public synchronized boolean transfer(Account account, double amount) throws IllegalAccountType {
+    public boolean transfer(Account account, double amount) throws IllegalAccountType {
         //Complete this method
-        return false;
+        if (!(account instanceof SavingsAccount)) {
+            throw new IllegalAccountType("Cannot transfer funds to a non-savings account.");
+        }
+        if (hasEnoughBalance(amount)) {
+            adjustAccountBalance(-amount);
+            ((SavingsAccount) account).adjustAccountBalance(amount);
+            return true;
+        } else {
+            insufficientBalance();
+            return false;
+        }
     }
     /*
     Transfers an amount of money from this account to another savings account. Should be used
@@ -103,9 +115,9 @@ CreditAccount.
      */
 
     @Override
-    public synchronized boolean transfer(Bank bank, Account account, double amount) throws IllegalAccountType {
+    public boolean transfer(Bank bank, Account account, double amount) throws IllegalAccountType {
         //Complete this method
-        return false;
+        return transfer(account, amount);
     }
 
     /*
@@ -114,8 +126,12 @@ CreditAccount.
 amount – Amount of money to be deposited.
      */
     @Override
-    public synchronized boolean cashDeposit(double amount) {
+    public boolean cashDeposit(double amount) {
         //Complete this method
+        if (amount > 0) {
+            adjustAccountBalance(amount);
+            return true;
+        }
         return false;
     }
 
@@ -126,22 +142,18 @@ Params:
 amount – Amount of money to be withdrawn.
      */
     @Override
-    public synchronized boolean withdrawal(double amount) {
+    public boolean withdrawal(double amount) {
         //Complete this method
-        String s = "";
-//        with self.lock:  # Ensures only one thread modifies the balance at a time
-//        print(f"{user} is attempting to withdraw ${amount}...")
-//        time.sleep(random.uniform(0.1, 0.5))  # Simulate processing delay
-//
-//        if self.balance >= amount:
-//        self.balance -= amount
-//        print(f"{user} successfully withdrew ${amount}. Remaining balance: ${self.balance}")
-//            else:
-//        print(f"{user} failed to withdraw ${amount}. Insufficient funds!")
-        return false;
+        if (hasEnoughBalance(amount)) {
+            adjustAccountBalance(-amount);
+            return true;
+        } else {
+            insufficientBalance();
+            return false;
+        }
     }
     @Override
-    public synchronized double loan_balance() {
+    public double loan_balance() {
         return this.balance;
     }
 
