@@ -6,7 +6,8 @@ import Bank.Bank;
 import SavingsAccount.SavingsAccount;
 
 public class CreditAccount extends Account implements Payment, Recompense {
-    private double loan = 0.0;
+    private double loan;
+    private static final double CREDIT_LIMIT = 100000.0; //Example limit
 
     public CreditAccount(Bank bank, String accountNumber, String firstName, String lastName, String email,String pin,double loan) {
         super(bank, accountNumber, firstName, lastName, email,pin);
@@ -39,8 +40,7 @@ public class CreditAccount extends Account implements Payment, Recompense {
          */
     private boolean canCredit(double amountAdjustment){
         //Complete this method
-
-        return false;
+        return (this.loan + amountAdjustment) <= CREDIT_LIMIT;
     }
 
     /*
@@ -50,9 +50,12 @@ public class CreditAccount extends Account implements Payment, Recompense {
     private void adjustLoanAmount(double amountAdjustment){
         //Complete this method
 
-         double res = loan - amountAdjustment;
-        if (res > 0){
-            this.loan = res;
+        if (amountAdjustment > 0 && canCredit(amountAdjustment)) {
+            // If the amount adjustment is positive and can be credited, increase the loan
+            this.loan += amountAdjustment;
+        } else if (amountAdjustment < 0 && (this.loan + amountAdjustment) >= 0) {
+            // If the amount adjustment is negative and does not make the loan go negative, decrease the loan
+            this.loan += amountAdjustment;
         }
     }
 
@@ -72,11 +75,12 @@ public class CreditAccount extends Account implements Payment, Recompense {
 
         // If it's a valid SavingsAccount (or other type), perform the payment
         // Assuming there's a method to deposit the money in the account
-        SavingsAccount payed = (SavingsAccount) account;
-        boolean payment = payed.cashDeposit(amount);
-        if (payment){
-            addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Payment,"Payment successful: $["+amount+"] transferred to ["+account.getOwnerFullName()+"].");
-            return true;
+        if (account instanceof SavingsAccount payee){
+            boolean paymentSuccessful = payee.cashDeposit(amount);
+            if (paymentSuccessful){
+                addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Payment,"Payment successful: $["+amount+"] transferred to ["+account.getOwnerFullName()+"].");
+                return true;
+            }
         }
         return false;
     }
