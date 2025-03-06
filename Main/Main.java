@@ -55,11 +55,6 @@ public class Main
                         showMenuHeader("All registered banks");
                         bl.showBanksMenu();
                         al.accountLogin();
-                        if (al.isLoggedIn()) {
-
-                        } else {
-                            System.out.println("Logout, login first...");
-                        }
                     }
 
                 }

@@ -196,10 +196,8 @@ public class BankLauncher {
      */
     public void showBanksMenu () {
         //Complete this method
-        int n = 1;
         for (Bank banks : this.banks) {
             System.out.print("[" + banks.getID()+ "]   " + banks.getName() + '\n');
-            n += 1;
         }
     }
 
