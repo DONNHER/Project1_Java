@@ -3,12 +3,12 @@ package Database;
 
 import Account.Account;
 import Bank.*;
-        import CreditAccount.CreditAccount;
+import CreditAccount.CreditAccount;
 
 import SavingsAccount.SavingsAccount;
 
 import java.sql.*;
-        import java.util.ArrayList;
+import java.util.ArrayList;
 
 public class BankDB {
     private static final String path = "jdbc:sqlite:Database/bank.db";// SQLite file in project directory
@@ -29,7 +29,9 @@ public class BankDB {
              PreparedStatement preStatements2 = conn.prepareStatement(table2);
              PreparedStatement checkPstmt = conn.prepareStatement(sql)) {
 
-            ResultSet rs = checkPstmt.executeQuery();// Savings Accounts
+            ResultSet rs = checkPstmt.executeQuery();
+            ResultSet res1 = preStatements1.executeQuery();  // Credit Accounts
+            ResultSet res2 = preStatements2.executeQuery();  // Savings Accounts
 
             // Load banks and their accounts
             while (rs.next()) {
@@ -41,11 +43,10 @@ public class BankDB {
                         rs.getDouble("Withdraw_Limit"),
                         rs.getDouble("Credit_Limit"),
                         rs.getDouble("Processing_Fee"));
+                bank.setIsNew(false);
                 banks.publicAddBank(bank);
-                try {
-                    ResultSet res1 = preStatements1.executeQuery();
 
-                    // Add Credit Accounts
+                // Add Credit Accounts
                 while (res1.next()) {
                     if (rs.getString("ID").equals(res1.getString("Bank"))) {
                         CreditAccount creditAccount = new CreditAccount(
@@ -56,15 +57,12 @@ public class BankDB {
                                 res1.getString("Email"),
                                 res1.getString("Pin"),
                                 res1.getDouble("Loan_Statement"));
+                        creditAccount.setIsNew(false);
                         bank.addNewAccount(creditAccount);
                         bank.addCreditAccount(creditAccount);
                     }
                 }
-                    res1.close();
-                }catch (Exception e) {
-                    // Credit Accounts
-                }
-                ResultSet res2 = preStatements2.executeQuery();
+                res1.close();
                 // Add Savings Accounts
                 while (res2.next()) {
                     if (rs.getString("ID").equals(res2.getString("Bank"))) {
@@ -76,13 +74,13 @@ public class BankDB {
                                 res2.getString("Email"),
                                 res2.getString("Pin"),
                                 res2.getDouble("Balance"));
+                        savingsAccount.setIsNew(false);
                         bank.addNewAccount(savingsAccount);
                         bank.addSavingsAccount(savingsAccount);
                     }
+                    res2.close();
                 }
-                res2.close();
             }
-
             rs.close();
         } catch (Exception e) {
             e.printStackTrace();  // Log the error
@@ -100,7 +98,7 @@ public class BankDB {
             conn.setAutoCommit(false);  // Start transaction
             for (Bank bank : lists) {
                 PreparedStatement pstmt;
-                if (!(bank.getIsNew())){  // For existing banks, update
+                if (!(bank.getIsNew())) {  // For new banks, insert
                     pstmt = conn.prepareStatement(updateSql);
                     pstmt.setString(1, bank.getName());
                     pstmt.setString(2, bank.getPasscode());
@@ -109,7 +107,7 @@ public class BankDB {
                     pstmt.setDouble(5, bank.getCreditLimit());
                     pstmt.setDouble(6, bank.getProcessingFee());
                     pstmt.setInt(7, bank.getID());
-                } else {  // For new banks, insert
+                } else {  // For existing banks, update
                     pstmt = conn.prepareStatement(insertSql);
                     pstmt.setInt(1, bank.getID());
                     pstmt.setString(2, bank.getName());
@@ -122,7 +120,7 @@ public class BankDB {
                 pstmt.executeUpdate();
                 pstmt.close();
             }
-            conn.commit();  // Commit transaction
+            conn.commit();// Commit transaction
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Database error occurred", e);
@@ -136,7 +134,7 @@ public class BankDB {
             conn1.setAutoCommit(false);
             for (Account account: accounts) {
                 PreparedStatement pstmt1;
-                if (account.getIsNew()) {
+                if (!(account.getIsNew())) {
                     pstmt1 = conn1.prepareStatement(updateSqlCredit);// New CreditAccount
                     pstmt1.setString(1, account.getOwnerFirstName());
                     pstmt1.setString(2, account.getOwnerLastName());
@@ -147,13 +145,13 @@ public class BankDB {
                     pstmt1.setString(7, account.getAccountNumber());
                 } else {
                     pstmt1 = conn1.prepareStatement(insertSqlCredit);  // Update CreditAccount
-                    pstmt1.setString(7, account.getAccountNumber());
-                    pstmt1.setString(1, account.getOwnerFirstName());
-                    pstmt1.setString(2, account.getOwnerLastName());
-                    pstmt1.setDouble(3, account.loan_balance());
-                    pstmt1.setString(4, account.getPin());
-                    pstmt1.setInt(5, account.getBank().getID());
-                    pstmt1.setString(6, account.getOwnerEmail());
+                    pstmt1.setString(1, account.getAccountNumber());
+                    pstmt1.setString(2, account.getOwnerFirstName());
+                    pstmt1.setString(3, account.getOwnerLastName());
+                    pstmt1.setDouble(4, account.loan_balance());
+                    pstmt1.setString(5, account.getPin());
+                    pstmt1.setInt(6, account.getBank().getID());
+                    pstmt1.setString(7, account.getOwnerEmail());
                 }
                 pstmt1.executeUpdate();
                 pstmt1.close();
@@ -174,7 +172,7 @@ public class BankDB {
             conn2.setAutoCommit(false);
             for (Account account: accounts) {
                 PreparedStatement pstmt2;
-                if (account.getIsNew()) {
+                if (!(account.getIsNew())) {
                     pstmt2 = conn2.prepareStatement(updateSqlSavings);// New CreditAccount
                     pstmt2.setString(1, account.getOwnerFirstName());
                     pstmt2.setString(2, account.getOwnerLastName());
@@ -198,9 +196,9 @@ public class BankDB {
             }
             conn2.commit();  // Commit transaction
         } catch (SQLException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Database error occurred", e);
-            }
+            e.printStackTrace();
+            throw new RuntimeException("Database error occurred", e);
+        }
     }
 
     public void deleteBankFromDatabase(int bankId) throws Exception {

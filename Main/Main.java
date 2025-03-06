@@ -96,11 +96,11 @@ public class Main
             }
             else if (getOption() == 4)
             {
+
                 bankdb.saveBanksToDatabase(bl.getBanks());
-                bankdb.deleteMultipleBanksFromDatabase(bl.getBankids());
-                for (Bank bank : bl.getBanks()){
-                    bankdb.saveCreditsAccount(bank.getCreditAccounts());
-                    bankdb.saveSavingsAccount(bank.getSavingsAccounts());
+                for(Bank b : bl.getBanks()){
+                    bankdb.saveSavingsAccount(b.getSavingsAccounts());
+                    bankdb.saveCreditsAccount(b.getCreditAccounts());
                 }
                 System.out.println("Exiting. Thank you for banking!");
                 break;

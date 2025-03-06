@@ -288,6 +288,7 @@ public class Bank implements Comparator{
         createNewAccount();
         SavingsAccount newsavingsAccount = new SavingsAccount(bank,this.accountNField.getFieldValue(),this.fnameField.getFieldValue(),
                 this.lnameField.getFieldValue(),this.emailField.getFieldValue(),this.pinField.getFieldValue(),this.BalanceField.getFieldValue());
+        newsavingsAccount.setIsNew(true);
         addNewAccount(newsavingsAccount);
         addSavingsAccount(newsavingsAccount);
         s_count += 1;
@@ -305,6 +306,7 @@ public class Bank implements Comparator{
         createNewAccount();
         CreditAccount newCreditAccount = new CreditAccount(bank,this.accountNField.getFieldValue(),this.fnameField.getFieldValue(),
                 this.lnameField.getFieldValue(),this.emailField.getFieldValue(),this.pinField.getFieldValue(),this.laonField.getFieldValue());
+        newCreditAccount.setIsNew(true);
         addNewAccount(newCreditAccount);
         addCreditAccount(newCreditAccount);
         c_count += 1;

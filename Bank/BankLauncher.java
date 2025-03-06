@@ -97,6 +97,8 @@ public class BankLauncher {
                     showAccounts();
                     break;
                 case 2:
+                    Main.showMenuHeader("Account type selection");
+                    Main.showMenu(33);
                     this.newAccounts();
                     break;
                 case 3:
