@@ -3,6 +3,7 @@ package SavingsAccount;
 import Account.Account;
 import Accounts.*;
 import Bank.Bank;
+import CreditAccount.CreditAccount;
 
 public class SavingsAccount extends Account implements Withdrawal, Deposit, FundTransfer {
     // Balance of this bank account
@@ -97,29 +98,30 @@ CreditAccount.
         }
     }
     /*
-    Transfers an amount of money from this account to another savings account. Should be used
-when transferring to other banks.
-Params:
-bank – Bank object of the recipient.
-account – Account number of recipient.
-amount – Amount of money to be supposedly adjusted from this account’s balance.
-Returns:
-Flag if fund transfer transaction is successful or not.
-Throws:
-IllegalAccountType – Cannot fund transfer when the other account is of type
-CreditAccount.
+    Transfers an amount of money from this account to another savings account. Should be used when transferring to other banks.
+    @Params bank – Bank object of the recipient.
+    @Params account – Account number of recipient.
+    @Params amount – Amount of money to be supposedly adjusted from this account’s balance.
+    @Returns Flag if fund transfer transaction is successful or not.
+    @Throws IllegalAccountType – Cannot fund transfer when the other account is of type CreditAccount.
      */
 
     @Override
     public boolean transfer(Bank bank, Account account, double amount) throws IllegalAccountType {
         //Complete this method
+//        if (account instanceof CreditAccount){
+//            throw new IllegalAccountType("Cannot fund transfer when the other account is of type CreditAccount.");
+//        }
+//
+//        Account toTransfer =  getBank().getBankAccount(bank,account.getAccountNumber());
+//        double balance =  toTransfer.loan_balance();
+//         balance += amount;
         return transfer(account, amount);
     }
 
     /*
     Deposit some cash into this account. Cannot be greater than the bank’s deposit limit.
-    Params:
-amount – Amount of money to be deposited.
+    @Params amount – Amount of money to be deposited.
      */
     @Override
     public boolean cashDeposit(double amount) {

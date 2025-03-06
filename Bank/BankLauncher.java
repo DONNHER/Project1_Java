@@ -14,7 +14,8 @@ import java.util.Comparator;
 import java.util.Objects;
 
 public class BankLauncher {
-    Field<Integer, Integer> user = new Field<Integer, Integer>("Options", Integer.class, 0, new IntegerFieldValidator());
+    Field<Double,Double> doubleField = new Field<Double,Double>("Double input", Double.class, 0.0, new DoubleFieldValidator());
+    Field < Integer, Integer > user = new Field<Integer, Integer>("Options", Integer.class, 0, new IntegerFieldValidator());
     Field<Integer, Integer> idField = new Field<Integer, Integer>("ID field", Integer.class, -1, new IntegerFieldValidator());
     Field<String, String> nameField = new Field<String, String>("Name field", String.class, "0", new StringFieldValidator());
     Field<String, String> passcodeField = new Field<String, String>("Passcode field", String.class, "0", new StringFieldValidator());
@@ -35,6 +36,7 @@ public class BankLauncher {
     private ArrayList<Integer> bankids = new ArrayList<>();
 
     //Getters
+    public Field<Double, Double> getFieldDouble(){return this.doubleField;}
     public int getUser(){
         return this.user.getFieldValue();
     }

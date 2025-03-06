@@ -2,14 +2,17 @@ package SavingsAccount;
 
 import Account.AccountLauncher;
 import Bank.BankLauncher;
+import Main.Main;
+
 import java.util.Scanner;
 
 public class SavingsAccountLauncher extends AccountLauncher {
 
-    private Scanner scanner = new Scanner(System.in);
+    private  BankLauncher bl;
 
     public SavingsAccountLauncher(BankLauncher bankLauncher) {
         super(bankLauncher);
+        this.bl = bankLauncher;
     }
 
     /*
@@ -17,24 +20,10 @@ public class SavingsAccountLauncher extends AccountLauncher {
          */
     public void savingsAccountInit() {
         while (true) {
-            System.out.println("Welcome to the Savings Account Portal!");
-            System.out.println("1. Deposit");
-            System.out.println("2. Withdraw");
-            System.out.println("3. Fund Transfer");
-            System.out.println("4. Log Out");
-            System.out.print("Enter your choice: ");
-
-            int choice = -1;
-            if (scanner.hasNextInt()) {
-                choice = scanner.nextInt();
-            } else {
-                // Handle invalid input
-                System.out.println("Invalid input. Please enter a number.");
-                scanner.nextLine();
-                continue;  // Skip this iteration and ask again
-            }
-
-            switch (choice) {
+            Main.showMenuHeader("Welcome to the Savings Account Portal!");
+            Main.showMenu(51,2);
+            Main.setOption();
+            switch (Main.getOption()) {
                 case 1:
                     depositProcess();
                     break;
@@ -60,10 +49,9 @@ public class SavingsAccountLauncher extends AccountLauncher {
     private void depositProcess(){
 
         // Complete this method
-        System.out.print("Enter amount to deposit: ");
-        double amount = scanner.nextDouble();
+        bl.getFieldDouble().setFieldValue("Enter Amount: ");
         SavingsAccount account = getLoggedAccount();
-        if (account != null && account.cashDeposit(amount)) {
+        if (account.cashDeposit(bl.getFieldDouble().getFieldValue())) {
             System.out.println("Deposit successful. New balance: " + account.getBalance());
         } else {
             System.out.println("Deposit failed. Please try again.");
@@ -76,10 +64,9 @@ public class SavingsAccountLauncher extends AccountLauncher {
     private void withdrawProcess(){
 
         // Complete this method
-        System.out.print("Enter amount to withdraw: ");
-        double amount = scanner.nextDouble();
+        bl.getFieldDouble().setFieldValue("Enter Amount: ");
         SavingsAccount account = getLoggedAccount();
-        if (account != null && account.withdrawal(amount)) {
+        if (account != null && account.withdrawal(bl.getFieldDouble().getFieldValue())) {
             System.out.println("Withdrawal successful. New balance: " + account.getBalance());
         } else {
             System.out.println("Withdrawal failed. Insufficient funds or invalid input.");
