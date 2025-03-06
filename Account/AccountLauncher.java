@@ -1,7 +1,9 @@
 package Account;
 import Bank.*;
 
+import CreditAccount.*;
 import Main.*;
+import SavingsAccount.*;
 
 public class AccountLauncher {
     private BankLauncher bankLauncher;
@@ -23,7 +25,7 @@ public class AccountLauncher {
     private Bank assocBank = null;
 
     //Getters
-    public Account getLoggedAccount() {
+    protected Account getLoggedAccount() {
         return this.loggedAccount;
     }
 
@@ -63,6 +65,11 @@ public class AccountLauncher {
                 if (account != null) {
                     setLoggedSession(account);
                     System.out.println("Login successful! Welcome, " + loggedAccount.getOwnerFullName() + ".");
+                    if (getLoggedAccount() instanceof CreditAccount){
+                        new CreditAccountLauncher(bankLauncher,this.loggedAccount).creditAccountInit();
+                    }else if(getLoggedAccount() instanceof SavingsAccount){
+                        new SavingsAccountLauncher(bankLauncher,this.loggedAccount).savingsAccountInit();
+                    }
                 } else {
                     System.out.println("Login failed. Invalid credentials.");
                 }
@@ -102,9 +109,6 @@ public class AccountLauncher {
     private void destroyLogSession(){
         //Complete this method
         this.loggedAccount = null;
-    }
-    public void logoutAccount(){
-        destroyLogSession();
     }
 
     /*

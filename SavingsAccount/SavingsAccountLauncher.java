@@ -1,18 +1,21 @@
 package SavingsAccount;
 
+import Account.Account;
 import Account.AccountLauncher;
+import Accounts.Transaction;
+import Bank.Bank;
 import Bank.BankLauncher;
 import Main.Main;
-
-import java.util.Scanner;
 
 public class SavingsAccountLauncher extends AccountLauncher {
 
     private  BankLauncher bl;
+    private SavingsAccount account;
 
-    public SavingsAccountLauncher(BankLauncher bankLauncher) {
+    public SavingsAccountLauncher(BankLauncher bankLauncher, Account logged) {
         super(bankLauncher);
         this.bl = bankLauncher;
+        this.account = (SavingsAccount) logged;
     }
 
     /*
@@ -25,15 +28,23 @@ public class SavingsAccountLauncher extends AccountLauncher {
             Main.setOption();
             switch (Main.getOption()) {
                 case 1:
-                    depositProcess();
+                    getLoggedAccount().getAccountBalanceStatement();
                     break;
                 case 2:
-                    withdrawProcess();
+                    depositProcess();
                     break;
                 case 3:
-                    fundTransferProcess();
+                    withdrawProcess();
                     break;
                 case 4:
+                    fundTransferProcess();
+                    break;
+                case 5:
+                     for (Transaction t: account.getTransactionsInfo()){
+                         System.out.print("Type: "+t.transactionType+"\nDescription: " + t.description);
+                         }
+                    break;
+                case 6:
                     System.out.println("Logging out...");
                     return;  // Exit the method and break the loop
                 default:
@@ -50,9 +61,8 @@ public class SavingsAccountLauncher extends AccountLauncher {
 
         // Complete this method
         bl.getFieldDouble().setFieldValue("Enter Amount: ");
-        SavingsAccount account = getLoggedAccount();
-        if (account.cashDeposit(bl.getFieldDouble().getFieldValue())) {
-            System.out.println("Deposit successful. New balance: " + account.getBalance());
+        if (this.account.cashDeposit(bl.getFieldDouble().getFieldValue())) {
+            System.out.println("Deposit successful. New balance: " + this.account.getBalance());
         } else {
             System.out.println("Deposit failed. Please try again.");
         }
@@ -65,9 +75,8 @@ public class SavingsAccountLauncher extends AccountLauncher {
 
         // Complete this method
         bl.getFieldDouble().setFieldValue("Enter Amount: ");
-        SavingsAccount account = getLoggedAccount();
-        if (account != null && account.withdrawal(bl.getFieldDouble().getFieldValue())) {
-            System.out.println("Withdrawal successful. New balance: " + account.getBalance());
+        if (this.account != null && this.account.withdrawal(bl.getFieldDouble().getFieldValue())) {
+            System.out.println("Withdrawal successful. New balance: " + this.account.getBalance());
         } else {
             System.out.println("Withdrawal failed. Insufficient funds or invalid input.");
         }
@@ -84,8 +93,8 @@ public class SavingsAccountLauncher extends AccountLauncher {
     Get the Savings Account instance of the currently logged account.
      */
     @Override
-    public SavingsAccount getLoggedAccount() {
+    protected SavingsAccount getLoggedAccount() {
         //Complete this method
-        return this.getLoggedAccount();
+        return this.account;
     }
 }

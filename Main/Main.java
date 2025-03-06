@@ -31,8 +31,6 @@ public class Main
     public static void main(String[] args) throws Exception {
         BankLauncher bl = new BankLauncher();
         AccountLauncher al = new AccountLauncher(bl);
-        CreditAccountLauncher cl = new CreditAccountLauncher(bl);
-        SavingsAccountLauncher sl = new SavingsAccountLauncher(bl);
         BankDB bankdb = new BankDB();
         bankdb.loadBanksFromDatabase(bl);
         while (true)
@@ -46,6 +44,7 @@ public class Main
                 // READ ME: Refer to this code block on how one should properly utilize
                 // showMenuHeader(), showMenu(),
                 // setOption(), and getOption() methods...
+
                 showMenuHeader("Account Login Menu");
                 showMenu(2, 1);
                 setOption();
@@ -57,11 +56,7 @@ public class Main
                         bl.showBanksMenu();
                         al.accountLogin();
                         if (al.isLoggedIn()) {
-                            if (al.getLoggedAccount() instanceof CreditAccount) {
-                                cl.creditAccountInit();
-                            }else if (al.getLoggedAccount() instanceof SavingsAccount) {
-                                sl.savingsAccountInit();
-                            }
+
                         } else {
                             System.out.println("Logout, login first...");
                         }

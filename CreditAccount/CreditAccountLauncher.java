@@ -1,15 +1,19 @@
 package CreditAccount;
 
+import Account.Account;
 import Account.AccountLauncher;
+import Accounts.Transaction;
 import Bank.BankLauncher;
 import Main.Main;
 
 public class CreditAccountLauncher extends AccountLauncher {
     private  BankLauncher bl;
+    private CreditAccount account;
 
-    public CreditAccountLauncher(BankLauncher bankLauncher) {
+    public CreditAccountLauncher(BankLauncher bankLauncher, Account logged) {
         super(bankLauncher);
         this.bl = bankLauncher;
+        this.account = (CreditAccount) logged;
     }
 
     /*
@@ -24,7 +28,7 @@ public class CreditAccountLauncher extends AccountLauncher {
             Main.setOption();
             switch (Main.getOption()) {
                 case 1:
-                    getLoggedAccount();
+                    this.account.getLoanStatement();
                     break;
                 case 2:
                     creditAccountProcess();
@@ -33,8 +37,9 @@ public class CreditAccountLauncher extends AccountLauncher {
                     credRecompenseProcess();
                     break;
                 case 4:
-                    getLoggedAccount().getTransactionsInfo();
-                    break;
+                    for (Transaction t: account.getTransactionsInfo()){
+                        System.out.print("Type: "+t.transactionType+"\nDescription: " + t.description);
+                    }
                 case 5:
                     System.out.println("Logging out...");
                     return;  // Exit the method and break the loop
@@ -61,8 +66,8 @@ public class CreditAccountLauncher extends AccountLauncher {
     /*
     Get the Credit Account instance of the currently logged account
      */
-    public CreditAccount getLoggedAccount(){
+    protected CreditAccount getLoggedAccount(){
         //Complete this method
-        return null;
+        return this.account;
     }
 }
