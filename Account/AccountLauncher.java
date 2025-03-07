@@ -33,6 +33,10 @@ public class AccountLauncher {
         return this.assocBank;
     }
 
+    public Field<String, String> getAccountNum() {
+        return accountNum;
+    }
+
     //Setters
     public void setLoggedAccount(Account newAccount) {
         this.loggedAccount = newAccount;

@@ -2,6 +2,7 @@ package SavingsAccount;
 
 import Account.Account;
 import Account.AccountLauncher;
+import Accounts.IllegalAccountType;
 import Accounts.Transaction;
 import Bank.Bank;
 import Bank.BankLauncher;
@@ -21,7 +22,7 @@ public class SavingsAccountLauncher extends AccountLauncher {
     /*
         Method that deals with all things about savings accounts. Mainly utilized for showing the main menu after Savings Account users log in to the application
          */
-    public void savingsAccountInit() {
+    public void savingsAccountInit() throws IllegalAccountType {
         while (true) {
             Main.showMenuHeader("Welcome to the Savings Account Portal!");
             Main.showMenu(51,2);
@@ -85,9 +86,42 @@ public class SavingsAccountLauncher extends AccountLauncher {
     /*
     A method that deals with the fund transfer process transaction.
      */
-    private void fundTransferProcess(){
-        //Complete this method
+    private void fundTransferProcess() throws IllegalAccountType {
+        // Get recipient's account number
+        getAccountNum().setFieldValue("Enter Recipient's Account Number: ");
+        String AccountNUm = getAccountNum().getFieldValue();
+        bl.getFieldDouble().setFieldValue("Enter Amount:: ");
+        Double Amount = bl.getFieldDouble().getFieldValue();
+        String recipientAccountNumber = String.valueOf(getLoggedAccount().transfer(getAssocBank(), getLoggedAccount(), Amount));
+
+        // Check if the account exists
+        Account recipientAccount = getLoggedAccount();
+
+        if (recipientAccount == null) {
+            System.out.println("Account not found.");
+            return;
+        }
+
+        // Ask for the amount to transfer
+        bl.getFieldDouble().setFieldValue("Enter Amount to Transfer: ");
+        double transferAmount = bl.getFieldDouble().getFieldValue();  // Assuming this method retrieves the value
+
+        // Check if transfer is valid and execute
+        boolean transferSuccess = false;
+        try {
+            transferSuccess = this.account.transfer(recipientAccount, transferAmount);
+        } catch (IllegalAccountType e) {
+            System.out.println("Transfer failed");
+        }
+
+        if (transferSuccess) {
+            System.out.println("Transfer successful! New Balance: " + this.account.getBalance());
+        } else {
+            System.out.println("Transfer failed. Please check your balance or try again.");
+        }
+
     }
+
 
     /*
     Get the Savings Account instance of the currently logged account.
