@@ -46,7 +46,7 @@ public abstract class Account {
         return this.ownerLastName;
     }
     public String getOwnerFirstName(){
-        return this.ownerLastName;
+        return this.ownerFirstName;
     }
     public Bank getBank() {
         return bank;
@@ -106,6 +106,6 @@ public abstract class Account {
 
     public String toString(){
         //Complete this method
-        return "";
+        return getOwnerFullName();
     }
 }

@@ -1,15 +1,8 @@
 package Main;
 
-import Account.AccountLauncher;
-import Bank.Bank;
-import Bank.BankLauncher;
-import CreditAccount.CreditAccount;
-import CreditAccount.*;
-import Database.*;
-import SavingsAccount.SavingsAccount;
-import SavingsAccount.*;
 
-import java.io.File;
+import Account.AccountLauncher;
+import Bank.BankLauncher;
 import java.util.Scanner;
 
 public class Main
@@ -31,8 +24,9 @@ public class Main
     public static void main(String[] args) throws Exception {
         BankLauncher bl = new BankLauncher();
         AccountLauncher al = new AccountLauncher(bl);
-        BankDB bankdb = new BankDB();
-        bankdb.loadBanksFromDatabase(bl);
+        bl.loadBanksFromDatabase();
+        bl.loadCreditsFromDatabase();
+        bl.loadSavingsFromDatabase();
         while (true)
         {
             showMenuHeader("Main Menu");
@@ -97,11 +91,7 @@ public class Main
             else if (getOption() == 4)
             {
 
-                bankdb.saveBanksToDatabase(bl.getBanks());
-                for(Bank b : bl.getBanks()){
-                    bankdb.saveSavingsAccount(b.getSavingsAccounts());
-                    bankdb.saveCreditsAccount(b.getCreditAccounts());
-                }
+                bl.savetoDB();
                 System.out.println("Exiting. Thank you for banking!");
                 break;
             }

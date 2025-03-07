@@ -3,6 +3,7 @@ package Bank;
 import Account.Account;
 import Accounts.Transaction;
 import CreditAccount.CreditAccount;
+import Database.BankDB;
 import Main.Field;
 import Main.Field.*;
 import Main.Main;
@@ -10,11 +11,16 @@ import SavingsAccount.SavingsAccount;
 
 
 import java.security.cert.TrustAnchor;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Objects;
 
 public class BankLauncher {
+    BankDB bankdb = new BankDB();
     Field<Double,Double> doubleField = new Field<Double,Double>("Double input", Double.class, 0.0, new DoubleFieldValidator());
     Field < Integer, Integer > user = new Field<Integer, Integer>("Options", Integer.class, 0, new IntegerFieldValidator());
     Field<Integer, Integer> idField = new Field<Integer, Integer>("ID field", Integer.class, -1, new IntegerFieldValidator());
@@ -334,5 +340,92 @@ public class BankLauncher {
             return;
         }
         System.out.println("Bank not found in the list.");
+    }
+    public void loadBanksFromDatabase() {
+        try {
+            Connection conn = BankDB.connect();
+            PreparedStatement pstmt1 = conn.prepareStatement("SELECT * FROM Banks");
+            ResultSet rs = pstmt1.executeQuery();
+            // Load banks and their accounts
+            while (rs.next()) {
+                Bank bank = new Bank(
+                        rs.getInt("ID"),
+                        rs.getString("Name"),
+                        rs.getString("Passcode"),
+                        rs.getDouble("Deposit_Limit"),
+                        rs.getDouble("Withdraw_Limit"),
+                        rs.getDouble("Credit_Limit"),
+                        rs.getDouble("Processing_Fee"));
+                bank.setIsNew(false);
+                this.addBank(bank);
+            }
+        } catch (SQLException _) {
+
+        }
+    }
+    public void loadSavingsFromDatabase() {
+        try {
+            Connection conn = BankDB.connect();
+            PreparedStatement pstmt1 = conn.prepareStatement("SELECT * FROM SavingsAccount");
+            ResultSet res2 = pstmt1.executeQuery();
+
+            while (res2.next()) {
+                Bank bank = new Bank(res2.getInt("Bank"),"","");
+                Bank search =  getBank(bankIdComparator,bank);
+                if(search != null) {
+                    SavingsAccount savingsAccount = new SavingsAccount(
+                            search,
+                            res2.getString("Account_Number"),
+                            res2.getString("First_Name"),
+                            res2.getString("Last_Name"),
+                            res2.getString("Email"),
+                            res2.getString("Pin"),
+                            res2.getDouble("Balance"));
+                    savingsAccount.setIsNew(false);
+                    search.addNewAccount(savingsAccount);
+                    search.addSavingsAccount(savingsAccount);
+                }
+                System.out.println(1);
+            }
+        } catch (SQLException _) {
+
+        }
+    }
+    public void loadCreditsFromDatabase() {
+        try {
+            Connection conn = BankDB.connect();
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM CreditAccounts ");
+            ResultSet res1 = pstmt.executeQuery();  // Credit Accounts
+            while (res1.next()) {
+                Bank bank = new Bank(res1.getInt("Bank"),"","");
+                Bank search =  getBank(bankIdComparator,bank);
+                if(search != null) {
+                    CreditAccount creditAccount = new CreditAccount(
+                        search,
+                        res1.getString("Account_Number"),
+                        res1.getString("First_Name"),
+                        res1.getString("Last_Name"),
+                        res1.getString("Email"),
+                        res1.getString("Pin"),
+                        res1.getDouble("Loan_Statement"));
+                creditAccount.setIsNew(false);
+                search.addNewAccount(creditAccount);
+                search.addCreditAccount(creditAccount);
+                }
+            }
+        } catch (SQLException _) {
+        }
+    }
+
+    public void savetoDB() throws Exception {
+        for(Bank b : this.banks){
+            bankdb.saveBanksToDatabase(b);
+            for (CreditAccount account: b.getCreditAccounts()){
+                bankdb.saveCreditsAccount(account);
+            }
+            for (SavingsAccount account: b.getSavingsAccounts()){
+                bankdb.saveSavingsAccount(account);
+            }
+        }
     }
 }

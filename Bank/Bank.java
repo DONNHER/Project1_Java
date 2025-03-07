@@ -3,11 +3,15 @@ package Bank;
 import Account.Account;
 import Account.AccountLauncher;
 import BusinessAccount.BusinessAccount;
+import Database.BankDB;
 import Main.Field;
 import CreditAccount.CreditAccount;
 import SavingsAccount.SavingsAccount;
 import StudentAccount.StudentAccount;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Objects;
@@ -160,10 +164,10 @@ public class Bank implements Comparator{
             //Complete this method
             Bank b1 = (Bank) o1;
             Bank b2 = (Bank) o2;
-            if(b1 == b2){
-                return 0;
+            if(b1 != b2){
+                return -1;
             }
-            return 1;
+            return 0;
         }
     }
 
@@ -276,7 +280,7 @@ public class Bank implements Comparator{
         fields.add(this.lnameField);
         fields.add(this.pinField);
         fields.add(this.emailField);
-        return new ArrayList<>(fields);
+        return fields;
     }
     /*
     Create a new savings account. Utilizes the createNewAccount() method.
@@ -286,8 +290,14 @@ public class Bank implements Comparator{
         //Complete this method
         this.BalanceField.setFieldValue("Enter balance: ");
         createNewAccount();
-        SavingsAccount newsavingsAccount = new SavingsAccount(bank,this.accountNField.getFieldValue(),this.fnameField.getFieldValue(),
-                this.lnameField.getFieldValue(),this.emailField.getFieldValue(),this.pinField.getFieldValue(),this.BalanceField.getFieldValue());
+        SavingsAccount newsavingsAccount = new SavingsAccount(
+                bank,
+                this.accountNField.getFieldValue(),
+                this.fnameField.getFieldValue(),
+                this.lnameField.getFieldValue(),
+                this.emailField.getFieldValue(),
+                this.pinField.getFieldValue(),
+                this.BalanceField.getFieldValue());
         newsavingsAccount.setIsNew(true);
         addNewAccount(newsavingsAccount);
         addSavingsAccount(newsavingsAccount);
