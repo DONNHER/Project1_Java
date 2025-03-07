@@ -71,6 +71,9 @@ public class Main
                         setOption();
                         if (getOption() == 1) {
                             bl.bankLogin();//Call for bankLogin method
+                            while (bl.isLogged()){
+                                bl.bankInit();
+                            }
                         }else if( getOption() == 2){
                             break;
                         } else {
@@ -90,7 +93,34 @@ public class Main
             }
             else if (getOption() == 4)
             {
-
+                // TODO: Complete Bank option
+                //READ ME: Checks if there's registered bank
+                if (bl.bankSize() != 0) {
+                    while (true) {
+                        //Display all banks
+                        showMenuHeader("All registered banks");
+                        bl.showBanksMenu();
+                        showMenuHeader("Options here");
+                        showMenu(3);
+                        setOption();
+                        if (getOption() == 1) {
+                            bl.bankLogin();//Call for bankLogin method
+                            while (bl.isLogged()){
+                                bl.bankUpdateInit();
+                            }
+                        }else if( getOption() == 2){
+                            break;
+                        } else {
+                            System.out.println("Invalid option!");
+                        }
+                    }
+                }
+                else {
+                    System.out.println("No bank exist, create first...");
+                }
+            }
+            else if (getOption() == 5)
+            {
                 bl.savetoDB();
                 System.out.println("Exiting. Thank you for banking!");
                 break;

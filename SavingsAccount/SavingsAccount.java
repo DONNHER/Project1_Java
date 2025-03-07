@@ -13,7 +13,7 @@ public class SavingsAccount extends Account implements Withdrawal, Deposit, Fund
     public SavingsAccount(Bank bank, String accountNumber,
                           String firstname, String lastname, String email,String pin, double balance) {
         super(bank, accountNumber, firstname, lastname, email,pin);
-        this.balance = Math.max(balance, 0.0); // Ensure non-negative balance
+        this.balance = balance; // Ensure non-negative balance
     }
 
     // Getters
@@ -134,10 +134,8 @@ CreditAccount.
     }
 
     /*
-Withdraw an amount of money from this savings account. Cannot proceed if account does not
-have sufficient balance.
-Params:
-amount – Amount of money to be withdrawn.
+    Withdraw an amount of money from this savings account. Cannot proceed if account does not have sufficient balance.
+    @Params: amount – Amount of money to be withdrawn.
      */
     @Override
     public boolean withdrawal(double amount) {

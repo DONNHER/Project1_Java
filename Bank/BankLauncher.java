@@ -115,6 +115,41 @@ public class BankLauncher {
             }
         }
     }
+    public void bankUpdateInit() {
+        //Complete this method
+        while (true) {
+            Main.showMenuHeader("Welcome to the Bank Update Portal!");
+            Main.showMenu(4, 2);
+            Main.setOption();
+            switch (Main.getOption()) {
+                case 1:
+                    showAccounts();
+                    break;
+                case 2:
+                    Main.showMenuHeader("Account type selection");
+                    Main.showMenu(33);
+                    this.newAccounts();
+                    break;
+                case 3:
+                    System.out.println("Logging out...");
+                    return;
+                case 4:
+                    System.out.println("Logging out...");
+                    return;
+                case 5:
+                    System.out.println("Logging out...");
+                    return;
+                case 6:
+                    System.out.println("Logging out...");
+                    return;
+                case 7:
+                    System.out.println("Logging out...");
+                    return;  // Exit the method and break the loop
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
 
     /*
     Show the accounts registered to this bank. Must prompt the user to select which type of
@@ -169,7 +204,6 @@ public class BankLauncher {
         if (searchBank != null){
             this.setLoggedBank(searchBank);
             System.out.println("Login successful! Welcome to " + searchBank.getName());
-            this.bankInit();
         }else {
             System.out.println("Login failed. Invalid credentials.");
         }
@@ -385,7 +419,6 @@ public class BankLauncher {
                     search.addNewAccount(savingsAccount);
                     search.addSavingsAccount(savingsAccount);
                 }
-                System.out.println(1);
             }
         } catch (SQLException _) {
 
