@@ -1,15 +1,8 @@
 package Main;
 
-import Account.AccountLauncher;
-import Bank.Bank;
-import Bank.BankLauncher;
-import CreditAccount.CreditAccount;
-import CreditAccount.*;
-import Database.*;
-import SavingsAccount.SavingsAccount;
-import SavingsAccount.*;
 
-import java.io.File;
+import Account.AccountLauncher;
+import Bank.BankLauncher;
 import java.util.Scanner;
 
 public class Main
@@ -31,8 +24,9 @@ public class Main
     public static void main(String[] args) throws Exception {
         BankLauncher bl = new BankLauncher();
         AccountLauncher al = new AccountLauncher(bl);
-        BankDB bankdb = new BankDB();
-        bankdb.loadBanksFromDatabase(bl);
+        bl.loadBanksFromDatabase();
+        bl.loadCreditsFromDatabase();
+        bl.loadSavingsFromDatabase();
         while (true)
         {
             showMenuHeader("Main Menu");
@@ -77,21 +71,8 @@ public class Main
                         setOption();
                         if (getOption() == 1) {
                             bl.bankLogin();//Call for bankLogin method
-                            while (bl.isLogged()) {
-                                showMenuHeader("Bank Accounts Menu");
-                                showMenu(31, 1);
-                                setOption();
-                                if (getOption() == 1) {
-                                    bl.bankInit();
-                                } else if (getOption() == 2) {
-                                    showMenuHeader("New Account options");
-                                    showMenu(33, 1);
-                                    bl.GetNewAccounts();
-                                } else if (getOption() == 3) {
-                                    break;
-                                } else {
-                                    System.out.println("Invalid option!");
-                                }
+                            while (bl.isLogged()){
+                                bl.bankInit();
                             }
                         }else if( getOption() == 2){
                             break;
@@ -112,12 +93,35 @@ public class Main
             }
             else if (getOption() == 4)
             {
-                bankdb.saveBanksToDatabase(bl.getBanks());
-                bankdb.deleteMultipleBanksFromDatabase(bl.getBankids());
-                for (Bank bank : bl.getBanks()){
-                    bankdb.saveCreditsAccount(bank.getCreditAccounts());
-                    bankdb.saveSavingsAccount(bank.getSavingsAccounts());
+                // TODO: Complete Bank option
+                //READ ME: Checks if there's registered bank
+                if (bl.bankSize() != 0) {
+                    while (true) {
+                        //Display all banks
+                        showMenuHeader("All registered banks");
+                        bl.showBanksMenu();
+                        showMenuHeader("Options here");
+                        showMenu(3);
+                        setOption();
+                        if (getOption() == 1) {
+                            bl.bankLogin();//Call for bankLogin method
+                            while (bl.isLogged()){
+                                bl.bankUpdateInit();
+                            }
+                        }else if( getOption() == 2){
+                            break;
+                        } else {
+                            System.out.println("Invalid option!");
+                        }
+                    }
                 }
+                else {
+                    System.out.println("No bank exist, create first...");
+                }
+            }
+            else if (getOption() == 5)
+            {
+                bl.savetoDB();
                 System.out.println("Exiting. Thank you for banking!");
                 break;
             }

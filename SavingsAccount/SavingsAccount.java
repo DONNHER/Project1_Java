@@ -13,7 +13,7 @@ public class SavingsAccount extends Account implements Withdrawal, Deposit, Fund
     public SavingsAccount(Bank bank, String accountNumber,
                           String firstname, String lastname, String email,String pin, double balance) {
         super(bank, accountNumber, firstname, lastname, email,pin);
-        this.balance = Math.max(balance, 0.0); // Ensure non-negative balance
+        this.balance = balance; // Ensure non-negative balance
     }
 
     // Getters
@@ -64,7 +64,7 @@ amount – Amount to be added or subtracted from the account balance.
      */
     private void adjustAccountBalance(double amount){
         //Complete this method
-        this.balance += amount;
+        this.balance = amount;
         if (this.balance < 0.0) {
             this.balance = 0.0;
         }
@@ -83,7 +83,7 @@ IllegalAccountType – Cannot fund transfer when the other account is of type
 CreditAccount.
      */
     @Override
-    public boolean transfer(Account account, double amount) throws IllegalAccountType {
+    public synchronized boolean transfer(Account account, double amount) throws IllegalAccountType {
         //Complete this method
         if (!(account instanceof SavingsAccount)) {
             throw new IllegalAccountType("Cannot transfer funds to a non-savings account.");
@@ -107,16 +107,21 @@ CreditAccount.
      */
 
     @Override
-    public boolean transfer(Bank bank, Account account, double amount) throws IllegalAccountType {
+    public synchronized boolean transfer(Bank bank, Account account, double amount) throws IllegalAccountType {
         //Complete this method
-//        if (account instanceof CreditAccount){
-//            throw new IllegalAccountType("Cannot fund transfer when the other account is of type CreditAccount.");
-//        }
-//
-//        Account toTransfer =  getBank().getBankAccount(bank,account.getAccountNumber());
-//        double balance =  toTransfer.loan_balance();
-//         balance += amount;
-        return transfer(account, amount);
+        if (account instanceof CreditAccount){
+            throw new IllegalAccountType("Cannot fund transfer when the other account is of type CreditAccount.");
+        }
+
+        Account toTransfer =  getBank().getBankAccount(bank,account.getAccountNumber());
+        if (hasEnoughBalance(amount)) {
+            adjustAccountBalance(-amount);
+            ((SavingsAccount) toTransfer).adjustAccountBalance(amount);
+            return true;
+        } else {
+            insufficientBalance();
+            return false;
+        }
     }
 
     /*
@@ -126,7 +131,7 @@ CreditAccount.
     @Override
     public boolean cashDeposit(double amount) {
         //Complete this method
-        if (amount > 0 && amount < getBank().getDepositLimit()) {
+        if (amount < getBank().getDepositLimit()) {
             adjustAccountBalance(amount);
             return true;
         }
@@ -134,13 +139,11 @@ CreditAccount.
     }
 
     /*
-Withdraw an amount of money from this savings account. Cannot proceed if account does not
-have sufficient balance.
-Params:
-amount – Amount of money to be withdrawn.
+    Withdraw an amount of money from this savings account. Cannot proceed if account does not have sufficient balance.
+    @Params: amount – Amount of money to be withdrawn.
      */
     @Override
-    public boolean withdrawal(double amount) {
+    public  synchronized boolean withdrawal(double amount) {
         //Complete this method
         if (hasEnoughBalance(amount)) {
             adjustAccountBalance(-amount);
