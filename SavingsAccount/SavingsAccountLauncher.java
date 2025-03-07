@@ -106,21 +106,15 @@ public class SavingsAccountLauncher extends AccountLauncher {
         bl.getFieldDouble().setFieldValue("Enter Amount to Transfer: ");
         double transferAmount = bl.getFieldDouble().getFieldValue();  // Assuming this method retrieves the value
 
-        // Check if transfer is valid and execute
-        boolean transferSuccess = false;
+        // Directly handle the exception
         try {
-            transferSuccess = this.account.transfer(recipientAccount, transferAmount);
-        } catch (IllegalAccountType e) {
-            System.out.println("Transfer failed");
-        }
-
-        if (transferSuccess) {
+            this.account.transfer(recipientAccount, transferAmount);
             System.out.println("Transfer successful! New Balance: " + this.account.getBalance());
-        } else {
-            System.out.println("Transfer failed. Please check your balance or try again.");
+        } catch (IllegalAccountType e) {
+            System.out.println("Transfer failed: " + e.getMessage());
         }
-
     }
+
 
 
     /*
