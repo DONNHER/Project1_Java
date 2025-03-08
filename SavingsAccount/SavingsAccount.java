@@ -91,9 +91,12 @@ CreditAccount.
         if (hasEnoughBalance(amount)) {
             adjustAccountBalance(-amount);
             ((SavingsAccount) account).adjustAccountBalance(amount);
+            addNewTransaction(account.getAccountNumber(), Transaction.Transactions.FundTransfer,"Success Fund Transfer $"+amount+" to "+ account.getOwnerFullName());
+            System.out.println("Success Fund Transfer $"+amount+" to "+ account.getOwnerFullName());
             return true;
         } else {
             insufficientBalance();
+            System.out.println("Unsuccessful Fund Transfer $"+amount+" to "+ account.getOwnerFullName());
             return false;
         }
     }
@@ -147,6 +150,7 @@ CreditAccount.
         //Complete this method
         if (hasEnoughBalance(amount)) {
             adjustAccountBalance(-amount);
+
             return true;
         } else {
             insufficientBalance();

@@ -1,4 +1,5 @@
 package Account;
+import Accounts.IllegalAccountType;
 import Bank.*;
 
 import CreditAccount.*;
@@ -58,7 +59,7 @@ public class AccountLauncher {
     Login an account. Bank must be selected first before logging in. Account existence will depend
     on the selected bank.
      */
-    public void accountLogin() {
+    public void accountLogin() throws IllegalAccountType {
         //Complete this method
         assocBank = selectBank();
         if (assocBank!= null) {

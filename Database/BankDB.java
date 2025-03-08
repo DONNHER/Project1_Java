@@ -111,7 +111,6 @@ public class BankDB {
         String updateSqlSavings = "UPDATE SavingsAccount SET First_Name = ?, Last_Name = ?, Balance = ?, Pin = ?, Bank = ?, Email = ? WHERE Account_Number = ?";
         try (Connection conn2 = BankDB.connect()) {
 
-            System.out.println(account.getOwnerLastName() + account.getOwnerFirstName());
             PreparedStatement pstmt2;
 
             pstmt2 = conn2.prepareStatement(updateSqlSavings);// New CreditAccount
