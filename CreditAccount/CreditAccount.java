@@ -106,4 +106,7 @@ public class CreditAccount extends Account implements Payment, Recompense {
         //Complete this method
         return "Name: "+ this.getOwnerFullName() +"\nLoan statement: "+this.getLoanStatement() + "\n";
     }
+    public boolean pay(Double ignoredFieldValue) {
+        return false;
+    }
 }

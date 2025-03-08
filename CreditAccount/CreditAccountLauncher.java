@@ -55,8 +55,8 @@ public class CreditAccountLauncher extends AccountLauncher {
     private void creditAccountProcess(){
         //Complete this method
         bl.getFieldDouble().setFieldValue("Enter The Account Number: ");
-        if (this.account.pay(bl.getFieldDouble().getFieldValue())) {
-            System.out.println("Payment successful! Your remaining loan balance is: " + this.account.getLoan());
+        if (this.getLoggedAccount().pay(bl.getFieldDouble().getFieldValue())) {
+            System.out.println("Payment successful! Your remaining loan balance is: " + this.getLoggedAccount().getLoan());
         } else {
             System.out.println("Payment failed. Please check the amount and try again.");
         }
@@ -68,8 +68,8 @@ public class CreditAccountLauncher extends AccountLauncher {
     private void credRecompenseProcess(){
         //Complete this method
         bl.getFieldDouble().setFieldValue("Enter the amount you want to recompense: ");
-        if (this.account != null && this.account.recompense(bl.getFieldDouble().getFieldValue())){
-            System.out.println("Recompense successful! Your updated loan balance is: " + this.account.getLoan());
+        if (this.getLoggedAccount() != null && this.getLoggedAccount().recompense(bl.getFieldDouble().getFieldValue())){
+            System.out.println("Recompense successful! Your updated loan balance is: " + this.getLoggedAccount().getLoan());
         } else {
             System.out.println("Recompense failed. Please check the amount and try again.");
         }
