@@ -115,7 +115,6 @@ CreditAccount.
         if (account instanceof CreditAccount){
             throw new IllegalAccountType("Cannot fund transfer when the other account is of type CreditAccount.");
         }
-
         Account toTransfer =  getBank().getBankAccount(bank,account.getAccountNumber());
         if (hasEnoughBalance(amount)) {
             adjustAccountBalance(-amount);
