@@ -41,7 +41,7 @@ public class SavingsAccountLauncher extends AccountLauncher {
                     fundTransferProcess();
                     break;
                 case 5:
-                     for (Transaction t: account.getTransactionsInfo()){
+                     for (Transaction t: getLoggedAccount().getTransactionsInfo()){
                          System.out.print("Type: "+t.transactionType+"\nDescription: " + t.description);
                          }
                     break;
@@ -62,12 +62,7 @@ public class SavingsAccountLauncher extends AccountLauncher {
 
         // Complete this method
         bl.getFieldDouble().setFieldValue("Enter Amount: ");
-        if (this.account.cashDeposit(bl.getFieldDouble().getFieldValue())) {
-            this.account.addNewTransaction(this.account.getAccountNumber(), Transaction.Transactions.Deposit,"Deposit successful. New balance: " + this.account.getBalance());
-            System.out.println("Deposit successful. New balance: " + this.account.getBalance());
-        } else {
-            System.out.println("Deposit failed. Please try again.");
-        }
+        getLoggedAccount().cashDeposit(bl.getFieldDouble().getFieldValue());
     }
 
     /*
@@ -77,13 +72,7 @@ public class SavingsAccountLauncher extends AccountLauncher {
 
         // Complete this method
         bl.getFieldDouble().setFieldValue("Enter Amount: ");
-        if (this.account != null && this.account.withdrawal(bl.getFieldDouble().getFieldValue())) {
-            this.account.addNewTransaction(this.account.getAccountNumber(), Transaction.Transactions.Withdraw,"Withdrawal successful. New balance: " + this.account.getBalance());
-
-            System.out.println("Withdrawal successful. New balance: " + this.account.getBalance());
-        } else {
-            System.out.println("Withdrawal failed. Insufficient funds or invalid input.");
-        }
+        getLoggedAccount().withdrawal(bl.getFieldDouble().getFieldValue());
     }
 
     /*
@@ -112,14 +101,14 @@ public class SavingsAccountLauncher extends AccountLauncher {
             Bank search1 = bl.getBank(bl.getBankIdComparator(), b1);
             if (search1 != null) {
                 getAccountNum().setFieldValue("Enter Recipient's Account Number: ");
-                String AccountNUm1 = getAccountNum().getFieldValue();
-                Account recipientAccount1 = getLoggedAccount().getBank().getBankAccount(getLoggedAccount().getBank(),AccountNUm1);
+                Account recipientAccount1 = getLoggedAccount().getBank().getBankAccount(search1,getAccountNum().getFieldValue());
                 if(recipientAccount1 != null) {
                     bl.getFieldDouble().setFieldValue("Enter Amount to Transfer: ");
                     double transferAmount = bl.getFieldDouble().getFieldValue();
                     SavingsAccount owner = getLoggedAccount();
                     owner.transfer(search1,recipientAccount1,transferAmount);
                 }
+                System.out.println("Recipient's Account Number not found!");
             }
         }
     }

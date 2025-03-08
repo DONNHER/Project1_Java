@@ -31,9 +31,14 @@ Returns:
 String balance statement.
      */
     @Override
-    public void getAccountBalanceStatement() {
+    public synchronized void getAccountBalanceStatement() {
         //Complete this method
-        System.out.println("Account Balance: " + this.balance);
+        String s = "Account Number: "+getAccountNumber()+"\n";
+        for (Transaction transactions : this.getTransactionsInfo()){
+            s += transactions.description +"\n";
+        }
+        s += "Account Balance: " + this.balance;
+        System.out.println(s);
     }
 
     /*
@@ -62,7 +67,7 @@ results to the account balance going less than 0.0, then it is forcibly reset to
 Params:
 amount – Amount to be added or subtracted from the account balance.
      */
-    private void adjustAccountBalance(double amount){
+    private synchronized void adjustAccountBalance(double amount){
         //Complete this method
         this.balance = amount;
         if (this.balance < 0.0) {
@@ -92,11 +97,11 @@ CreditAccount.
             adjustAccountBalance(-amount);
             ((SavingsAccount) account).adjustAccountBalance(amount);
             addNewTransaction(account.getAccountNumber(), Transaction.Transactions.FundTransfer,"Success Fund Transfer $"+amount+" to "+ account.getOwnerFullName());
-            System.out.println("Success Fund Transfer $"+amount+" to "+ account.getOwnerFullName());
+            System.out.println("Fund Transfer successful: $"+amount+" to "+ account.getOwnerFullName());
             return true;
         } else {
             insufficientBalance();
-            System.out.println("Unsuccessful Fund Transfer $"+amount+" to "+ account.getOwnerFullName());
+            System.out.println("Fund Transfer Unsuccessful: $"+amount+" to "+ account.getOwnerFullName());
             return false;
         }
     }
@@ -119,9 +124,12 @@ CreditAccount.
         if (hasEnoughBalance(amount)) {
             adjustAccountBalance(-amount);
             ((SavingsAccount) toTransfer).adjustAccountBalance(amount);
+            addNewTransaction(this.getAccountNumber(), Transaction.Transactions.FundTransfer,"Fund Transfer successful: $["+amount+"] transferred to ["+account.getOwnerFullName()+"].");
+            System.out.println("Fund Transfer successful: $"+amount+" to "+ account.getOwnerFullName());
             return true;
         } else {
             insufficientBalance();
+            System.out.println("Fund Transfer Unsuccessful: $"+amount+" to "+ account.getOwnerFullName());
             return false;
         }
     }
@@ -131,10 +139,12 @@ CreditAccount.
     @Params amount – Amount of money to be deposited.
      */
     @Override
-    public boolean cashDeposit(double amount) {
+    public synchronized boolean cashDeposit(double amount) {
         //Complete this method
         if (amount < getBank().getDepositLimit()) {
             adjustAccountBalance(amount);
+            addNewTransaction(getAccountNumber(),Transaction.Transactions.Deposit,"Deposit Successful: $["+amount+"].");
+            System.out.println("Deposit Successful: $["+amount+"].");
             return true;
         }
         System.out.println("Deposit Failed. Amount exceeds bank deposit limit.");
@@ -149,13 +159,16 @@ CreditAccount.
     public  synchronized boolean withdrawal(double amount) {
         //Complete this method
         if (hasEnoughBalance(amount)) {
-            adjustAccountBalance(-amount);
-
-            return true;
-        } else {
-            insufficientBalance();
-            return false;
+            if(amount <= this.getBank().getWithdrawLimit()) {
+                adjustAccountBalance(-amount);
+                addNewTransaction(getAccountNumber(), Transaction.Transactions.Deposit, "Deposit Successful: $[" + amount + "].");
+                System.out.println("Deposit Successful: $[" + amount + "].");
+                return true;
+            }
+            System.out.println("Withdraw Failed: The amount to be withdraw exceeds to Bank withdrawal limit.");
         }
+        insufficientBalance();
+        return false;
     }
     @Override
     public double loan_balance() {
