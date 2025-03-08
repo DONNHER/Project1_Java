@@ -2,6 +2,7 @@ package CreditAccount;
 
 import Account.Account;
 import Account.AccountLauncher;
+import Accounts.IllegalAccountType;
 import Accounts.Transaction;
 import Bank.BankLauncher;
 import Main.Main;
@@ -20,7 +21,7 @@ public class CreditAccountLauncher extends AccountLauncher {
         Method that deals with all things about credit accounts. Mainly utilized for showing the main
         menu after Credit Account users log in to the application.
          */
-    public void creditAccountInit(){
+    public void creditAccountInit() throws IllegalAccountType {
         //Complete this method
         while (true) {
             Main.showMenuHeader("Welcome to the Credit Account Portal!");
@@ -52,10 +53,10 @@ public class CreditAccountLauncher extends AccountLauncher {
     /*
     Method that is utilized to process the credit payment transaction.
      */
-    private void creditAccountProcess(){
+    private void creditAccountProcess() throws IllegalAccountType {
         //Complete this method
         bl.getFieldDouble().setFieldValue("Enter The Account Number: ");
-        if (this.getLoggedAccount().pay(bl.getFieldDouble().getFieldValue())) {
+        if (this.getLoggedAccount().pay(getLoggedAccount(),bl.getFieldDouble().getFieldValue())) {
             System.out.println("Payment successful! Your remaining loan balance is: " + this.getLoggedAccount().getLoan());
         } else {
             System.out.println("Payment failed. Please check the amount and try again.");

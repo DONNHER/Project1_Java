@@ -460,9 +460,35 @@ public class BankLauncher {
             bankdb.saveBanksToDatabase(b);
             for (CreditAccount account: b.getCreditAccounts()){
                 bankdb.saveCreditsAccount(account);
+                for(Transaction transaction : account.getTransactionsInfo()){
+                    if(transaction.transactionType.equals(Transaction.Transactions.Deposit)){
+                        bankdb.save(transaction);
+                    }else if(transaction.transactionType.equals(Transaction.Transactions.FundTransfer)){
+                        bankdb.saveFund(transaction);
+                    }else if(transaction.transactionType.equals(Transaction.Transactions.Withdraw)){
+                        bankdb.saveWithdraw(transaction);
+                    }else if(transaction.transactionType.equals(Transaction.Transactions.Recompense)){
+                        bankdb.saveRecompense(transaction);
+                    }else if(transaction.transactionType.equals(Transaction.Transactions.Payment)){
+                        bankdb.savePayment(transaction);
+                    }
+                }
             }
             for (SavingsAccount account: b.getSavingsAccounts()){
                 bankdb.saveSavingsAccount(account);
+                for(Transaction transaction : account.getTransactionsInfo()){
+                    if(transaction.transactionType.equals(Transaction.Transactions.Deposit)){
+                        bankdb.save(transaction);
+                    }else if(transaction.transactionType.equals(Transaction.Transactions.FundTransfer)){
+                        bankdb.saveFund(transaction);
+                    }else if(transaction.transactionType.equals(Transaction.Transactions.Withdraw)){
+                        bankdb.saveWithdraw(transaction);
+                    }else if(transaction.transactionType.equals(Transaction.Transactions.Recompense)){
+                        bankdb.saveRecompense(transaction);
+                    }else if(transaction.transactionType.equals(Transaction.Transactions.Payment)){
+                        bankdb.savePayment(transaction);
+                    }
+                }
             }
         }
     }

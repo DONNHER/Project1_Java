@@ -161,7 +161,7 @@ CreditAccount.
         if (hasEnoughBalance(amount)) {
             if(amount <= this.getBank().getWithdrawLimit()) {
                 adjustAccountBalance(-amount);
-                addNewTransaction(getAccountNumber(), Transaction.Transactions.Deposit, "Deposit Successful: $[" + amount + "].");
+                addNewTransaction(getAccountNumber(), Transaction.Transactions.Withdraw, "Deposit Successful: $[" + amount + "].");
                 System.out.println("Deposit Successful: $[" + amount + "].");
                 return true;
             }

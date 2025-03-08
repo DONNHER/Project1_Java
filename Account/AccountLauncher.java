@@ -73,6 +73,7 @@ public class AccountLauncher {
                     if (getLoggedAccount() instanceof CreditAccount){
                         new CreditAccountLauncher(bankLauncher,this.loggedAccount).creditAccountInit();
                     }else if(getLoggedAccount() instanceof SavingsAccount){
+
                         new SavingsAccountLauncher(bankLauncher,this.loggedAccount).savingsAccountInit();
                     }
                 } else {

@@ -2,6 +2,7 @@
 package Database;
 
 import Account.Account;
+import Accounts.Transaction;
 import Bank.*;
 import CreditAccount.CreditAccount;
 
@@ -10,7 +11,7 @@ import SavingsAccount.SavingsAccount;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class BankDB {
+public class BankDB implements loadFromDB,saveToDB,deleteFromDB {
     private static final String path = "jdbc:sqlite:Database/bank.db";// SQLite file in project directory
 
     public static Connection connect() throws SQLException {
@@ -19,7 +20,7 @@ public class BankDB {
     }
 
     //ISSUE HERe//
-    public void updateBanksToDatabase(Bank bank){
+    public void updateBanksToDatabase(Bank bank) {
         String updateSql = "UPDATE Banks SET Name = ?, Passcode = ?, Deposit_Limit = ?, Withdraw_Limit = ?, Credit_Limit = ?, Processing_Fee = ? WHERE ID = ?";
         try (Connection conn = BankDB.connect()) {
             PreparedStatement pstmt;  // For new banks, insert
@@ -40,8 +41,8 @@ public class BankDB {
     }
 
     public void saveBanksToDatabase(Bank bank) throws Exception {
-        String insertSql = "INSERT OR REPLACE INTO Banks (ID, Name, Passcode, Deposit_Limit, Withdraw_Limit, Credit_Limit, Processing_Fee) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        if(bank.getIsNew()){
+        String insertSql = "INSERT INTO Banks (ID, Name, Passcode, Deposit_Limit, Withdraw_Limit, Credit_Limit, Processing_Fee) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        if (bank.getIsNew()) {
             try (Connection conn = BankDB.connect()) {
                 PreparedStatement pstmt;
                 pstmt = conn.prepareStatement(insertSql);
@@ -86,7 +87,7 @@ public class BankDB {
 
     public void saveCreditsAccount(CreditAccount account) {
         String insertSqlCredit = "INSERT INTO CreditAccounts (Account_Number, First_Name, Last_Name, Loan_Statement, Pin, Bank, Email) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        if(account.getIsNew()){
+        if (account.getIsNew()) {
             try (Connection conn1 = BankDB.connect()) {
                 PreparedStatement pstmt1;
                 pstmt1 = conn1.prepareStatement(insertSqlCredit);  // Update CreditAccount
@@ -128,30 +129,30 @@ public class BankDB {
             throw new RuntimeException("Database error occurred", e);
         }
     }
-        public void saveSavingsAccount (SavingsAccount account){
-            String insertSqlSavings = "INSERT OR REPLACE INTO SavingsAccount (Account_Number, First_Name, Last_Name, Balance, Pin, Bank, Email) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            if(account.getIsNew()) {
-                try (Connection conn2 = BankDB.connect()) {
-                    PreparedStatement pstmt2;
-                    pstmt2 = conn2.prepareStatement(insertSqlSavings);  // Update CreditAccount
-                    pstmt2.setString(1, account.getAccountNumber());
-                    pstmt2.setString(2, account.getOwnerFirstName());
-                    pstmt2.setString(3, account.getOwnerLastName());
-                    pstmt2.setDouble(4, account.loan_balance());
-                    pstmt2.setString(5, account.getPin());
-                    pstmt2.setInt(6, account.getBank().getID());
-                    pstmt2.setString(7, account.getOwnerEmail());
-                    pstmt2.executeUpdate();
-                    pstmt2.close();
-                    // Commit transaction
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("Database error occurred", e);
-                }
-            }
-            UpdateSavingsAccount(account);
-        }
 
+    public void saveSavingsAccount(SavingsAccount account) {
+        String insertSqlSavings = "INSERT INTO SavingsAccount (Account_Number, First_Name, Last_Name, Balance, Pin, Bank, Email) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        if (account.getIsNew()) {
+            try (Connection conn2 = BankDB.connect()) {
+                PreparedStatement pstmt2;
+                pstmt2 = conn2.prepareStatement(insertSqlSavings);  // Update CreditAccount
+                pstmt2.setString(1, account.getAccountNumber());
+                pstmt2.setString(2, account.getOwnerFirstName());
+                pstmt2.setString(3, account.getOwnerLastName());
+                pstmt2.setDouble(4, account.loan_balance());
+                pstmt2.setString(5, account.getPin());
+                pstmt2.setInt(6, account.getBank().getID());
+                pstmt2.setString(7, account.getOwnerEmail());
+                pstmt2.executeUpdate();
+                pstmt2.close();
+                // Commit transaction
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Database error occurred", e);
+            }
+        }
+        UpdateSavingsAccount(account);
+    }
 
 
     public void deleteBankFromDatabase(int bankId) throws Exception {
@@ -174,6 +175,106 @@ public class BankDB {
     public void deleteMultipleBanksFromDatabase(ArrayList<Integer> bankIds) throws Exception {
         for (Integer bankId : bankIds) {
             deleteBankFromDatabase(bankId);
+        }
+    }
+
+    @Override
+    public void delete(ArrayList<Integer> idNumber) throws Exception {
+
+    }
+
+    @Override
+    public void loadFromDatabase(BankLauncher banks) throws Exception {
+
+    }
+
+    @Override
+    public void save(Transaction transaction) {
+        String insertSqlDeposit = "INSERT INTO DepositTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
+
+        try (Connection conn2 = BankDB.connect()) {
+            PreparedStatement pstmt2;
+            pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
+            pstmt2.setString(1, transaction.accountNumber);
+            pstmt2.setObject(2, transaction.transactionType);
+            pstmt2.setString(3, transaction.description);
+            pstmt2.executeUpdate();
+            pstmt2.close();
+            // Commit transaction
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Database error occurred", e);
+        }
+    }
+
+    @Override
+    public void savePayment(Transaction transaction) {
+        String insertSqlDeposit = "INSERT INTO PaymentTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
+        try (Connection conn2 = BankDB.connect()) {
+            PreparedStatement pstmt2;
+            pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
+            pstmt2.setString(1, transaction.accountNumber);
+            pstmt2.setObject(2, transaction.transactionType);
+            pstmt2.setString(3, transaction.description);
+            pstmt2.executeUpdate();
+            pstmt2.close();
+            // Commit transaction
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Database error occurred", e);
+        }
+    }
+
+    @Override
+    public void saveFund(Transaction transaction) {
+        String insertSqlDeposit = "INSERT INTO FundTransferTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
+        try (Connection conn2 = BankDB.connect()) {
+            PreparedStatement pstmt2;
+            pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
+            pstmt2.setString(1, transaction.accountNumber);
+            pstmt2.setObject(2, transaction.transactionType);
+            pstmt2.setString(3, transaction.description);
+            pstmt2.executeUpdate();
+            pstmt2.close();
+            // Commit transaction
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Database error occurred", e);
+        }
+    }
+
+    @Override
+    public void saveRecompense(Transaction transaction) {
+        String insertSqlDeposit = "INSERT INTO RecompenseTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
+        try (Connection conn2 = BankDB.connect()) {
+            PreparedStatement pstmt2;
+            pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
+            pstmt2.setString(1, transaction.accountNumber);
+            pstmt2.setObject(2, transaction.transactionType);
+            pstmt2.setString(3, transaction.description);
+            pstmt2.executeUpdate();
+            pstmt2.close();
+            // Commit transaction
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Database error occurred", e);
+        }
+    }
+    @Override
+    public void saveWithdraw(Transaction transaction) {
+        String insertSqlDeposit = "INSERT INTO WithdrawTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
+        try (Connection conn2 = BankDB.connect()) {
+            PreparedStatement pstmt2;
+            pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
+            pstmt2.setString(1, transaction.accountNumber);
+            pstmt2.setObject(2, transaction.transactionType);
+            pstmt2.setString(3, transaction.description);
+            pstmt2.executeUpdate();
+            pstmt2.close();
+            // Commit transaction
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Database error occurred", e);
         }
     }
 }
