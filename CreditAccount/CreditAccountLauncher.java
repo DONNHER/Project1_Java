@@ -55,12 +55,17 @@ public class CreditAccountLauncher extends AccountLauncher {
      */
     private void creditAccountProcess() throws IllegalAccountType {
         //Complete this method
-        bl.getFieldDouble().setFieldValue("Enter The Account Number: ");
-        if (this.getLoggedAccount().pay(getLoggedAccount(),bl.getFieldDouble().getFieldValue())) {
-            System.out.println("Payment successful! Your remaining loan balance is: " + this.getLoggedAccount().getLoan());
-        } else {
+        getLoggedAccount().getBank().getIdField().setFieldValue("Enter Recipient's Account Number: ");
+        Account recipient = getLoggedAccount().getBank().getBankAccount(getLoggedAccount().getBank(), getLoggedAccount().getBank().getIdField().getFieldValue());
+        if(recipient != null) {
+            bl.getFieldDouble().setFieldValue("Enter Amount: ");
+            if (this.getLoggedAccount().pay(getLoggedAccount(), bl.getFieldDouble().getFieldValue())) {
+                System.out.println("Payment successful! Your remaining loan balance is: " + this.getLoggedAccount().getLoan());
+                return;
+            }
             System.out.println("Payment failed. Please check the amount and try again.");
         }
+        System.out.println("Recipient's Account Number not found!");
     }
 
     /*
@@ -68,12 +73,12 @@ public class CreditAccountLauncher extends AccountLauncher {
      */
     private void credRecompenseProcess(){
         //Complete this method
-        bl.getFieldDouble().setFieldValue("Enter the amount you want to recompense: ");
-        if (this.getLoggedAccount() != null && this.getLoggedAccount().recompense(bl.getFieldDouble().getFieldValue())){
+        bl.getFieldDouble().setFieldValue("Enter Amount: ");
+        if (this.getLoggedAccount().recompense(bl.getFieldDouble().getFieldValue())){
             System.out.println("Recompense successful! Your updated loan balance is: " + this.getLoggedAccount().getLoan());
-        } else {
-            System.out.println("Recompense failed. Please check the amount and try again.");
+            return;
         }
+        System.out.println("Recompense failed. Please check the amount and try again.");
     }
 
     /*

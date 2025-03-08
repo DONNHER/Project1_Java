@@ -11,7 +11,7 @@ import SavingsAccount.SavingsAccount;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class BankDB implements loadFromDB,saveToDB,deleteFromDB {
+public class BankDB implements loadFromDB,saveToDB{
     private static final String path = "jdbc:sqlite:Database/bank.db";// SQLite file in project directory
 
     public static Connection connect() throws SQLException {
@@ -178,14 +178,102 @@ public class BankDB implements loadFromDB,saveToDB,deleteFromDB {
         }
     }
 
-    @Override
-    public void delete(ArrayList<Integer> idNumber) throws Exception {
 
+    @Override
+    public void loadDepositTransaction(Account account) {
+        try {
+            Connection conn = BankDB.connect();
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM DepositTransactions ");
+            ResultSet res1 = pstmt.executeQuery();  // Credit Accounts
+            while (res1.next()) {
+                if(res1.getString("AccountNumber").equals(account.getAccountNumber())) {
+                    account.addNewTransaction(
+                            res1.getString("AccountNumber"),
+                            ((Transaction.Transactions)res1.getObject("Type")),
+                            res1.getString("Description"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Database error occurred", e);
+        }
+    }
+    @Override
+    public void loadFundTransaction(Account account)  {
+        try {
+            Connection conn = BankDB.connect();
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM FundTransferTransactions ");
+            ResultSet res1 = pstmt.executeQuery();  // Credit Accounts
+            while (res1.next()) {
+                if(res1.getString("AccountNumber").equals(account.getAccountNumber())) {
+                    account.addNewTransaction(
+                            res1.getString("AccountNumber"),
+                            ((Transaction.Transactions)res1.getObject("Type")),
+                            res1.getString("Description"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Database error occurred", e);
+        }
+    }
+    @Override
+    public void loadPaymentTransaction(Account account) {
+        try {
+            Connection conn = BankDB.connect();
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM PaymentTransactions ");
+            ResultSet res1 = pstmt.executeQuery();  // Credit Accounts
+            while (res1.next()) {
+                if(res1.getString("AccountNumber").equals(account.getAccountNumber())) {
+                    account.addNewTransaction(
+                            res1.getString("AccountNumber"),
+                            ((Transaction.Transactions)res1.getObject("Type")),
+                            res1.getString("Description"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Database error occurred", e);
+        }
+    }
+    @Override
+    public void loadRecompenseTransaction(Account account) {
+        try {
+            Connection conn = BankDB.connect();
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM RecompenseTransactions ");
+            ResultSet res1 = pstmt.executeQuery();  // Credit Accounts
+            while (res1.next()) {
+                if(res1.getString("AccountNumber").equals(account.getAccountNumber())) {
+                    account.addNewTransaction(
+                            res1.getString("AccountNumber"),
+                            ((Transaction.Transactions)res1.getObject("Type")),
+                            res1.getString("Description"));
+                }
+            }
+        }  catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Database error occurred", e);
+        }
     }
 
     @Override
-    public void loadFromDatabase(BankLauncher banks) throws Exception {
-
+    public void loadWithdrawTransaction(Account account){
+        try {
+            Connection conn = BankDB.connect();
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM WithdrawTransactions ");
+            ResultSet res1 = pstmt.executeQuery();  // Credit Accounts
+            while (res1.next()) {
+                if(res1.getString("AccountNumber").equals(account.getAccountNumber())) {
+                    account.addNewTransaction(
+                            res1.getString("AccountNumber"),
+                            ((Transaction.Transactions)res1.getObject("Type")),
+                            res1.getString("Description"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Database error occurred", e);
+        }
     }
 
     @Override

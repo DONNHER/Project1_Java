@@ -420,6 +420,11 @@ public class BankLauncher {
                             res2.getString("Email"),
                             res2.getString("Pin"),
                             res2.getDouble("Balance"));
+                    bankdb.loadPaymentTransaction(savingsAccount);
+                    bankdb.loadFundTransaction(savingsAccount);
+                    bankdb.loadRecompenseTransaction(savingsAccount);
+                    bankdb.loadDepositTransaction(savingsAccount);
+                    bankdb.loadWithdrawTransaction(savingsAccount);
                     savingsAccount.setIsNew(false);
                     search.addNewAccount(savingsAccount);
                     search.addSavingsAccount(savingsAccount);
@@ -446,6 +451,11 @@ public class BankLauncher {
                         res1.getString("Email"),
                         res1.getString("Pin"),
                         res1.getDouble("Loan_Statement"));
+                    bankdb.loadPaymentTransaction(creditAccount);
+                    bankdb.loadFundTransaction(creditAccount);
+                    bankdb.loadRecompenseTransaction(creditAccount);
+                    bankdb.loadDepositTransaction(creditAccount);
+                    bankdb.loadWithdrawTransaction(creditAccount);
                     creditAccount.setIsNew(false);
                     search.addNewAccount(creditAccount);
                     search.addCreditAccount(creditAccount);
