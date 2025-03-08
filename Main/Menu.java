@@ -44,7 +44,11 @@ public enum Menu {
     Update selection menu.
      */
     UpdateBankMenu(new String[] {"Bank Name", "Passcode", "Deposit Limit", "Withdrawal Limit",
-            "CreditLimit", "Processing Fee", "Log Out"},4);
+            "CreditLimit", "Processing Fee", "Log Out"},4),
+    /*
+   Update selection menu.
+    */
+    FundtransferMenu(new String[] {"Transfer Fund to other Account","Transfer Fund to other Bank Account"},5);
 
     public final String[] menuOptions;
     public final int menuIdx;

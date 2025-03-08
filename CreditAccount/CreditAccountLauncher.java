@@ -80,6 +80,6 @@ public class CreditAccountLauncher extends AccountLauncher {
      */
     protected CreditAccount getLoggedAccount(){
         //Complete this method
-        return  this.account;
+        return this.account;
     }
 }

@@ -63,6 +63,7 @@ public class SavingsAccountLauncher extends AccountLauncher {
         // Complete this method
         bl.getFieldDouble().setFieldValue("Enter Amount: ");
         if (this.account.cashDeposit(bl.getFieldDouble().getFieldValue())) {
+            this.account.addNewTransaction(this.account.getAccountNumber(), Transaction.Transactions.Deposit,"Deposit successful. New balance: " + this.account.getBalance());
             System.out.println("Deposit successful. New balance: " + this.account.getBalance());
         } else {
             System.out.println("Deposit failed. Please try again.");
@@ -77,6 +78,8 @@ public class SavingsAccountLauncher extends AccountLauncher {
         // Complete this method
         bl.getFieldDouble().setFieldValue("Enter Amount: ");
         if (this.account != null && this.account.withdrawal(bl.getFieldDouble().getFieldValue())) {
+            this.account.addNewTransaction(this.account.getAccountNumber(), Transaction.Transactions.Withdraw,"Withdrawal successful. New balance: " + this.account.getBalance());
+
             System.out.println("Withdrawal successful. New balance: " + this.account.getBalance());
         } else {
             System.out.println("Withdrawal failed. Insufficient funds or invalid input.");
@@ -88,34 +91,38 @@ public class SavingsAccountLauncher extends AccountLauncher {
      */
     private void fundTransferProcess() throws IllegalAccountType {
         // Get recipient's account number
-        getAccountNum().setFieldValue("Enter Recipient's Account Number: ");
-        String AccountNUm = getAccountNum().getFieldValue();
-        bl.getFieldDouble().setFieldValue("Enter Amount:: ");
-        Double Amount = bl.getFieldDouble().getFieldValue();
-        String recipientAccountNumber = String.valueOf(getLoggedAccount().transfer(getAssocBank(), getLoggedAccount(), Amount));
+        Main.showMenuHeader("Fund Transfer Menu");
+        Main.showMenu(5);
+        Main.setOption();
+        if (Main.getOption() == 1) {
+            getAccountNum().setFieldValue("Enter Recipient's Account Number: ");
+            Account recipientAccount = getLoggedAccount().getBank().getBankAccount(getLoggedAccount().getBank(),getAccountNum().getFieldValue());
+            if(recipientAccount != null) {
+                bl.getFieldDouble().setFieldValue("Enter Amount to Transfer: ");
+                double transferAmount = bl.getFieldDouble().getFieldValue();
+                SavingsAccount owner = getLoggedAccount();
+                owner.transfer(recipientAccount,transferAmount);
+            }
 
-        // Check if the account exists
-        Account recipientAccount = getLoggedAccount();
-
-        if (recipientAccount == null) {
-            System.out.println("Account not found.");
-            return;
-        }
-
-        // Ask for the amount to transfer
-        bl.getFieldDouble().setFieldValue("Enter Amount to Transfer: ");
-        double transferAmount = bl.getFieldDouble().getFieldValue();  // Assuming this method retrieves the value
-
-        // Directly handle the exception
-        try {
-            this.account.transfer(recipientAccount, transferAmount);
-            System.out.println("Transfer successful! New Balance: " + this.account.getBalance());
-        } catch (IllegalAccountType e) {
-            System.out.println("Transfer failed: " + e.getMessage());
+        }else if(Main.getOption() == 2){
+            bl.showBanksMenu();
+            Main.showMenuHeader("Options here");
+            bl.getIdField().setFieldValue("Enter Bank ID: ");
+            Bank b1 = new Bank(bl.getIdField().getFieldValue(), "", "");
+            Bank search1 = bl.getBank(bl.getBankIdComparator(), b1);
+            if (search1 != null) {
+                getAccountNum().setFieldValue("Enter Recipient's Account Number: ");
+                String AccountNUm1 = getAccountNum().getFieldValue();
+                Account recipientAccount1 = getLoggedAccount().getBank().getBankAccount(getLoggedAccount().getBank(),AccountNUm1);
+                if(recipientAccount1 != null) {
+                    bl.getFieldDouble().setFieldValue("Enter Amount to Transfer: ");
+                    double transferAmount = bl.getFieldDouble().getFieldValue();
+                    SavingsAccount owner = getLoggedAccount();
+                    owner.transfer(search1,recipientAccount1,transferAmount);
+                }
+            }
         }
     }
-
-
 
     /*
     Get the Savings Account instance of the currently logged account.

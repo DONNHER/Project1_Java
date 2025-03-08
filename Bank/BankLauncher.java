@@ -94,7 +94,9 @@ public class BankLauncher {
      */
     public void bankInit() {
         //Complete this method
-        while (true) {
+
+        while (isLogged()){
+
             Main.showMenuHeader("Welcome to the Bank Account Portal!");
             Main.showMenu(31, 1);
             Main.setOption();
@@ -108,11 +110,15 @@ public class BankLauncher {
                     this.newAccounts();
                     break;
                 case 3:
-                    System.out.println("Logging out...");
                     return;  // Exit the method and break the loop
+                case 4:
+                    System.out.println("Logging out...");
+                    logout();
+                    break;// Exit the method and break the loop
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
+
         }
     }
     public void bankUpdateInit() {
@@ -402,7 +408,6 @@ public class BankLauncher {
             Connection conn = BankDB.connect();
             PreparedStatement pstmt1 = conn.prepareStatement("SELECT * FROM SavingsAccount");
             ResultSet res2 = pstmt1.executeQuery();
-
             while (res2.next()) {
                 Bank bank = new Bank(res2.getInt("Bank"),"","");
                 Bank search =  getBank(bankIdComparator,bank);
@@ -441,9 +446,9 @@ public class BankLauncher {
                         res1.getString("Email"),
                         res1.getString("Pin"),
                         res1.getDouble("Loan_Statement"));
-                creditAccount.setIsNew(false);
-                search.addNewAccount(creditAccount);
-                search.addCreditAccount(creditAccount);
+                    creditAccount.setIsNew(false);
+                    search.addNewAccount(creditAccount);
+                    search.addCreditAccount(creditAccount);
                 }
             }
         } catch (SQLException _) {

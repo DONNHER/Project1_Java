@@ -209,42 +209,24 @@ public class Bank implements Comparator{
     public <T> void showAccount(Class<T> accountType) {
 
         int left = 0, right = bankAccounts.size() - 1;
-        int foundIndex = -1;
 
-        // Binary search to find one account of the specified type
         while (left <= right) {
-            int mid = left + (right - left) / 2;
 
-            // Check if the current account is of the requested type
-            if (accountType.isInstance(bankAccounts.get(mid))) {
-                foundIndex = mid;
-                break;
-            } else {
-                // Adjust search range based on accountType
-                if (accountType.isInstance(bankAccounts.get(mid))) {
-                    right = mid - 1; // Move left
-                } else {
-                    left = mid + 1; // Move right
-                }
+            boolean leftRes = bankAccounts.get(left).getClass().equals(accountType);
+            boolean RightRes = bankAccounts.get(right).getClass().equals(accountType);
+//            if (leftRes && RightRes){
+//                System.out.println(bankAccounts.get(right));
+//                return;
+//            }
+
+            if (leftRes) {
+                System.out.println(bankAccounts.get(left));
             }
-        }
-
-        // Case 1: If an account of the specified type is found, print all matching accounts
-        if (foundIndex != -1) {
-            int i = foundIndex;
-
-            // Print accounts of the specified type to the left
-            while (i >= 0 && accountType.isInstance(bankAccounts.get(i))) {
-                System.out.println(bankAccounts.get(i));
-                i--;
+            if (RightRes) {
+                System.out.println(bankAccounts.get(right));
             }
-
-            // Print accounts of the specified type to the right
-            i = foundIndex + 1;
-            while (i < bankAccounts.size() && accountType.isInstance(bankAccounts.get(i))) {
-                System.out.println(bankAccounts.get(i));
-                i++;
-            }
+            left ++;
+            right --;
         }
     }
 
@@ -253,13 +235,30 @@ public class Bank implements Comparator{
     @Params bank - Bank to search from.
     @Params accountNum – Account number of target account.
      */
-    public Account getBankAccount(Bank bank, String accountNum){
-        //Complete this code
-        if (accountExist(bank,accountNum)){
-            return new BankLauncher().findAccount(accountNum);
+    public Account getBankAccount(Bank bank, String accountNum) {
+         // Get the list of accounts
+        int l = 0, r = bank.bankAccountSize()- 1;
+
+        while (l <= r ) {
+            Account lAccount = bank.getBankAccounts().get(l);
+            Account rAccount = bank.getBankAccounts().get(r);
+            int res1 = lAccount.getAccountNumber().compareTo(accountNum);
+            int res2 = rAccount.getAccountNumber().compareTo(accountNum);
+//
+
+            if (res1 == 0 ) {
+                return lAccount; // Found the account
+            }
+            if (res2 == 0) {
+                return rAccount; // Search right half
+            }
+            r --;
+            l ++;
         }
-        return null;
+
+        return null; // Account not found
     }
+
 
     /*
     Handles the processing of inputting the basic information of the account.
@@ -355,10 +354,9 @@ public class Bank implements Comparator{
      */
     public void addNewAccount(Account account){
         //Complete this method
-        if (!accountExist(new BankLauncher().getLoggedBank(),account.getAccountNumber())){
-            int index = findIndexInsertion(this.bankAccounts, account);
-            this.bankAccounts.add(index, account);
-        }
+
+        int index = findIndexInsertion(this.bankAccounts, account);
+        this.bankAccounts.add(index, account);
     }
 
     public void addCreditAccount(CreditAccount ca){
@@ -375,7 +373,7 @@ public class Bank implements Comparator{
      */
     public boolean accountExist(Bank bank, String accountNum){
         //Complete this method
-        return new BankLauncher().findAccount(accountNum) != null;
+        return getBankAccount(bank,accountNum) == null;
     }
 
     /*
