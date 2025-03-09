@@ -39,7 +39,7 @@ public class BankDB implements loadFromDB,saveToDB{
         }
     }
 
-    public void saveBanksToDatabase(Bank bank) throws Exception {
+    public void saveBanksToDatabase(Bank bank) {
         String insertSql = "INSERT INTO Banks (ID, Name, Passcode, Deposit_Limit, Withdraw_Limit, Credit_Limit, Processing_Fee) VALUES (?, ?, ?, ?, ?, ?, ?)";
         if (bank.getIsNew()) {
             try (Connection conn = BankDB.connect()) {

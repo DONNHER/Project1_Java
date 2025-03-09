@@ -1,23 +1,15 @@
 package Bank;
 
 import Account.Account;
-import Account.AccountLauncher;
 import BusinessAccount.BusinessAccount;
-import Database.BankDB;
 import Main.Field;
 import CreditAccount.CreditAccount;
 import SavingsAccount.SavingsAccount;
 import StudentAccount.StudentAccount;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Objects;
 
 public class Bank implements Comparator{
-    //Init of Account Launcher utilize when creating accounts
     Field <String,String> accountNField = new Field<String, String>("Name field", String.class, "0", new Field.StringFieldValidator());
     Field <String,String> fnameField = new Field<String, String>("First name field", String.class, "0", new Field.StringFieldValidator());
     Field <String,String> lnameField = new Field<String, String>("Last name field", String.class, "0", new Field.StringFieldValidator());
