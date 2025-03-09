@@ -69,7 +69,7 @@ amount – Amount to be added or subtracted from the account balance.
      */
     private synchronized void adjustAccountBalance(double amount){
         //Complete this method
-        this.balance = amount;
+        this.balance += amount;
         if (this.balance < 0.0) {
             this.balance = 0.0;
         }
@@ -161,8 +161,8 @@ CreditAccount.
         if (hasEnoughBalance(amount)) {
             if(amount <= this.getBank().getWithdrawLimit()) {
                 adjustAccountBalance(-amount);
-                addNewTransaction(getAccountNumber(), Transaction.Transactions.Withdraw, "Deposit Successful: $[" + amount + "].");
-                System.out.println("Deposit Successful: $[" + amount + "].");
+                addNewTransaction(getAccountNumber(), Transaction.Transactions.Withdraw, "Withdraw Successful: $[" + amount + "].");
+                System.out.println("Withdraw Successful: $[" + amount + "].");
                 return true;
             }
             System.out.println("Withdraw Failed: The amount to be withdraw exceeds to Bank withdrawal limit.");

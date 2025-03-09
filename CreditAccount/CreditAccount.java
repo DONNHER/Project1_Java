@@ -27,9 +27,13 @@ public class CreditAccount extends Account implements Payment, Recompense {
         Loan statement of this credit account.
         @Returns - String loan statement.
          */
-    public double getLoanStatement(){
-        System.out.println("Loan Statement:\nOutstanding Balance: ₱");
-        return  this.loan;
+    public void getLoanStatement(){
+        String s = "\nAccount Number: "+getAccountNumber()+"\n";
+        for (Transaction transactions : this.getTransactionsInfo()){
+                s += transactions.description +"\n";
+            }
+        s += "Loan Statement: Outstanding Balance: ₱" +this.loan;
+        System.out.println(s);
     }
 
     /*
@@ -39,7 +43,27 @@ public class CreditAccount extends Account implements Payment, Recompense {
      */
     private boolean canCredit(double amountAdjustment){
         //Complete this method
+        if(amountAdjustment > getBank().getCreditLimit()){
+            return false;
+        }
+        adjustLoanAmount(amountAdjustment);
+        return true;
+    }
 
+    /*
+    Get credit to added loan
+    @Param amount to be credited
+     */
+    public synchronized boolean getCredit(double amount){
+        if (loan < getBank().getCreditLimit()){
+            if(canCredit(amount)){
+                addNewTransaction(getAccountNumber(), Transaction.Transactions.GetCredit, "Credit Successful: $["+amount+"].");
+                return true;
+            }
+            System.out.println("Credit Unsuccessful: $["+amount+"] exceeds bank credit limit.");
+            return false;
+        }
+        System.out.println("Credit Unsuccessful: $["+amount+"] exceeds bank credit limit.");
         return false;
     }
 
@@ -49,10 +73,9 @@ public class CreditAccount extends Account implements Payment, Recompense {
      */
     private void adjustLoanAmount(double amountAdjustment){
         //Complete this method
-
-        double res = loan - amountAdjustment;
-        if (res > 0){
-            this.loan = res;
+        this.loan += amountAdjustment;
+        if (loan < 0){
+            this.loan = 0.0;
         }
     }
 
@@ -91,10 +114,11 @@ public class CreditAccount extends Account implements Payment, Recompense {
         if (amount > this.loan) {
             return false;
         }
-        this.loan -= amount;
+        adjustLoanAmount(-amount);
         addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Recompense, "Recompense successful. Amount: " + amount + ". Remaining loan balance: " + loan);
         return true;
     }
+
     @Override
     public double loan_balance() {
         return this.loan;
@@ -102,6 +126,6 @@ public class CreditAccount extends Account implements Payment, Recompense {
 
     public String toString(){
         //Complete this method
-        return "Name: "+ this.getOwnerFullName() +"\nLoan statement: "+this.getLoanStatement() + "\n";
+        return "Name: "+ this.getOwnerFullName();
     }
 }

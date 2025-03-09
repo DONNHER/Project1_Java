@@ -34,7 +34,7 @@ public enum Menu {
     /**
      * CreditAccount type selection menu. Used when logging in as a CreditAccount.
      */
-    CreditAccountMenu(new String[]{ "Show Credits", "Pay", "Recompense", "Show Transactions", "Logout" }, 41),
+    CreditAccountMenu(new String[]{ "Show Credits", "Pay", "Recompense","Get Credit", "Show Transactions", "Logout" }, 41),
     /**
      * SavingsAccount type selection menu. Used when logging in as a SavingsAccount.
      */
@@ -46,9 +46,13 @@ public enum Menu {
     UpdateBankMenu(new String[] {"Bank Name", "Passcode", "Deposit Limit", "Withdrawal Limit",
             "CreditLimit", "Processing Fee", "Log Out"},4),
     /*
-   Update selection menu.
+    Fund transfer selection menu.
     */
-    FundtransferMenu(new String[] {"Transfer Fund to other Account","Transfer Fund to other Bank Account"},5);
+    FundtransferMenu(new String[] {"Transfer Fund to other Account","Transfer Fund to other Bank Account"},5),
+    /*
+    Payment selection menu.
+    */
+    PaymentMenu(new String[] {"Pay to other Account","Pay to other Bank Account"},6);;
 
     public final String[] menuOptions;
     public final int menuIdx;
