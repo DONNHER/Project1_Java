@@ -87,7 +87,6 @@ public class BankLauncher {
         //Complete this method
 
         while (isLogged()){
-
             Main.showMenuHeader("Welcome to the Bank Account Portal!");
             Main.showMenu(31, 1);
             Main.setOption();
