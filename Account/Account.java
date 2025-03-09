@@ -25,7 +25,7 @@ public abstract class Account {
     // A successful withdrawal; deposit; payment; transfer.
     private ArrayList<Transaction>transactions = new ArrayList<>();
     //Utilize when updating
-    private boolean isNew = false;
+    private String isNew = "New";
 
     // Constructor of Abstract class
     public Account( Bank bank,String accountNumber,String firstName,String lastName, String email,String pin){
@@ -55,7 +55,7 @@ public abstract class Account {
     public String getOwnerEmail(){
         return this.ownerEmail;
     }
-    public boolean getIsNew(){
+    public String getIsNew(){
         return this.isNew;
     }
 
@@ -72,7 +72,7 @@ public abstract class Account {
     public void setOwnerEmail(String email){
         this.ownerEmail = email;
     }
-    public void setIsNew(boolean newState){
+    public void setIsNew(String newState){
         this.isNew = newState;
     }
 

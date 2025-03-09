@@ -42,7 +42,7 @@ public class SavingsAccountLauncher extends AccountLauncher {
                     break;
                 case 5:
                      for (Transaction t: getLoggedAccount().getTransactionsInfo()){
-                         System.out.print("Type: "+t.transactionType+"\nDescription: " + t.description);
+                         System.out.print("Description: " + t.description +"\n");
                          }
                     break;
                 case 6:
@@ -107,6 +107,7 @@ public class SavingsAccountLauncher extends AccountLauncher {
                     double transferAmount = bl.getFieldDouble().getFieldValue();
                     SavingsAccount owner = getLoggedAccount();
                     owner.transfer(search1,recipientAccount1,transferAmount);
+                    return;
                 }
                 System.out.println("Recipient's Account Number not found!");
             }

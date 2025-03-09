@@ -43,8 +43,9 @@ public class CreditAccountLauncher extends AccountLauncher {
                     break;
                 case 5:
                     for (Transaction t: account.getTransactionsInfo()){
-                        System.out.print("Type: "+t.transactionType+"\nDescription: " + t.description);
+                        System.out.print("Description: " + t.description +"\n");
                     }
+                    break;
                 case 6:
                     System.out.println("Logging out...");
                     return;  // Exit the method and break the loop
@@ -67,8 +68,7 @@ public class CreditAccountLauncher extends AccountLauncher {
             Account recipient = getLoggedAccount().getBank().getBankAccount(getLoggedAccount().getBank(), getLoggedAccount().getBank().getIdField().getFieldValue());
             if(recipient != null) {
                 bl.getFieldDouble().setFieldValue("Enter Amount: ");
-                if (this.getLoggedAccount().pay(getLoggedAccount(), bl.getFieldDouble().getFieldValue())) {
-                    System.out.println("Payment successful! Your remaining loan balance is: " + this.getLoggedAccount().getLoan());
+                if (this.getLoggedAccount().pay(recipient, bl.getFieldDouble().getFieldValue())) {
                     return;
                 }
                 System.out.println("Payment failed. Please check the amount and try again.");
@@ -103,7 +103,6 @@ public class CreditAccountLauncher extends AccountLauncher {
         //Complete this method
         bl.getFieldDouble().setFieldValue("Enter Amount: ");
         if (this.getLoggedAccount().recompense(bl.getFieldDouble().getFieldValue())){
-            System.out.println("Recompense successful! Your updated loan balance is: " + this.getLoggedAccount().getLoan());
             return;
         }
         System.out.println("Recompense failed. Please check the amount and try again.");

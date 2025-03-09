@@ -9,7 +9,7 @@ import StudentAccount.StudentAccount;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class Bank implements Comparator{
+public class Bank {
     Field <String,String> accountNField = new Field<String, String>("Name field", String.class, "0", new Field.StringFieldValidator());
     Field <String,String> fnameField = new Field<String, String>("First name field", String.class, "0", new Field.StringFieldValidator());
     Field <String,String> lnameField = new Field<String, String>("Last name field", String.class, "0", new Field.StringFieldValidator());
@@ -49,7 +49,7 @@ public class Bank implements Comparator{
     /*
     State of the Bank if updated or changed
      */
-    private boolean isNew = false;
+    private String isNew = "New";
     private  ArrayList<CreditAccount> CreditAccounts = new ArrayList<>();
     private  ArrayList<SavingsAccount> SavingsAccounts = new ArrayList<>();
 
@@ -100,7 +100,7 @@ public class Bank implements Comparator{
     public ArrayList<SavingsAccount> getSavingsAccounts() {
         return SavingsAccounts;
     }
-    public boolean getIsNew(){
+    public String getIsNew(){
         return this.isNew;
     }
     public Field<String, String> getIdField(){
@@ -132,19 +132,8 @@ public class Bank implements Comparator{
     public void setBankAccounts(ArrayList<Account> newBankAccounts){
         this.bankAccounts = new ArrayList<>(newBankAccounts);
     }
-    public void setIsNew(boolean newState){
+    public void setIsNew(String newState){
         this.isNew = newState;
-    }
-
-    @Override
-    public int compare(Object o1, Object o2) {
-        Account a1 = (Account) o1;
-        Account a2 = (Account) o2;
-        int res = a1.getOwnerLastName().compareTo(a2.getOwnerLastName());
-        if( res != 0) {
-            return res;
-        }
-        return a1.getOwnerFirstName().compareTo(a2.getOwnerFirstName());
     }
 
     /*
@@ -269,7 +258,6 @@ public class Bank implements Comparator{
                 this.emailField.getFieldValue(),
                 this.pinField.getFieldValue(),
                 this.BalanceField.getFieldValue());
-        newsavingsAccount.setIsNew(true);
         addNewAccount(newsavingsAccount);
         addSavingsAccount(newsavingsAccount);
         s_count += 1;
@@ -287,7 +275,6 @@ public class Bank implements Comparator{
         createNewAccount();
         CreditAccount newCreditAccount = new CreditAccount(bank,this.accountNField.getFieldValue(),this.fnameField.getFieldValue(),
                 this.lnameField.getFieldValue(),this.emailField.getFieldValue(),this.pinField.getFieldValue(),this.laonField.getFieldValue());
-        newCreditAccount.setIsNew(true);
         addNewAccount(newCreditAccount);
         addCreditAccount(newCreditAccount);
         c_count += 1;
@@ -352,18 +339,29 @@ public class Bank implements Comparator{
     Binary search method to find the index where a new bank account should be inserted
      */
     public int findIndexInsertion(ArrayList<Account> accounts, Account a) {
-        int left = 0, right = bankAccountSize();
+        int left = 0, right = accounts.size();
         while (left < right) {
             int mid = left + (right - left) / 2;
-            if (compare(accounts.get(mid), a) >= 0) {
-                right = mid;  // Search in the left half
+            Account midAccount = accounts.get(mid);
+            // Compare last names first
+            int lastNameComparison = midAccount.getOwnerLastName().compareTo(a.getOwnerLastName());
+            if (lastNameComparison > 0) {
+                right = mid; // Search in the left half
+            } else if (lastNameComparison < 0) {
+                left = mid + 1; // Search in the right half
             } else {
-                left = mid + 1;  // Search in the right half
+                // If last names are the same, compare first names
+                int firstNameComparison = midAccount.getOwnerFirstName().compareTo(a.getOwnerFirstName());
+                if (firstNameComparison >= 0) {
+                    right = mid; // Insert before or at mid
+                } else {
+                    left = mid + 1; // Insert after mid
+                }
             }
         }
-        return left; // Returns the correct index for insertion
-
+        return left;
     }
+
 
 
     //Get size of bank accounts

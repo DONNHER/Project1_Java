@@ -117,19 +117,23 @@ CreditAccount.
     @Override
     public synchronized boolean transfer(Bank bank, Account account, double amount) throws IllegalAccountType {
         //Complete this method
-        if (account instanceof CreditAccount){
-            throw new IllegalAccountType("Cannot fund transfer when the other account is of type CreditAccount.");
+        try { //issue here , terminate program
+            if (account instanceof CreditAccount) {
+                throw new IllegalAccountType("Cannot fund transfer when the other account is of type CreditAccount.");
+            }
+        }catch (Exception e){
+            System.out.println("Cannot fund transfer when the other account is of type CreditAccount.");
         }
-        Account toTransfer =  getBank().getBankAccount(bank,account.getAccountNumber());
+        Account toTransfer = getBank().getBankAccount(bank, account.getAccountNumber());
         if (hasEnoughBalance(amount)) {
             adjustAccountBalance(-amount);
             ((SavingsAccount) toTransfer).adjustAccountBalance(amount);
-            addNewTransaction(this.getAccountNumber(), Transaction.Transactions.FundTransfer,"Fund Transfer successful: $["+amount+"] transferred to ["+account.getOwnerFullName()+"].");
-            System.out.println("Fund Transfer successful: $"+amount+" to "+ account.getOwnerFullName());
+            addNewTransaction(this.getAccountNumber(), Transaction.Transactions.FundTransfer, "Fund Transfer successful: $[" + amount + "] transferred to [" + account.getOwnerFullName() + "].");
+            System.out.println("Fund Transfer successful: $" + amount + " to " + account.getOwnerFullName());
             return true;
         } else {
             insufficientBalance();
-            System.out.println("Fund Transfer Unsuccessful: $"+amount+" to "+ account.getOwnerFullName());
+            System.out.println("Fund Transfer Unsuccessful: $" + amount + " to " + account.getOwnerFullName());
             return false;
         }
     }
@@ -143,8 +147,8 @@ CreditAccount.
         //Complete this method
         if (amount < getBank().getDepositLimit()) {
             adjustAccountBalance(amount);
-            addNewTransaction(getAccountNumber(),Transaction.Transactions.Deposit,"Deposit Successful: $["+amount+"].");
-            System.out.println("Deposit Successful: $["+amount+"].");
+            addNewTransaction(getAccountNumber(),Transaction.Transactions.Deposit,"Deposit Successful: $["+amount+"]. \nBalance: $"+this.balance);
+            System.out.println("Deposit Successful: $["+amount+"].\n Balance: $"+this.balance);
             return true;
         }
         System.out.println("Deposit Failed. Amount exceeds bank deposit limit.");
@@ -180,6 +184,6 @@ CreditAccount.
      */
     public String toString(){
         //Complete this method
-        return "Name: " + this.getOwnerFullName() +"\nBalance: " + this.getBalance() +"\n";
+        return "Name: " + this.getOwnerFullName() +"\nBalance: $" + this.getBalance() +"\n";
     }
 }

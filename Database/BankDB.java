@@ -12,7 +12,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class BankDB implements loadFromDB,saveToDB{
-    private static final String path = "jdbc:sqlite:Database/bank.db";// SQLite file in project directory
+    private static final String path = "jdbc:sqlite:Database/bank1.db";// SQLite file in project directory
 
     public static Connection connect() throws SQLException {
         // Establish the connection
@@ -40,11 +40,21 @@ public class BankDB implements loadFromDB,saveToDB{
     }
 
     public void saveBanksToDatabase(Bank bank) {
+        String s = "CREATE TABLE IF NOT EXISTS Banks ("
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "Name TEXT NOT NULL, "
+                + "Passcode TEXT NOT NULL UNIQUE, "
+                + "Deposit_Limit REAL, "
+                + "Withdraw_Limit REAL, "
+                + "Credit_Limit REAL, "
+                + "Processing_Fee REAL"
+                + ");";
         String insertSql = "INSERT INTO Banks (ID, Name, Passcode, Deposit_Limit, Withdraw_Limit, Credit_Limit, Processing_Fee) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        if (bank.getIsNew()) {
-            try (Connection conn = BankDB.connect()) {
-                PreparedStatement pstmt;
-                pstmt = conn.prepareStatement(insertSql);
+        try (Connection conn = BankDB.connect()) {
+            Statement stmt = conn.createStatement();
+            stmt.execute(s);
+            if (bank.getIsNew().equals("New")) {
+                PreparedStatement pstmt = conn.prepareStatement(insertSql);
                 pstmt.setInt(1, bank.getID());
                 pstmt.setString(2, bank.getName());
                 pstmt.setString(3, bank.getPasscode());
@@ -54,11 +64,14 @@ public class BankDB implements loadFromDB,saveToDB{
                 pstmt.setDouble(7, bank.getProcessingFee());
                 pstmt.executeUpdate();
                 pstmt.close();
-            } catch (SQLException e) {
-                throw new RuntimeException("Database error occurred", e);
             }
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error occurred", e);
+
         }
-        updateBanksToDatabase(bank);
+        if (bank.getIsNew().equals("Update") || bank.getIsNew().equals("Old")) {
+            updateBanksToDatabase(bank);
+        }
     }
 
     public void UpdateCreditsAccount(CreditAccount account) {
@@ -83,11 +96,21 @@ public class BankDB implements loadFromDB,saveToDB{
     }
 
     public void saveCreditsAccount(CreditAccount account) {
+        String s = "CREATE TABLE IF NOT EXISTS CreditAccounts ("
+                + "Account_Number TEXT NOT NULL, "
+                + "First_Name TEXT NOT NULL, "
+                + "Last_Name TEXT NOT NULL, "
+                + "Loan_Statement REAL NOT NULL,, "
+                + "Pin TEXT NOT NULL, "
+                + "Bank INTEGER NOT NULL, "
+                + "Email TEXT NOT NULL,"
+                + ");";
         String insertSqlCredit = "INSERT INTO CreditAccounts (Account_Number, First_Name, Last_Name, Loan_Statement, Pin, Bank, Email) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        if (account.getIsNew()) {
-            try (Connection conn1 = BankDB.connect()) {
-                PreparedStatement pstmt1;
-                pstmt1 = conn1.prepareStatement(insertSqlCredit);  // Update CreditAccount
+        try (Connection conn1 = BankDB.connect()) {
+            Statement stmt = conn1.createStatement();
+            stmt.execute(s);
+            if (account.getIsNew().equals("New")) {
+                PreparedStatement pstmt1 = conn1.prepareStatement(insertSqlCredit);  // Update CreditAccount
                 pstmt1.setString(1, account.getAccountNumber());
                 pstmt1.setString(2, account.getOwnerFirstName());
                 pstmt1.setString(3, account.getOwnerLastName());
@@ -96,20 +119,20 @@ public class BankDB implements loadFromDB,saveToDB{
                 pstmt1.setInt(6, account.getBank().getID());
                 pstmt1.setString(7, account.getOwnerEmail());
                 pstmt1.executeUpdate();
-                pstmt1.close();// Commit transaction
-            } catch (SQLException e) {
-                throw new RuntimeException("Database error occurred", e);
+                pstmt1.close();
             }
+            } catch (SQLException e) {
+            throw new RuntimeException("Database error occurred", e);
         }
-        UpdateCreditsAccount(account);
+        if (account.getIsNew().equals("Update") || account.getIsNew().equals("Old")) {
+            UpdateCreditsAccount(account);
+        }
     }
 
     public void UpdateSavingsAccount(SavingsAccount account) {
         String updateSqlSavings = "UPDATE SavingsAccount SET First_Name = ?, Last_Name = ?, Balance = ?, Pin = ?, Bank = ?, Email = ? WHERE Account_Number = ?";
         try (Connection conn2 = BankDB.connect()) {
-
             PreparedStatement pstmt2;
-
             pstmt2 = conn2.prepareStatement(updateSqlSavings);// New CreditAccount
             pstmt2.setString(1, account.getOwnerFirstName());
             pstmt2.setString(2, account.getOwnerLastName());
@@ -126,11 +149,21 @@ public class BankDB implements loadFromDB,saveToDB{
     }
 
     public void saveSavingsAccount(SavingsAccount account) {
+        String s = "CREATE TABLE IF NOT EXISTS SavingsAccount ("
+                + "Account_Number TEXT NOT NULL PRIMARY KEY, "
+                + "First_Name TEXT NOT NULL, "
+                + "Last_Name TEXT NOT NULL, "
+                + "Loan_Statement REAL NOT NULL,, "
+                + "Pin TEXT NOT NULL, "
+                + "Bank INTEGER NOT NULL, "
+                + "Email TEXT NOT NULL,"
+                + ");";
         String insertSqlSavings = "INSERT INTO SavingsAccount (Account_Number, First_Name, Last_Name, Balance, Pin, Bank, Email) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        if (account.getIsNew()) {
-            try (Connection conn2 = BankDB.connect()) {
-                PreparedStatement pstmt2;
-                pstmt2 = conn2.prepareStatement(insertSqlSavings);  // Update CreditAccount
+        try (Connection conn2 = BankDB.connect()) {
+            Statement stmt = conn2.createStatement();
+            stmt.execute(s);
+            if (account.getIsNew().equals("New")) {
+                PreparedStatement pstmt2 = conn2.prepareStatement(insertSqlSavings);  // Update CreditAccount
                 pstmt2.setString(1, account.getAccountNumber());
                 pstmt2.setString(2, account.getOwnerFirstName());
                 pstmt2.setString(3, account.getOwnerLastName());
@@ -140,11 +173,13 @@ public class BankDB implements loadFromDB,saveToDB{
                 pstmt2.setString(7, account.getOwnerEmail());
                 pstmt2.executeUpdate();
                 pstmt2.close();
-            } catch (SQLException e) {
-                throw new RuntimeException("Database error occurred", e);
-            }
+                }
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error occurred", e);
         }
-        UpdateSavingsAccount(account);
+        if (account.getIsNew().equals("Update") || account.getIsNew().equals("Old")) {
+            UpdateSavingsAccount(account);
+        }
     }
 
 
@@ -289,11 +324,17 @@ public class BankDB implements loadFromDB,saveToDB{
 
     @Override
     public void save(Transaction transaction) {
-        String insertSqlDeposit = "INSERT INTO DepositTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
+        String s = "CREATE TABLE IF NOT EXISTS DepositTransactions ("
+                + "AccountNumber TEXT NOT NULL, "
+                + "Type TEXT NOT NULL, "
+                + "Description TEXT NOT NULL, "
+                + ");";
 
+        String insertSqlDeposit = "INSERT INTO DepositTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
         try (Connection conn2 = BankDB.connect()) {
-            PreparedStatement pstmt2;
-            pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
+            Statement stmt = conn2.createStatement();
+            stmt.execute(s);
+            PreparedStatement pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
             pstmt2.setString(1, transaction.accountNumber);
             pstmt2.setObject(2, transaction.transactionType);
             pstmt2.setString(3, transaction.description);
@@ -307,10 +348,16 @@ public class BankDB implements loadFromDB,saveToDB{
 
     @Override
     public void savePayment(Transaction transaction) {
+        String s = "CREATE TABLE IF NOT EXISTS PaymentTransactions ("
+                + "AccountNumber TEXT NOT NULL, "
+                + "Type TEXT NOT NULL, "
+                + "Description TEXT NOT NULL, "
+                + ");";
         String insertSqlDeposit = "INSERT INTO PaymentTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
         try (Connection conn2 = BankDB.connect()) {
-            PreparedStatement pstmt2;
-            pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
+            Statement stmt = conn2.createStatement();
+            stmt.execute(s);
+            PreparedStatement pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
             pstmt2.setString(1, transaction.accountNumber);
             pstmt2.setObject(2, transaction.transactionType);
             pstmt2.setString(3, transaction.description);
@@ -324,10 +371,16 @@ public class BankDB implements loadFromDB,saveToDB{
 
     @Override
     public void saveFund(Transaction transaction) {
+        String s = "CREATE TABLE IF NOT EXISTS FundTransferTransactions ("
+                + "AccountNumber TEXT NOT NULL, "
+                + "Type TEXT NOT NULL, "
+                + "Description TEXT NOT NULL, "
+                + ");";
         String insertSqlDeposit = "INSERT INTO FundTransferTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
         try (Connection conn2 = BankDB.connect()) {
-            PreparedStatement pstmt2;
-            pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
+            Statement stmt = conn2.createStatement();
+            stmt.execute(s);
+            PreparedStatement pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
             pstmt2.setString(1, transaction.accountNumber);
             pstmt2.setObject(2, transaction.transactionType);
             pstmt2.setString(3, transaction.description);
@@ -341,10 +394,16 @@ public class BankDB implements loadFromDB,saveToDB{
 
     @Override
     public void saveRecompense(Transaction transaction) {
+        String s = "CREATE TABLE IF NOT EXISTS RecompenseTransactions ("
+                + "AccountNumber TEXT NOT NULL, "
+                + "Type TEXT NOT NULL, "
+                + "Description TEXT NOT NULL, "
+                + ");";
         String insertSqlDeposit = "INSERT INTO RecompenseTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
         try (Connection conn2 = BankDB.connect()) {
-            PreparedStatement pstmt2;
-            pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
+            Statement stmt = conn2.createStatement();
+            stmt.execute(s);
+            PreparedStatement pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
             pstmt2.setString(1, transaction.accountNumber);
             pstmt2.setObject(2, transaction.transactionType);
             pstmt2.setString(3, transaction.description);
@@ -357,10 +416,16 @@ public class BankDB implements loadFromDB,saveToDB{
     }
     @Override
     public void saveWithdraw(Transaction transaction) {
+        String s = "CREATE TABLE IF NOT EXISTS WithdrawTransactions ("
+                + "AccountNumber TEXT NOT NULL, "
+                + "Type TEXT NOT NULL, "
+                + "Description TEXT NOT NULL, "
+                + ");";
         String insertSqlDeposit = "INSERT INTO WithdrawTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
         try (Connection conn2 = BankDB.connect()) {
-            PreparedStatement pstmt2;
-            pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
+            Statement stmt = conn2.createStatement();
+            stmt.execute(s);
+            PreparedStatement pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
             pstmt2.setString(1, transaction.accountNumber);
             pstmt2.setObject(2, transaction.transactionType);
             pstmt2.setString(3, transaction.description);
@@ -373,10 +438,16 @@ public class BankDB implements loadFromDB,saveToDB{
     }
     @Override
     public void saveGetCredit(Transaction transaction) {
+        String s = "CREATE TABLE IF NOT EXISTS GetCreditTransactions ("
+                + "AccountNumber TEXT NOT NULL, "
+                + "Type TEXT NOT NULL, "
+                + "Description TEXT NOT NULL, "
+                + ");";
         String insertSqlDeposit = "INSERT INTO GetCreditTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
         try (Connection conn2 = BankDB.connect()) {
-            PreparedStatement pstmt2;
-            pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
+            Statement stmt = conn2.createStatement();
+            stmt.execute(s);
+            PreparedStatement pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
             pstmt2.setString(1, transaction.accountNumber);
             pstmt2.setObject(2, transaction.transactionType);
             pstmt2.setString(3, transaction.description);

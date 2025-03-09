@@ -113,33 +113,45 @@ public class BankLauncher {
     }
     public void bankUpdateInit() {
         //Complete this method
-        while (true) {
+        while (isLogged()) {
             Main.showMenuHeader("Welcome to the Bank Update Portal!");
             Main.showMenu(4, 2);
+            System.out.println("\n");
             Main.setOption();
             switch (Main.getOption()) {
                 case 1:
-                    showAccounts();
+                    this.nameField.setFieldValue("Enter bank name: ",false);
+                    getLoggedBank().setName(nameField.getFieldValue());
+                    getLoggedBank().setIsNew("Update");
                     break;
                 case 2:
-                    Main.showMenuHeader("Account type selection");
-                    Main.showMenu(33);
-                    this.newAccounts();
+                    this.passcodeField.setFieldValue("Enter bank passcode: ");
+                    getLoggedBank().setPasscode(passcodeField.getFieldValue());
+                    getLoggedBank().setIsNew("Update");
                     break;
                 case 3:
-                    System.out.println("Logging out...");
-                    return;
+                    this.depositLimitField.setFieldValue("Enter deposit limit: ",false);
+                    getLoggedBank().setDepositLimit(depositLimitField.getFieldValue());
+                    getLoggedBank().setIsNew("Update");
+                    break;
                 case 4:
-                    System.out.println("Logging out...");
-                    return;
+                    this.withdrawLimitField.setFieldValue("Enter withdraw limit: ",false);
+                    getLoggedBank().setWithdrawLimit(withdrawLimitField.getFieldValue());
+                    getLoggedBank().setIsNew("Update");
+                    break;
                 case 5:
-                    System.out.println("Logging out...");
-                    return;
+                    this.creditLimitField.setFieldValue("Enter credit limit: ",false);
+                    getLoggedBank().setCreditLimit(creditLimitField.getFieldValue());
+                    getLoggedBank().setIsNew("Update");
+                    break;
                 case 6:
-                    System.out.println("Logging out...");
-                    return;
+                    this.processingFeeField.setFieldValue("Enter processing fee: ",false);
+                    getLoggedBank().setProcessingFee(processingFeeField.getFieldValue());
+                    getLoggedBank().setIsNew("Update");
+                    break;
                 case 7:
                     System.out.println("Logging out...");
+                    logout();
                     return;  // Exit the method and break the loop
                 default:
                     System.out.println("Invalid choice. Please try again.");
@@ -195,7 +207,6 @@ public class BankLauncher {
         this.nameField.setFieldValue("Enter bank name: ",false);
         this.passcodeField.setFieldValue("Enter bank passcode: ");
         Bank bank = new Bank(this.idField.getFieldValue(),this.nameField.getFieldValue(),this.passcodeField.getFieldValue());
-
         Bank searchBank= getBank(BankCredentials,bank);
         if (searchBank != null){
             this.setLoggedBank(searchBank);
@@ -234,13 +245,7 @@ public class BankLauncher {
         this.idField.setFieldValue("Enter bank ID: ");
         this.nameField.setFieldValue("Enter bank name: ",false);
         this.passcodeField.setFieldValue("Enter bank passcode: ");
-        this.depositLimitField.setFieldValue("Enter deposit limit: ",false);
-        this.withdrawLimitField.setFieldValue("Enter withdraw limit: ",false);
-        this.creditLimitField.setFieldValue("Enter credit limit: ",false);
-        this.processingFeeField.setFieldValue("Enter processing fee: ",false);
-        Bank newbank = new Bank(this.idField.getFieldValue(), this.nameField.getFieldValue(), this.passcodeField.getFieldValue(),this.creditLimitField.getFieldValue(),
-                this.withdrawLimitField.getFieldValue(), this.creditLimitField.getFieldValue(), this.processingFeeField.getFieldValue());
-        newbank.setIsNew(true);
+        Bank newbank = new Bank(this.idField.getFieldValue(), this.nameField.getFieldValue(), this.passcodeField.getFieldValue());
         addBank(newbank);
         this.size += 1;
     }
@@ -264,10 +269,11 @@ public class BankLauncher {
     private void addBank (Bank b){
         //Complete this method
         if (getBank(this.BankCredentials,b) == null) {
-            if(b.getIsNew()){
+            if(b.getIsNew().equals("New")){
                 int index = findIndexInsertion(this.banks, b);
                 this.banks.add(index, b);
                 System.out.print(b.getName()+" is successfully added...\n");
+                return;
             }
             int index = findIndexInsertion(this.banks, b);
             this.banks.add(index, b);
@@ -393,7 +399,7 @@ public class BankLauncher {
                         rs.getDouble("Withdraw_Limit"),
                         rs.getDouble("Credit_Limit"),
                         rs.getDouble("Processing_Fee"));
-                bank.setIsNew(false);
+                bank.setIsNew("Old");
                 this.addBank(bank);
             }
         } catch (SQLException _) {
@@ -423,7 +429,7 @@ public class BankLauncher {
                     bankdb.loadDepositTransaction(savingsAccount);
                     bankdb.loadWithdrawTransaction(savingsAccount);
                     bankdb.loadGetCreditTransaction(savingsAccount);
-                    savingsAccount.setIsNew(false);
+                    savingsAccount.setIsNew("Old");
                     search.addNewAccount(savingsAccount);
                     search.addSavingsAccount(savingsAccount);
                 }
@@ -455,7 +461,7 @@ public class BankLauncher {
                     bankdb.loadDepositTransaction(creditAccount);
                     bankdb.loadWithdrawTransaction(creditAccount);
                     bankdb.loadGetCreditTransaction(creditAccount);
-                    creditAccount.setIsNew(false);
+                    creditAccount.setIsNew("Old");
                     search.addNewAccount(creditAccount);
                     search.addCreditAccount(creditAccount);
                 }

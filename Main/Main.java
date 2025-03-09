@@ -1,6 +1,5 @@
 package Main;
 
-
 import Account.AccountLauncher;
 import Bank.BankLauncher;
 import java.util.Scanner;
