@@ -35,19 +35,19 @@ public class Bank implements Comparator{
     /*
     The amount of money each Savings Account registered to this bank can deposit at every transaction. Defaults to 50,000.0
      */
-    private double depositLimit = 50000.0;
+    private Double depositLimit = 50000.0;
     /*
     The amount of money withdrawable / transferrable at once, restricted to every Savings Account registered to this bank. Defaults to 50,000.0
      */
-    private double withdrawLimit = 50000.0;
+    private Double withdrawLimit = 50000.0;
     /*
     Limits the amount of credit or loan that all Credit Accounts, registered on this bank, can handle all at once. Defaults to 100,000.0
      */
-    private double creditLimit = 100000.0;
+    private Double creditLimit = 100000.0;
     /*
     Processing fee added when some transaction is involved with another bank. Cannot be lower than 0.0. Defaults to 10.00
      */
-    private double processingFee = 10.00;
+    private Double processingFee = 10.00;
     //Arraylist of BANK ACCOUNTS
     private ArrayList<Account> bankAccounts = new ArrayList<Account>();
     // Size of bank credit accounts
@@ -68,7 +68,7 @@ public class Bank implements Comparator{
         this.passcode = passcode;
     }
 
-    public Bank(int ID,String name,String passcode, double depositLimit, double withdrawLimit, double creditLimit, double processingFee ){
+    public Bank(Integer ID,String name,String passcode, Double depositLimit, Double withdrawLimit, Double creditLimit, Double processingFee ){
         this.ID = ID;
         this.name = name;
         this.passcode = passcode;
@@ -207,26 +207,10 @@ public class Bank implements Comparator{
     @Params accountType – Type of account to be shown
      */
     public <T> void showAccount(Class<T> accountType) {
-
-        int left = 0, right = bankAccounts.size() - 1;
-
-        while (left <= right) {
-
-            boolean leftRes = bankAccounts.get(left).getClass().equals(accountType);
-            boolean RightRes = bankAccounts.get(right).getClass().equals(accountType);
-//            if (leftRes && RightRes){
-//                System.out.println(bankAccounts.get(right));
-//                return;
-//            }
-
-            if (leftRes) {
-                System.out.println(bankAccounts.get(left));
+        for (Account account : bankAccounts) {
+            if (account.getClass().equals(accountType)) {
+                System.out.println(account);
             }
-            if (RightRes) {
-                System.out.println(bankAccounts.get(right));
-            }
-            left ++;
-            right --;
         }
     }
 
@@ -237,25 +221,21 @@ public class Bank implements Comparator{
      */
     public Account getBankAccount(Bank bank, String accountNum) {
          // Get the list of accounts
-        int l = 0, r = bank.bankAccountSize()- 1;
+        int l = 0, r = bank.bankAccountSize() - 1;
 
-        while (l <= r ) {
-            Account lAccount = bank.getBankAccounts().get(l);
-            Account rAccount = bank.getBankAccounts().get(r);
-            int res1 = lAccount.getAccountNumber().compareTo(accountNum);
-            int res2 = rAccount.getAccountNumber().compareTo(accountNum);
-//
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            Account midAccount = bank.getBankAccounts().get(mid);
+            int res = midAccount.getAccountNumber().compareTo(accountNum);
 
-            if (res1 == 0 ) {
-                return lAccount; // Found the account
+            if (res == 0) {
+                return midAccount; // Found the account
+            } else if (res < 0) {
+                l = mid + 1; // Search right half
+            } else {
+                r = mid - 1; // Search left half
             }
-            if (res2 == 0) {
-                return rAccount; // Search right half
-            }
-            r --;
-            l ++;
         }
-
         return null; // Account not found
     }
 
@@ -380,15 +360,17 @@ public class Bank implements Comparator{
     Binary search method to find the index where a new bank account should be inserted
      */
     public int findIndexInsertion(ArrayList<Account> accounts, Account a) {
-        for (int i = 0; i < bankAccountSize(); i++) {
-            // Compare last names
-            if (compare(accounts.get(i),a) >= 0) {
-                // Insert i before contact
-                return i;
+        int left = 0, right = bankAccountSize();
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (compare(accounts.get(mid), a) >= 0) {
+                right = mid;  // Search in the left half
+            } else {
+                left = mid + 1;  // Search in the right half
             }
         }
-        // Insert at i[-1] if no position found to be inserted
-        return bankAccountSize();
+        return left; // Returns the correct index for insertion
+
     }
 
 

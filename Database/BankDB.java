@@ -35,7 +35,6 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt.executeUpdate();
             pstmt.close();
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException("Database error occurred", e);
         }
     }
@@ -56,7 +55,6 @@ public class BankDB implements loadFromDB,saveToDB{
                 pstmt.executeUpdate();
                 pstmt.close();
             } catch (SQLException e) {
-                e.printStackTrace();
                 throw new RuntimeException("Database error occurred", e);
             }
         }
@@ -79,7 +77,6 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt1.executeUpdate();
             pstmt1.close();
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException("Database error occurred", e);
         }
 
@@ -101,7 +98,6 @@ public class BankDB implements loadFromDB,saveToDB{
                 pstmt1.executeUpdate();
                 pstmt1.close();// Commit transaction
             } catch (SQLException e) {
-                e.printStackTrace();
                 throw new RuntimeException("Database error occurred", e);
             }
         }
@@ -125,7 +121,6 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt2.executeUpdate();
             pstmt2.close();
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException("Database error occurred", e);
         }
     }
@@ -145,9 +140,7 @@ public class BankDB implements loadFromDB,saveToDB{
                 pstmt2.setString(7, account.getOwnerEmail());
                 pstmt2.executeUpdate();
                 pstmt2.close();
-                // Commit transaction
             } catch (SQLException e) {
-                e.printStackTrace();
                 throw new RuntimeException("Database error occurred", e);
             }
         }
@@ -187,14 +180,14 @@ public class BankDB implements loadFromDB,saveToDB{
             ResultSet res1 = pstmt.executeQuery();  // Credit Accounts
             while (res1.next()) {
                 if(res1.getString("AccountNumber").equals(account.getAccountNumber())) {
+                    Transaction.Transactions type = Transaction.Transactions.valueOf(res1.getObject("Type").toString());
                     account.addNewTransaction(
                             res1.getString("AccountNumber"),
-                            ((Transaction.Transactions)res1.getObject("Type")),
+                            type,
                             res1.getString("Description"));
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException("Database error occurred", e);
         }
     }
@@ -206,14 +199,14 @@ public class BankDB implements loadFromDB,saveToDB{
             ResultSet res1 = pstmt.executeQuery();  // Credit Accounts
             while (res1.next()) {
                 if(res1.getString("AccountNumber").equals(account.getAccountNumber())) {
+                    Transaction.Transactions type = Transaction.Transactions.valueOf(res1.getObject("Type").toString());
                     account.addNewTransaction(
                             res1.getString("AccountNumber"),
-                            ((Transaction.Transactions)res1.getObject("Type")),
+                            type,
                             res1.getString("Description"));
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException("Database error occurred", e);
         }
     }
@@ -225,14 +218,14 @@ public class BankDB implements loadFromDB,saveToDB{
             ResultSet res1 = pstmt.executeQuery();  // Credit Accounts
             while (res1.next()) {
                 if(res1.getString("AccountNumber").equals(account.getAccountNumber())) {
+                    Transaction.Transactions type = Transaction.Transactions.valueOf(res1.getObject("Type").toString());
                     account.addNewTransaction(
                             res1.getString("AccountNumber"),
-                            ((Transaction.Transactions)res1.getObject("Type")),
+                            type,
                             res1.getString("Description"));
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException("Database error occurred", e);
         }
     }
@@ -244,14 +237,14 @@ public class BankDB implements loadFromDB,saveToDB{
             ResultSet res1 = pstmt.executeQuery();  // Credit Accounts
             while (res1.next()) {
                 if(res1.getString("AccountNumber").equals(account.getAccountNumber())) {
+                    Transaction.Transactions type = Transaction.Transactions.valueOf(res1.getObject("Type").toString());
                     account.addNewTransaction(
                             res1.getString("AccountNumber"),
-                            ((Transaction.Transactions)res1.getObject("Type")),
+                            type,
                             res1.getString("Description"));
                 }
             }
         }  catch (SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException("Database error occurred", e);
         }
     }
@@ -264,14 +257,32 @@ public class BankDB implements loadFromDB,saveToDB{
             ResultSet res1 = pstmt.executeQuery();  // Credit Accounts
             while (res1.next()) {
                 if(res1.getString("AccountNumber").equals(account.getAccountNumber())) {
+                    Transaction.Transactions type = Transaction.Transactions.valueOf(res1.getObject("Type").toString());
                     account.addNewTransaction(
                             res1.getString("AccountNumber"),
-                            ((Transaction.Transactions)res1.getObject("Type")),
+                            type,
                             res1.getString("Description"));
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Database error occurred", e);
+        }
+    }
+    public void loadGetCreditTransaction(Account account){
+        try {
+            Connection conn = BankDB.connect();
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM GetCreditTransactions ");
+            ResultSet res1 = pstmt.executeQuery();  // Credit Accounts
+            while (res1.next()) {
+                if(res1.getString("AccountNumber").equals(account.getAccountNumber())) {
+                    Transaction.Transactions type = Transaction.Transactions.valueOf(res1.getObject("Type").toString());
+                    account.addNewTransaction(
+                            res1.getString("AccountNumber"),
+                            type,
+                            res1.getString("Description"));
+                }
+            }
+        } catch (SQLException e) {
             throw new RuntimeException("Database error occurred", e);
         }
     }
@@ -290,7 +301,6 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt2.close();
             // Commit transaction
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException("Database error occurred", e);
         }
     }
@@ -308,7 +318,6 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt2.close();
             // Commit transaction
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException("Database error occurred", e);
         }
     }
@@ -326,7 +335,6 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt2.close();
             // Commit transaction
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException("Database error occurred", e);
         }
     }
@@ -344,7 +352,6 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt2.close();
             // Commit transaction
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException("Database error occurred", e);
         }
     }
@@ -361,7 +368,22 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt2.close();
             // Commit transaction
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Database error occurred", e);
+        }
+    }
+    @Override
+    public void saveGetCredit(Transaction transaction) {
+        String insertSqlDeposit = "INSERT INTO GetCreditTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
+        try (Connection conn2 = BankDB.connect()) {
+            PreparedStatement pstmt2;
+            pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
+            pstmt2.setString(1, transaction.accountNumber);
+            pstmt2.setObject(2, transaction.transactionType);
+            pstmt2.setString(3, transaction.description);
+            pstmt2.executeUpdate();
+            pstmt2.close();
+            // Commit transaction
+        } catch (SQLException e) {
             throw new RuntimeException("Database error occurred", e);
         }
     }

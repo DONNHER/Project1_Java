@@ -4,29 +4,20 @@ import Account.Account;
 import Accounts.Transaction;
 import CreditAccount.CreditAccount;
 import Database.BankDB;
-import Main.Field;
 import Main.Field.*;
-import Main.Main;
+import Main.*;
 import SavingsAccount.SavingsAccount;
-
-
-import java.security.cert.TrustAnchor;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Objects;
+import java.sql.*;
+import java.util.*;
 
 public class BankLauncher {
     BankDB bankdb = new BankDB();
     Field<Double,Double> doubleField = new Field<Double,Double>("Double input", Double.class, 0.0, new DoubleFieldValidator());
     Field < Integer, Integer > user = new Field<Integer, Integer>("Options", Integer.class, 0, new IntegerFieldValidator());
-    Field<Integer, Integer> idField = new Field<Integer, Integer>("ID field", Integer.class, -1, new IntegerFieldValidator());
+    Field<Integer, Integer> idField = new Field<Integer, Integer>("ID field", Integer.class, 0, new IntegerFieldValidator());
     Field<String, String> nameField = new Field<String, String>("Name field", String.class, "0", new StringFieldValidator());
     Field<String, String> passcodeField = new Field<String, String>("Passcode field", String.class, "0", new StringFieldValidator());
-    Field<Double, Double> depositLimitField = new Field<Double, Double>("Deposit limit field", Double.class, 0.0, new DoubleFieldValidator());
+    Field<Double, Double> depositLimitField = new Field<Double, Double>("Deposit limit field", Double.class,0.0, new DoubleFieldValidator());
     Field<Double, Double> withdrawLimitField = new Field<Double, Double>("Withdraw limit field", Double.class, 0.0, new DoubleFieldValidator());
     Field<Double, Double> creditLimitField = new Field<Double, Double>("Credit Limit field", Double.class, 0.0, new DoubleFieldValidator());
     Field<Double, Double> processingFeeField = new Field<Double, Double>("ID field", Double.class, 0.0, new DoubleFieldValidator());
@@ -244,11 +235,11 @@ public class BankLauncher {
         this.idField.setFieldValue("Enter bank ID: ");
         this.nameField.setFieldValue("Enter bank name: ",false);
         this.passcodeField.setFieldValue("Enter bank passcode: ");
-        this.depositLimitField.setFieldValue("Enter deposit limit: ");
-        this.withdrawLimitField.setFieldValue("Enter withdraw limit: ");
-        this.creditLimitField.setFieldValue("Enter credit limit: ");
-        this.processingFeeField.setFieldValue("Enter processing fee: ");
-        Bank newbank = new Bank(this.idField.getFieldValue(), this.nameField.getFieldValue(), this.passcodeField.getFieldValue(), this.depositLimitField.getFieldValue(),
+        this.depositLimitField.setFieldValue("Enter deposit limit: ",false);
+        this.withdrawLimitField.setFieldValue("Enter withdraw limit: ",false);
+        this.creditLimitField.setFieldValue("Enter credit limit: ",false);
+        this.processingFeeField.setFieldValue("Enter processing fee: ",false);
+        Bank newbank = new Bank(this.idField.getFieldValue(), this.nameField.getFieldValue(), this.passcodeField.getFieldValue(),this.creditLimitField.getFieldValue(),
                 this.withdrawLimitField.getFieldValue(), this.creditLimitField.getFieldValue(), this.processingFeeField.getFieldValue());
         newbank.setIsNew(true);
         addBank(newbank);
@@ -263,6 +254,7 @@ public class BankLauncher {
         for (Bank banks : this.banks) {
             System.out.print("[" + banks.getID()+ "]   " + banks.getName() + '\n');
         }
+
     }
 
     /*
@@ -273,6 +265,11 @@ public class BankLauncher {
     private void addBank (Bank b){
         //Complete this method
         if (getBank(this.BankCredentials,b) == null) {
+            if(b.getIsNew()){
+                int index = findIndexInsertion(this.banks, b);
+                this.banks.add(index, b);
+                System.out.print(b.getName()+" is successfully added...\n");
+            }
             int index = findIndexInsertion(this.banks, b);
             this.banks.add(index, b);
         }
@@ -353,15 +350,16 @@ public class BankLauncher {
     Binary search method to find the index where a new bank should be inserted
      */
     public static int findIndexInsertion(ArrayList<Bank> banks, Bank b) {
-        for (int i = 0; i < banks.size(); i++) {
-            // Compare last names
-            if (banks.get(i).getName().compareTo(b.getName()) >= 0) {
-                // Insert i before contact
-                return i;
+        int left = 0, right = banks.size();
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (banks.get(mid).getName().compareTo(b.getName()) >= 0) {
+                right = mid;  // Search in the left half
+            } else {
+                left = mid + 1;  // Search in the right half
             }
         }
-        // Insert at i[-1] if no position found to be inserted
-        return banks.size();
+        return left; // Returns the correct index for insertion
     }
 
     /*
@@ -425,6 +423,7 @@ public class BankLauncher {
                     bankdb.loadRecompenseTransaction(savingsAccount);
                     bankdb.loadDepositTransaction(savingsAccount);
                     bankdb.loadWithdrawTransaction(savingsAccount);
+                    bankdb.loadGetCreditTransaction(savingsAccount);
                     savingsAccount.setIsNew(false);
                     search.addNewAccount(savingsAccount);
                     search.addSavingsAccount(savingsAccount);
@@ -456,6 +455,7 @@ public class BankLauncher {
                     bankdb.loadRecompenseTransaction(creditAccount);
                     bankdb.loadDepositTransaction(creditAccount);
                     bankdb.loadWithdrawTransaction(creditAccount);
+                    bankdb.loadGetCreditTransaction(creditAccount);
                     creditAccount.setIsNew(false);
                     search.addNewAccount(creditAccount);
                     search.addCreditAccount(creditAccount);
@@ -481,6 +481,8 @@ public class BankLauncher {
                         bankdb.saveRecompense(transaction);
                     }else if(transaction.transactionType.equals(Transaction.Transactions.Payment)){
                         bankdb.savePayment(transaction);
+                    }else if(transaction.transactionType.equals(Transaction.Transactions.GetCredit)){
+                        bankdb.saveGetCredit(transaction);
                     }
                 }
             }
@@ -497,6 +499,8 @@ public class BankLauncher {
                         bankdb.saveRecompense(transaction);
                     }else if(transaction.transactionType.equals(Transaction.Transactions.Payment)){
                         bankdb.savePayment(transaction);
+                    }else if(transaction.transactionType.equals(Transaction.Transactions.GetCredit)){
+                        bankdb.saveGetCredit(transaction);
                     }
                 }
             }
