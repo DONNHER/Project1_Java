@@ -420,6 +420,12 @@ public class BankLauncher {
                             res2.getString("Email"),
                             res2.getString("Pin"),
                             res2.getDouble("Balance"));
+                    bankdb.loadPaymentTransaction(savingsAccount);
+                    bankdb.loadFundTransaction(savingsAccount);
+                    bankdb.loadRecompenseTransaction(savingsAccount);
+                    bankdb.loadDepositTransaction(savingsAccount);
+                    bankdb.loadWithdrawTransaction(savingsAccount);
+                    bankdb.loadGetCreditTransaction(savingsAccount);
                     savingsAccount.setIsNew(false);
                     search.addNewAccount(savingsAccount);
                     search.addSavingsAccount(savingsAccount);
@@ -446,6 +452,12 @@ public class BankLauncher {
                         res1.getString("Email"),
                         res1.getString("Pin"),
                         res1.getDouble("Loan_Statement"));
+                    bankdb.loadPaymentTransaction(creditAccount);
+                    bankdb.loadFundTransaction(creditAccount);
+                    bankdb.loadRecompenseTransaction(creditAccount);
+                    bankdb.loadDepositTransaction(creditAccount);
+                    bankdb.loadWithdrawTransaction(creditAccount);
+                    bankdb.loadGetCreditTransaction(creditAccount);
                     creditAccount.setIsNew(false);
                     search.addNewAccount(creditAccount);
                     search.addCreditAccount(creditAccount);
@@ -471,6 +483,8 @@ public class BankLauncher {
                         bankdb.saveRecompense(transaction);
                     }else if(transaction.transactionType.equals(Transaction.Transactions.Payment)){
                         bankdb.savePayment(transaction);
+                    }else if(transaction.transactionType.equals(Transaction.Transactions.GetCredit)){
+                        bankdb.saveGetCredit(transaction);
                     }
                 }
             }
@@ -487,6 +501,8 @@ public class BankLauncher {
                         bankdb.saveRecompense(transaction);
                     }else if(transaction.transactionType.equals(Transaction.Transactions.Payment)){
                         bankdb.savePayment(transaction);
+                    }else if(transaction.transactionType.equals(Transaction.Transactions.GetCredit)){
+                        bankdb.saveGetCredit(transaction);
                     }
                 }
             }

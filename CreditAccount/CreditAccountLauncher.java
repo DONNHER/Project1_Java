@@ -4,8 +4,10 @@ import Account.Account;
 import Account.AccountLauncher;
 import Accounts.IllegalAccountType;
 import Accounts.Transaction;
+import Bank.Bank;
 import Bank.BankLauncher;
 import Main.Main;
+import SavingsAccount.SavingsAccount;
 
 public class CreditAccountLauncher extends AccountLauncher {
     private  BankLauncher bl;
@@ -38,10 +40,13 @@ public class CreditAccountLauncher extends AccountLauncher {
                     credRecompenseProcess();
                     break;
                 case 4:
+                    getCreditProcess();
+                    break;
+                case 5:
                     for (Transaction t: account.getTransactionsInfo()){
                         System.out.print("Type: "+t.transactionType+"\nDescription: " + t.description);
                     }
-                case 5:
+                case 6:
                     System.out.println("Logging out...");
                     return;  // Exit the method and break the loop
                 default:
@@ -55,11 +60,40 @@ public class CreditAccountLauncher extends AccountLauncher {
      */
     private void creditAccountProcess() throws IllegalAccountType {
         //Complete this method
-        bl.getFieldDouble().setFieldValue("Enter The Account Number: ");
-        if (this.getLoggedAccount().pay(getLoggedAccount(),bl.getFieldDouble().getFieldValue())) {
-            System.out.println("Payment successful! Your remaining loan balance is: " + this.getLoggedAccount().getLoan());
-        } else {
-            System.out.println("Payment failed. Please check the amount and try again.");
+        Main.showMenuHeader("Payment Menu");
+        Main.showMenu(6);
+        Main.setOption();
+        if (Main.getOption() == 1) {
+            getLoggedAccount().getBank().getIdField().setFieldValue("Enter Recipient's Account Number: ");
+            Account recipient = getLoggedAccount().getBank().getBankAccount(getLoggedAccount().getBank(), getLoggedAccount().getBank().getIdField().getFieldValue());
+            if(recipient != null) {
+                bl.getFieldDouble().setFieldValue("Enter Amount: ");
+                if (this.getLoggedAccount().pay(getLoggedAccount(), bl.getFieldDouble().getFieldValue())) {
+                    System.out.println("Payment successful! Your remaining loan balance is: " + this.getLoggedAccount().getLoan());
+                    return;
+                }
+                System.out.println("Payment failed. Please check the amount and try again.");
+            }
+            System.out.println("Recipient's Account Number not found!");
+        }else if(Main.getOption() == 2){
+            bl.showBanksMenu();
+            Main.showMenuHeader("Options here");
+            bl.getIdField().setFieldValue("Enter Bank ID: ");
+            Bank b1 = new Bank(bl.getIdField().getFieldValue(), "", "");
+            Bank search1 = bl.getBank(bl.getBankIdComparator(), b1);
+            if (search1 != null) {
+                getAccountNum().setFieldValue("Enter Recipient's Account Number: ");
+                Account recipientAccount1 = getLoggedAccount().getBank().getBankAccount(search1,getAccountNum().getFieldValue());
+                if(recipientAccount1 != null) {
+                    bl.getFieldDouble().setFieldValue("Enter Amount: ");
+                    if (this.getLoggedAccount().pay(getLoggedAccount(), bl.getFieldDouble().getFieldValue())) {
+                        System.out.println("Payment successful! Your remaining loan balance is: " + this.getLoggedAccount().getLoan());
+                        return;
+                    }
+                    System.out.println("Payment failed. Please check the amount and try again.");
+                }
+                System.out.println("Recipient's Account Number not found!");
+            }
         }
     }
 
@@ -68,17 +102,23 @@ public class CreditAccountLauncher extends AccountLauncher {
      */
     private void credRecompenseProcess(){
         //Complete this method
-        bl.getFieldDouble().setFieldValue("Enter the amount you want to recompense: ");
-        if (this.getLoggedAccount() != null && this.getLoggedAccount().recompense(bl.getFieldDouble().getFieldValue())){
+        bl.getFieldDouble().setFieldValue("Enter Amount: ");
+        if (this.getLoggedAccount().recompense(bl.getFieldDouble().getFieldValue())){
             System.out.println("Recompense successful! Your updated loan balance is: " + this.getLoggedAccount().getLoan());
-        } else {
-            System.out.println("Recompense failed. Please check the amount and try again.");
+            return;
         }
+        System.out.println("Recompense failed. Please check the amount and try again.");
     }
 
     /*
     Get the Credit Account instance of the currently logged account
      */
+
+    private void getCreditProcess(){
+        bl.getFieldDouble().setFieldValue("Enter Amount: ");
+        getLoggedAccount().getCredit(bl.getFieldDouble().getFieldValue());
+    }
+
     protected CreditAccount getLoggedAccount(){
         //Complete this method
         return this.account;
