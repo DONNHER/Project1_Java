@@ -2,6 +2,7 @@
 package Database;
 
 import Account.Account;
+import Accounts.IllegalAccountType;
 import Accounts.Transaction;
 import Bank.*;
 import CreditAccount.CreditAccount;
@@ -129,7 +130,7 @@ public class BankDB implements loadFromDB,saveToDB{
     }
 
     public void UpdateSavingsAccount(SavingsAccount account) {
-        String updateSqlSavings = "UPDATE SavingsAccount SET First_Name = ?, Last_Name = ?, Balance = ?, Pin = ?, Bank = ?, Email = ? WHERE Account_Number = ?";
+        String updateSqlSavings = "UPDATE SavingsAccount SET First_Name = ?, Last_Name = ?, Loan_Statement = ?, Pin = ?, Bank = ?, Email = ? WHERE Account_Number = ?";
         try (Connection conn2 = BankDB.connect()) {
             PreparedStatement pstmt2;
             pstmt2 = conn2.prepareStatement(updateSqlSavings);// New CreditAccount
@@ -147,17 +148,17 @@ public class BankDB implements loadFromDB,saveToDB{
         }
     }
 
-    public void saveSavingsAccount(SavingsAccount account) {
+    public void saveSavingsAccount(SavingsAccount account) throws IllegalAccountType {
         String s = "CREATE TABLE IF NOT EXISTS SavingsAccount ("
                 + "Account_Number TEXT NOT NULL PRIMARY KEY, "
                 + "First_Name TEXT NOT NULL, "
                 + "Last_Name TEXT NOT NULL, "
-                + "Balance REAL NOT NULL, "
+                + "Loan_Statement REAL NOT NULL, "
                 + "Pin TEXT NOT NULL, "
                 + "Bank INTEGER NOT NULL, "
                 + "Email TEXT NOT NULL"
                 + ");";
-        String insertSqlSavings = "INSERT INTO SavingsAccount (Account_Number, First_Name, Last_Name, Balance, Pin, Bank, Email) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String insertSqlSavings = "INSERT INTO SavingsAccount (Account_Number, First_Name, Last_Name, Loan_Statement, Pin, Bank, Email) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn2 = BankDB.connect()) {
             Statement stmt = conn2.createStatement();
             stmt.execute(s);
@@ -174,7 +175,8 @@ public class BankDB implements loadFromDB,saveToDB{
                 pstmt2.close();
                 }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new IllegalAccountType(e.getMessage());
+//            System.out.println(e.getMessage());
         }
         if (account.getIsNew().equals("Update") || account.getIsNew().equals("Old")) {
             UpdateSavingsAccount(account);
