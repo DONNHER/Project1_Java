@@ -60,39 +60,43 @@ public class CreditAccountLauncher extends AccountLauncher {
      */
     private void creditAccountProcess() throws IllegalAccountType {
         //Complete this method
-        Main.showMenuHeader("Payment Menu");
-        Main.showMenu(6);
-        Main.setOption();
-        if (Main.getOption() == 1) {
-            getLoggedAccount().getBank().getIdField().setFieldValue("Enter Recipient's Account Number: ");
-            Account recipient = getLoggedAccount().getBank().getBankAccount(getLoggedAccount().getBank(), getLoggedAccount().getBank().getIdField().getFieldValue());
-            if(recipient != null) {
-                bl.getFieldDouble().setFieldValue("Enter Amount: ");
-                if (this.getLoggedAccount().pay(recipient, bl.getFieldDouble().getFieldValue())) {
-                    return;
-                }
-                System.out.println("Payment failed. Please check the amount and try again.");
-            }
-            System.out.println("Recipient's Account Number not found!");
-        }else if(Main.getOption() == 2){
-            bl.showBanksMenu();
-            Main.showMenuHeader("Options here");
-            bl.getIdField().setFieldValue("Enter Bank ID: ");
-            Bank b1 = new Bank(bl.getIdField().getFieldValue(), "", "");
-            Bank search1 = bl.getBank(bl.getBankIdComparator(), b1);
-            if (search1 != null) {
-                getAccountNum().setFieldValue("Enter Recipient's Account Number: ");
-                Account recipientAccount1 = getLoggedAccount().getBank().getBankAccount(search1,getAccountNum().getFieldValue());
-                if(recipientAccount1 != null) {
+        try {
+            Main.showMenuHeader("Payment Menu");
+            Main.showMenu(6);
+            Main.setOption();
+            if (Main.getOption() == 1) {
+                getLoggedAccount().getBank().getIdField().setFieldValue("Enter Recipient's Account Number: ");
+                Account recipient = getLoggedAccount().getBank().getBankAccount(getLoggedAccount().getBank(), getLoggedAccount().getBank().getIdField().getFieldValue());
+                if (recipient != null) {
                     bl.getFieldDouble().setFieldValue("Enter Amount: ");
-                    if (this.getLoggedAccount().pay(getLoggedAccount(), bl.getFieldDouble().getFieldValue())) {
-                        System.out.println("Payment successful! Your remaining loan balance is: " + this.getLoggedAccount().getLoan());
+                    if (this.getLoggedAccount().pay(recipient, bl.getFieldDouble().getFieldValue())) {
                         return;
                     }
                     System.out.println("Payment failed. Please check the amount and try again.");
                 }
                 System.out.println("Recipient's Account Number not found!");
+            } else if (Main.getOption() == 2) {
+                bl.showBanksMenu();
+                Main.showMenuHeader("Options here");
+                bl.getIdField().setFieldValue("Enter Bank ID: ");
+                Bank b1 = new Bank(bl.getIdField().getFieldValue(), "", "");
+                Bank search1 = bl.getBank(bl.getBankIdComparator(), b1);
+                if (search1 != null) {
+                    getAccountNum().setFieldValue("Enter Recipient's Account Number: ");
+                    Account recipientAccount1 = getLoggedAccount().getBank().getBankAccount(search1, getAccountNum().getFieldValue());
+                    if (recipientAccount1 != null) {
+                        bl.getFieldDouble().setFieldValue("Enter Amount: ");
+                        if (this.getLoggedAccount().pay(getLoggedAccount(), bl.getFieldDouble().getFieldValue())) {
+                            System.out.println("Payment successful! Your remaining loan balance is: " + this.getLoggedAccount().getLoan());
+                            return;
+                        }
+                        System.out.println("Payment failed. Please check the amount and try again.");
+                    }
+                    System.out.println("Recipient's Account Number not found!");
+                }
             }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 

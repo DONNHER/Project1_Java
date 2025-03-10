@@ -78,8 +78,9 @@ public class SavingsAccountLauncher extends AccountLauncher {
     /*
     A method that deals with the fund transfer process transaction.
      */
-    private void fundTransferProcess() throws IllegalAccountType {
+    private void fundTransferProcess(){
         // Get recipient's account number
+        try {
         Main.showMenuHeader("Fund Transfer Menu");
         Main.showMenu(5);
         Main.setOption();
@@ -93,7 +94,7 @@ public class SavingsAccountLauncher extends AccountLauncher {
                 owner.transfer(recipientAccount,transferAmount);
             }
 
-        }else if(Main.getOption() == 2){
+        }else if(Main.getOption() == 2) {
             bl.showBanksMenu();
             Main.showMenuHeader("Options here");
             bl.getIdField().setFieldValue("Enter Bank ID: ");
@@ -101,16 +102,19 @@ public class SavingsAccountLauncher extends AccountLauncher {
             Bank search1 = bl.getBank(bl.getBankIdComparator(), b1);
             if (search1 != null) {
                 getAccountNum().setFieldValue("Enter Recipient's Account Number: ");
-                Account recipientAccount1 = getLoggedAccount().getBank().getBankAccount(search1,getAccountNum().getFieldValue());
-                if(recipientAccount1 != null) {
+                Account recipientAccount1 = getLoggedAccount().getBank().getBankAccount(search1, getAccountNum().getFieldValue());
+                if (recipientAccount1 != null) {
                     bl.getFieldDouble().setFieldValue("Enter Amount to Transfer: ");
                     double transferAmount = bl.getFieldDouble().getFieldValue();
                     SavingsAccount owner = getLoggedAccount();
-                    owner.transfer(search1,recipientAccount1,transferAmount);
+                    owner.transfer(search1, recipientAccount1, transferAmount);
                     return;
                 }
                 System.out.println("Recipient's Account Number not found!");
             }
+        }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 

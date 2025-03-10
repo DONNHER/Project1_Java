@@ -35,7 +35,7 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt.executeUpdate();
             pstmt.close();
         } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
     }
 
@@ -66,8 +66,7 @@ public class BankDB implements loadFromDB,saveToDB{
                 pstmt.close();
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
-
+            System.out.println(e.getMessage());
         }
         if (bank.getIsNew().equals("Update") || bank.getIsNew().equals("Old")) {
             updateBanksToDatabase(bank);
@@ -90,7 +89,7 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt1.executeUpdate();
             pstmt1.close();
         } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
 
     }
@@ -100,10 +99,10 @@ public class BankDB implements loadFromDB,saveToDB{
                 + "Account_Number TEXT NOT NULL, "
                 + "First_Name TEXT NOT NULL, "
                 + "Last_Name TEXT NOT NULL, "
-                + "Loan_Statement REAL NOT NULL,, "
+                + "Loan_Statement REAL NOT NULL,"
                 + "Pin TEXT NOT NULL, "
                 + "Bank INTEGER NOT NULL, "
-                + "Email TEXT NOT NULL,"
+                + "Email TEXT NOT NULL"
                 + ");";
         String insertSqlCredit = "INSERT INTO CreditAccounts (Account_Number, First_Name, Last_Name, Loan_Statement, Pin, Bank, Email) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn1 = BankDB.connect()) {
@@ -122,7 +121,7 @@ public class BankDB implements loadFromDB,saveToDB{
                 pstmt1.close();
             }
             } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
         if (account.getIsNew().equals("Update") || account.getIsNew().equals("Old")) {
             UpdateCreditsAccount(account);
@@ -144,7 +143,7 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt2.executeUpdate();
             pstmt2.close();
         } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
     }
 
@@ -153,10 +152,10 @@ public class BankDB implements loadFromDB,saveToDB{
                 + "Account_Number TEXT NOT NULL PRIMARY KEY, "
                 + "First_Name TEXT NOT NULL, "
                 + "Last_Name TEXT NOT NULL, "
-                + "Loan_Statement REAL NOT NULL,, "
+                + "Balance REAL NOT NULL, "
                 + "Pin TEXT NOT NULL, "
                 + "Bank INTEGER NOT NULL, "
-                + "Email TEXT NOT NULL,"
+                + "Email TEXT NOT NULL"
                 + ");";
         String insertSqlSavings = "INSERT INTO SavingsAccount (Account_Number, First_Name, Last_Name, Balance, Pin, Bank, Email) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn2 = BankDB.connect()) {
@@ -175,7 +174,7 @@ public class BankDB implements loadFromDB,saveToDB{
                 pstmt2.close();
                 }
         } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
         if (account.getIsNew().equals("Update") || account.getIsNew().equals("Old")) {
             UpdateSavingsAccount(account);
@@ -223,7 +222,7 @@ public class BankDB implements loadFromDB,saveToDB{
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
     }
     @Override
@@ -242,7 +241,7 @@ public class BankDB implements loadFromDB,saveToDB{
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
     }
     @Override
@@ -261,7 +260,7 @@ public class BankDB implements loadFromDB,saveToDB{
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
     }
     @Override
@@ -280,7 +279,7 @@ public class BankDB implements loadFromDB,saveToDB{
                 }
             }
         }  catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
     }
 
@@ -300,7 +299,7 @@ public class BankDB implements loadFromDB,saveToDB{
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
     }
     public void loadGetCreditTransaction(Account account){
@@ -318,7 +317,7 @@ public class BankDB implements loadFromDB,saveToDB{
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
     }
 
@@ -327,7 +326,7 @@ public class BankDB implements loadFromDB,saveToDB{
         String s = "CREATE TABLE IF NOT EXISTS DepositTransactions ("
                 + "AccountNumber TEXT NOT NULL, "
                 + "Type TEXT NOT NULL, "
-                + "Description TEXT NOT NULL, "
+                + "Description TEXT NOT NULL "
                 + ");";
 
         String insertSqlDeposit = "INSERT INTO DepositTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
@@ -342,7 +341,7 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt2.close();
             // Commit transaction
         } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
     }
 
@@ -351,7 +350,7 @@ public class BankDB implements loadFromDB,saveToDB{
         String s = "CREATE TABLE IF NOT EXISTS PaymentTransactions ("
                 + "AccountNumber TEXT NOT NULL, "
                 + "Type TEXT NOT NULL, "
-                + "Description TEXT NOT NULL, "
+                + "Description TEXT NOT NULL "
                 + ");";
         String insertSqlDeposit = "INSERT INTO PaymentTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
         try (Connection conn2 = BankDB.connect()) {
@@ -365,7 +364,7 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt2.close();
             // Commit transaction
         } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
     }
 
@@ -374,7 +373,7 @@ public class BankDB implements loadFromDB,saveToDB{
         String s = "CREATE TABLE IF NOT EXISTS FundTransferTransactions ("
                 + "AccountNumber TEXT NOT NULL, "
                 + "Type TEXT NOT NULL, "
-                + "Description TEXT NOT NULL, "
+                + "Description TEXT NOT NULL "
                 + ");";
         String insertSqlDeposit = "INSERT INTO FundTransferTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
         try (Connection conn2 = BankDB.connect()) {
@@ -388,7 +387,7 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt2.close();
             // Commit transaction
         } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
     }
 
@@ -397,7 +396,7 @@ public class BankDB implements loadFromDB,saveToDB{
         String s = "CREATE TABLE IF NOT EXISTS RecompenseTransactions ("
                 + "AccountNumber TEXT NOT NULL, "
                 + "Type TEXT NOT NULL, "
-                + "Description TEXT NOT NULL, "
+                + "Description TEXT NOT NULL "
                 + ");";
         String insertSqlDeposit = "INSERT INTO RecompenseTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
         try (Connection conn2 = BankDB.connect()) {
@@ -411,7 +410,7 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt2.close();
             // Commit transaction
         } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
     }
     @Override
@@ -419,7 +418,7 @@ public class BankDB implements loadFromDB,saveToDB{
         String s = "CREATE TABLE IF NOT EXISTS WithdrawTransactions ("
                 + "AccountNumber TEXT NOT NULL, "
                 + "Type TEXT NOT NULL, "
-                + "Description TEXT NOT NULL, "
+                + "Description TEXT NOT NULL "
                 + ");";
         String insertSqlDeposit = "INSERT INTO WithdrawTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
         try (Connection conn2 = BankDB.connect()) {
@@ -433,7 +432,7 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt2.close();
             // Commit transaction
         } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
     }
     @Override
@@ -441,7 +440,7 @@ public class BankDB implements loadFromDB,saveToDB{
         String s = "CREATE TABLE IF NOT EXISTS GetCreditTransactions ("
                 + "AccountNumber TEXT NOT NULL, "
                 + "Type TEXT NOT NULL, "
-                + "Description TEXT NOT NULL, "
+                + "Description TEXT NOT NULL "
                 + ");";
         String insertSqlDeposit = "INSERT INTO GetCreditTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
         try (Connection conn2 = BankDB.connect()) {
@@ -455,7 +454,7 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt2.close();
             // Commit transaction
         } catch (SQLException e) {
-            throw new RuntimeException("Database error occurred", e);
+            System.out.println(e.getMessage());
         }
     }
 }

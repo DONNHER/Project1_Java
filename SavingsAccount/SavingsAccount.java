@@ -117,12 +117,8 @@ CreditAccount.
     @Override
     public synchronized boolean transfer(Bank bank, Account account, double amount) throws IllegalAccountType {
         //Complete this method
-        try { //issue here , terminate program
-            if (account instanceof CreditAccount) {
-                throw new IllegalAccountType("Cannot fund transfer when the other account is of type CreditAccount.");
-            }
-        }catch (Exception e){
-            System.out.println("Cannot fund transfer when the other account is of type CreditAccount.");
+        if (account instanceof CreditAccount) {
+            throw new IllegalAccountType("Cannot fund transfer when the other account is of type CreditAccount.");
         }
         Account toTransfer = getBank().getBankAccount(bank, account.getAccountNumber());
         if (hasEnoughBalance(amount)) {
