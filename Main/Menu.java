@@ -25,21 +25,31 @@ public enum Menu {
     /**
      * Main.Menu option inside Bank.Bank module to show a particular set of accounts.
      */
-    ShowAccounts(new String[]{ "Credit Accounts", "Savings Accounts", "All Accounts", "Go Back" }, 32),
+    ShowAccounts(new String[]{ "Credit Accounts", "Savings Accounts","Business Accounts","Student Accounts", "All Accounts", "Go Back" }, 32),
 
     /**
      * Account.Account.Account type selection menu. Used when creating New Accounts for every Bank.Bank.
      */
-    AccountTypeSelection(new String[]{ "Credit Account", "Savings Account" }, 33),
+    AccountTypeSelection(new String[]{ "Credit Account", "Savings Account","Business Account", "Student Account"}, 33),
     /**
      * CreditAccount type selection menu. Used when logging in as a CreditAccount.
      */
-    CreditAccountMenu(new String[]{ "Show Credits", "Pay", "Recompense","Get Credit", "Show Transactions", "Logout" }, 41),
+    CreditAccountMenu(new String[]{ "Show Credits", "Pay", "Recompense","Show Transactions", "Logout" }, 41),
     /**
      * SavingsAccount type selection menu. Used when logging in as a SavingsAccount.
      */
     SavingsAccountMenu(new String[]{ "Show Balance", "Deposit", "Withdraw", "Fund Transfer",
-            "Show Transactions", "Logout" }, 51);
+            "Show Transactions", "Logout" }, 51),
+    /**
+     * SavingsAccount type selection menu. Used when logging in as a SavingsAccount.
+     */
+    BusinessAccountMenu(new String[]{ "Show Balance", "Deposit", "Withdraw", "Fund Transfer", "Pay",
+            "Show Transactions", "Logout" }, 61),
+    /**
+     * SavingsAccount type selection menu. Used when logging in as a SavingsAccount.
+     */
+    StudentAccountMenu(new String[]{ "Show Balance", "Deposit", "Withdraw",
+            "Show Transactions", "Logout" }, 71);
 
     public final String[] menuOptions;
     public final int menuIdx;

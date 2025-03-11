@@ -4,6 +4,7 @@ import Account.Account;
 import Accounts.*;
 import Bank.Bank;
 import CreditAccount.CreditAccount;
+import java.time.LocalDateTime;
 
 public class SavingsAccount extends Account implements Withdrawal, Deposit, FundTransfer {
     // Balance of this bank account
@@ -88,19 +89,16 @@ CreditAccount.
     @Override
     public synchronized boolean transfer(Account account, double amount) throws IllegalAccountType {
         //Complete this method
-        if (!(account instanceof SavingsAccount)) {
+        if (account instanceof CreditAccount) {
             throw new IllegalAccountType("Cannot transfer funds to a non-savings account.");
         }
         if (hasEnoughBalance(amount)) {
             adjustAccountBalance(-amount);
             ((SavingsAccount) account).adjustAccountBalance(amount);
-            addNewTransaction(account.getAccountNumber(), Transaction.Transactions.FundTransfer,"Success Fund Transfer $"+amount+" to "+ account.getOwnerFullName());
-            System.out.println("Fund Transfer successful: $"+amount+" to "+ account.getOwnerFullName());
-            return true;
+             return true;
         } else {
             insufficientBalance();
-            System.out.println("Fund Transfer Unsuccessful: $"+amount+" to "+ account.getOwnerFullName());
-            return false;
+             return false;
         }
     }
     /*
@@ -122,12 +120,9 @@ CreditAccount.
         if (hasEnoughBalance(amount)) {
             adjustAccountBalance(-amount);
             ((SavingsAccount) toTransfer).adjustAccountBalance(amount);
-            addNewTransaction(this.getAccountNumber(), Transaction.Transactions.FundTransfer, "Fund Transfer successful: $[" + amount + "] transferred to [" + account.getOwnerFullName() + "].");
-            System.out.println("Fund Transfer successful: $" + amount + " to " + account.getOwnerFullName());
             return true;
         } else {
             insufficientBalance();
-            System.out.println("Fund Transfer Unsuccessful: $" + amount + " to " + account.getOwnerFullName());
             return false;
         }
     }
@@ -141,11 +136,8 @@ CreditAccount.
         //Complete this method
         if (amount < getBank().getDepositLimit()) {
             adjustAccountBalance(amount);
-            addNewTransaction(getAccountNumber(),Transaction.Transactions.Deposit,"Deposit Successful: $"+amount);
-            System.out.println("Deposit Successful: $"+amount);
             return true;
         }
-        System.out.println("Deposit Failed. Amount exceeds bank deposit limit.");
         return false;
     }
 
@@ -159,11 +151,10 @@ CreditAccount.
         if (hasEnoughBalance(amount)) {
             if(amount <= this.getBank().getWithdrawLimit()) {
                 adjustAccountBalance(-amount);
-                addNewTransaction(getAccountNumber(), Transaction.Transactions.Withdraw, "Withdraw Successful: $" + amount);
-                System.out.println("Withdraw Successful: $" + amount);
                 return true;
             }
             System.out.println("Withdraw Failed: The amount to be withdraw exceeds to Bank withdrawal limit.");
+            return false;
         }
         insufficientBalance();
         return false;

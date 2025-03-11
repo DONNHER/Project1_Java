@@ -26,6 +26,8 @@ public class Main
         bl.loadBanksFromDatabase();
         bl.loadCreditsFromDatabase();
         bl.loadSavingsFromDatabase();
+        bl.loadStudentFromDatabase();
+        bl.loadBusinessFromDatabase();
         while (true)
         {
             showMenuHeader("Main Menu");

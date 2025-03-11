@@ -10,8 +10,7 @@ public class Transaction {
         Withdraw,
         FundTransfer,
         Payment,
-        Recompense,
-        GetCredit
+        Recompense
     }
 
     /**

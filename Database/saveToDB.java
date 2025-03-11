@@ -11,5 +11,4 @@ public interface saveToDB {
     public void savePayment(Transaction transaction) ;
     public void saveRecompense(Transaction transaction) ;
     public void saveWithdraw(Transaction transaction) ;
-    public void saveGetCredit(Transaction transaction) ;
 }

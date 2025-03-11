@@ -8,5 +8,4 @@ public interface loadFromDB {
      void loadPaymentTransaction(Account account);
      void loadRecompenseTransaction(Account account) ;
      void loadWithdrawTransaction(Account account) ;
-     void loadGetCreditTransaction(Account account) ;
 }
