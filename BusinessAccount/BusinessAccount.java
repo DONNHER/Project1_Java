@@ -26,7 +26,7 @@ Returns:
 String balance statement.
      */
     @Override
-    public synchronized void getAccountBalanceStatement() {
+    public void getAccountBalanceStatement() {
         //Complete this method
         String s = "Account Number: "+getAccountNumber()+"\n";
         s += "Company: " +getCompany() +"\n";
@@ -56,7 +56,7 @@ successfully.
     Adjust the owner’s current loan. Result of adjustment cannot be less than 0.
     @Param amountAdjustment – Amount to be adjusted to the loan of this credit account.
      */
-    private void adjustAccountBalance(double amountAdjustment){
+    private synchronized void adjustAccountBalance(double amountAdjustment){
         //Complete this method
         this.balance += amountAdjustment;
         if (balance < 0){
@@ -65,7 +65,7 @@ successfully.
     }
 
     @Override
-    public boolean cashDeposit(double amount) {
+    public synchronized boolean cashDeposit(double amount) {
         //Complete this method
         if (amount < getBank().getDepositLimit()) {
             adjustAccountBalance(amount);
@@ -86,7 +86,7 @@ successfully.
     CreditAccount.
          */
     @Override
-    public boolean transfer(Account account, double amount) throws IllegalAccountType {
+    public synchronized boolean transfer(Account account, double amount) throws IllegalAccountType {
         //Complete this method
         if (account instanceof CreditAccount) {
             throw new IllegalAccountType("Cannot transfer funds to a non-savings account.");
@@ -127,7 +127,7 @@ successfully.
     }
 
     @Override
-    public boolean withdrawal(double amount) {
+    public synchronized boolean withdrawal(double amount) {
         if (hasEnoughBalance(amount)) {
             if(amount <= this.getBank().getWithdrawLimit()) {
                 adjustAccountBalance(-amount);
@@ -146,7 +146,7 @@ successfully.
     }
 
     @Override
-    public boolean pay(Account account, double amount) throws IllegalAccountType {
+    public synchronized boolean pay(Account account, double amount) throws IllegalAccountType {
         if (account instanceof CreditAccount) {
             // Throw an exception if it's a CreditAccount
             throw new IllegalAccountType("Credit Accounts cannot pay to other Credit Accounts as they do not hold account money balance.");

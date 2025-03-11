@@ -41,7 +41,7 @@ public class CreditAccount extends Account implements Payment, Recompense {
     @Param amountAdjustment – The amount of credit to be adjusted once the said transaction is processed.
     @Return - Flag if this account can continue with the credit transaction.
      */
-    private boolean canCredit(double amountAdjustment){
+    private synchronized boolean canCredit(double amountAdjustment){
         //Complete this method
         if(amountAdjustment > getBank().getCreditLimit()){
             return false;
@@ -53,14 +53,13 @@ public class CreditAccount extends Account implements Payment, Recompense {
     Adjust the owner’s current loan. Result of adjustment cannot be less than 0.
     @Param amountAdjustment – Amount to be adjusted to the loan of this credit account.
      */
-    private void adjustLoanAmount(double amountAdjustment){
+    private synchronized void adjustLoanAmount(double amountAdjustment){
         //Complete this method
         this.loan += amountAdjustment;
         if (loan < 0){
             this.loan = 0.0;
         }
     }
-//ISSUE HERE
     /*
     Pay an amount of money to a selected account. Such an account cannot be of type CreditAccount.
     @Param account – Target account to pay money into.

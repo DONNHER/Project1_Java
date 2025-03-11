@@ -55,7 +55,7 @@ amount – Amount to be added or subtracted from the account balance.
         @Params amount – Amount of money to be deposited.
          */
     @Override
-    public boolean cashDeposit(double amount) {
+    public synchronized boolean cashDeposit(double amount) {
         //Complete this method
         if (amount < getBank().getDepositLimit()) {
             adjustAccountBalance(amount);
@@ -69,7 +69,7 @@ amount – Amount to be added or subtracted from the account balance.
     @Params: amount – Amount of money to be withdrawn.
      */
     @Override
-    public boolean withdrawal(double amount) {
+    public synchronized boolean withdrawal(double amount) {
         //Complete this method
         if (hasEnoughBalance(amount)) {
             if(amount <= this.getBank().getWithdrawLimit()) {

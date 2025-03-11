@@ -32,7 +32,7 @@ Returns:
 String balance statement.
      */
     @Override
-    public synchronized void getAccountBalanceStatement() {
+    public void getAccountBalanceStatement() {
         //Complete this method
         String s = "Account Number: "+getAccountNumber()+"\n";
         s += "Name: " +getOwnerFullName() +"\n";
