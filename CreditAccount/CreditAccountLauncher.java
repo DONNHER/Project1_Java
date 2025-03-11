@@ -39,14 +39,11 @@ public class CreditAccountLauncher extends AccountLauncher {
                     credRecompenseProcess();
                     break;
                 case 4:
-                    getCreditProcess();
-                    break;
-                case 5:
                     for (Transaction t: account.getTransactionsInfo()){
                         System.out.print("Description: " + t.description +"\n");
                     }
                     break;
-                case 6:
+                case 5:
                     System.out.println("Logging out...");
                     return;  // Exit the method and break the loop
                 default:
@@ -62,38 +59,18 @@ public class CreditAccountLauncher extends AccountLauncher {
         //Complete this method
         try {
             Main.showMenuHeader("Payment Menu");
-            Main.showMenu(6);
-            Main.setOption();
-            if (Main.getOption() == 1) {
-                getLoggedAccount().getBank().getIdField().setFieldValue("Enter Recipient's Account Number: ");
-                Account recipient = getLoggedAccount().getBank().getBankAccount(getLoggedAccount().getBank(), getLoggedAccount().getBank().getIdField().getFieldValue());
-                if (recipient != null) {
-                    bl.getFieldDouble().setFieldValue("Enter Amount: ");
-                    if (this.getLoggedAccount().pay(recipient, bl.getFieldDouble().getFieldValue())) {
-                        return;
-                    }
-                    System.out.println("Payment failed. Please check the amount and try again.");
+            getAccountNum().setFieldValue("Enter Recipient's Account Number: ");
+            Account recipientAccount2 = bl.findAccount(getAccountNum().getFieldValue());
+            if (recipientAccount2 != null) {
+                bl.getFieldDouble().setFieldValue("Enter Amount: ");
+                if(getLoggedAccount().pay(recipientAccount2, bl.getFieldDouble().getFieldValue())){
+                    getLoggedAccount().addNewTransaction(getLoggedAccount().getAccountNumber(), Transaction.Transactions.Payment, "Payment Successful: $"+bl.getFieldDouble().getFieldValue());
+                    System.out.println("Payment Successful: $"+bl.getFieldDouble().getFieldValue());
+                    return;
                 }
-                System.out.println("Recipient's Account Number not found!");
-            } else if (Main.getOption() == 2) {
-                bl.showBanksMenu();
-                Main.showMenuHeader("Options here");
-                bl.getIdField().setFieldValue("Enter Bank ID: ");
-                Bank b1 = new Bank(bl.getIdField().getFieldValue(), "", "");
-                Bank search1 = bl.getBank(bl.getBankIdComparator(), b1);
-                if (search1 != null) {
-                    getAccountNum().setFieldValue("Enter Recipient's Account Number: ");
-                    Account recipientAccount1 = getLoggedAccount().getBank().getBankAccount(search1, getAccountNum().getFieldValue());
-                    if (recipientAccount1 != null) {
-                        bl.getFieldDouble().setFieldValue("Enter Amount: ");
-                        if (this.getLoggedAccount().pay(getLoggedAccount(), bl.getFieldDouble().getFieldValue())) {
-                            return;
-                        }
-                        System.out.println("Payment failed. Please check the amount and try again.");
-                    }
-                    System.out.println("Recipient's Account Number not found!");
-                }
+                System.out.println("Payment Unsuccessful: $"+bl.getFieldDouble().getFieldValue()+" exceeds bank credit limit.");
             }
+            System.out.println("Recipient's Account Number not found!");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -106,18 +83,10 @@ public class CreditAccountLauncher extends AccountLauncher {
         //Complete this method
         bl.getFieldDouble().setFieldValue("Enter Amount: ");
         if (this.getLoggedAccount().recompense(bl.getFieldDouble().getFieldValue())){
+            getLoggedAccount().addNewTransaction(getLoggedAccount().getAccountNumber(), Transaction.Transactions.Recompense, "Recompense Successful: $"+bl.getFieldDouble().getFieldValue());
             return;
         }
         System.out.println("Recompense failed. Please check the amount and try again.");
-    }
-
-    /*
-    Get the Credit Account instance of the currently logged account
-     */
-
-    private void getCreditProcess(){
-        bl.getFieldDouble().setFieldValue("Enter Amount: ");
-        getLoggedAccount().getCredit(bl.getFieldDouble().getFieldValue());
     }
 
     protected CreditAccount getLoggedAccount(){

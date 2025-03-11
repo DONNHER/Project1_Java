@@ -2,14 +2,16 @@ package Account;
 import Accounts.IllegalAccountType;
 import Bank.*;
 
+import BusinessAccount.*;
 import CreditAccount.*;
 import Main.*;
 import SavingsAccount.*;
+import StudentAccount.*;
 
 public class AccountLauncher {
     private BankLauncher bankLauncher;
     Field<Integer,Integer> bankid = new Field<Integer, Integer>("Selected user ID",Integer.class,0,new Field.IntegerFieldValidator());
-    Field<String,String> password = new Field<String, String>("User password",String.class,"0",new Field.StringFieldValidator());
+    Field<String ,Integer> password = new Field<String,Integer>("User password",String.class,4,new Field.StringFieldLengthValidator());
     Field<String,String> accountNum = new Field<String, String>("User password",String.class,"0",new Field.StringFieldValidator());
 
     public AccountLauncher(BankLauncher bankLauncher){
@@ -75,6 +77,12 @@ public class AccountLauncher {
                         destroyLogSession();
                     }else if(getLoggedAccount() instanceof SavingsAccount){
                         new SavingsAccountLauncher(bankLauncher,this.loggedAccount).savingsAccountInit();
+                        destroyLogSession();
+                    }else if(getLoggedAccount() instanceof BusinessAccount){
+                        new BusinessAccountLauncher(bankLauncher,this.loggedAccount).businessAccountInit();
+                        destroyLogSession();
+                    }else if(getLoggedAccount() instanceof StudentAccount){
+                        new StudentAccountLauncher(bankLauncher,this.loggedAccount).studentAccountInit();
                         destroyLogSession();
                     }
                 } else {

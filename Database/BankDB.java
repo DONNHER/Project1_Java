@@ -5,9 +5,11 @@ import Account.Account;
 import Accounts.IllegalAccountType;
 import Accounts.Transaction;
 import Bank.*;
+import BusinessAccount.BusinessAccount;
 import CreditAccount.CreditAccount;
 
 import SavingsAccount.SavingsAccount;
+import StudentAccount.StudentAccount;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -130,7 +132,7 @@ public class BankDB implements loadFromDB,saveToDB{
     }
 
     public void UpdateSavingsAccount(SavingsAccount account) {
-        String updateSqlSavings = "UPDATE SavingsAccount SET First_Name = ?, Last_Name = ?, Loan_Statement = ?, Pin = ?, Bank = ?, Email = ? WHERE Account_Number = ?";
+        String updateSqlSavings = "UPDATE SavingsAccount SET First_Name = ?, Last_Name = ?,Balance_Statement = ?, Pin = ?, Bank = ?, Email = ? WHERE Account_Number = ?";
         try (Connection conn2 = BankDB.connect()) {
             PreparedStatement pstmt2;
             pstmt2 = conn2.prepareStatement(updateSqlSavings);// New CreditAccount
@@ -175,11 +177,124 @@ public class BankDB implements loadFromDB,saveToDB{
                 pstmt2.close();
                 }
         } catch (SQLException e) {
-            throw new IllegalAccountType(e.getMessage());
-//            System.out.println(e.getMessage());
+            System.out.println(e.getMessage());
         }
         if (account.getIsNew().equals("Update") || account.getIsNew().equals("Old")) {
             UpdateSavingsAccount(account);
+        }
+    }
+    public void UpdateBusinessAccount(BusinessAccount account) {
+        String updateSqlBusiness = "UPDATE BusinessAccounts SET  Company = ?, First_Name = ?, Last_Name = ?, Balance_Statement = ?, Pin = ?, Bank = ?, Email = ? WHERE Account_Number = ?";
+        try (Connection conn1 = BankDB.connect()) {
+            conn1.setAutoCommit(false);
+            PreparedStatement pstmt1;
+            pstmt1 = conn1.prepareStatement(updateSqlBusiness);// New CreditAccount
+            pstmt1.setString(1, account.getCompany());
+            pstmt1.setString(1, account.getOwnerFirstName());
+            pstmt1.setString(2, account.getOwnerLastName());
+            pstmt1.setDouble(3, account.getBalance());  // Check if it's loan_balance() or another method
+            pstmt1.setString(4, account.getPin());
+            pstmt1.setInt(5, account.getBank().getID());
+            pstmt1.setString(6, account.getOwnerEmail());
+            pstmt1.setString(7, account.getAccountNumber());
+            pstmt1.executeUpdate();
+            pstmt1.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    public void saveBusinessAccount(BusinessAccount account) {
+        String s = "CREATE TABLE IF NOT EXISTS BusinessAccounts ("
+                + "Account_Number TEXT NOT NULL, "
+                + "Company TEXT NOT NULL, "
+                + "First_Name TEXT NOT NULL, "
+                + "Last_Name TEXT NOT NULL, "
+                + "Loan_Statement REAL NOT NULL,"
+                + "Pin TEXT NOT NULL, "
+                + "Bank INTEGER NOT NULL, "
+                + "Email TEXT NOT NULL"
+                + ");";
+        String insertSqlBusiness = "INSERT INTO BusinessAccounts (Account_Number,Company, First_Name, Last_Name, Loan_Statement, Pin, Bank, Email) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn1 = BankDB.connect()) {
+            Statement stmt = conn1.createStatement();
+            stmt.execute(s);
+            if (account.getIsNew().equals("New")) {
+                PreparedStatement pstmt1 = conn1.prepareStatement(insertSqlBusiness);
+                pstmt1.setString(1, account.getAccountNumber());
+                pstmt1.setString(1, account.getCompany());
+                pstmt1.setString(2, account.getOwnerFirstName());
+                pstmt1.setString(3, account.getOwnerLastName());
+                pstmt1.setDouble(4, account.getBalance());
+                pstmt1.setString(5, account.getPin());
+                pstmt1.setInt(6, account.getBank().getID());
+                pstmt1.setString(7, account.getOwnerEmail());
+                pstmt1.executeUpdate();
+                pstmt1.close();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        if (account.getIsNew().equals("Update") || account.getIsNew().equals("Old")) {
+            UpdateBusinessAccount(account);
+        }
+    }
+    public void UpdateStudentAccount(StudentAccount account) {
+        String updateSqlCredit = "UPDATE Student SET Program =?, First_Name = ?, Last_Name = ?, Loan_Statement = ?, Pin = ?, Bank = ?, Email = ? WHERE Account_Number = ?";
+        try (Connection conn1 = BankDB.connect()) {
+            conn1.setAutoCommit(false);
+            PreparedStatement pstmt1;
+            pstmt1 = conn1.prepareStatement(updateSqlCredit);// New CreditAccount
+            pstmt1.setString(1, account.getProgram());
+            pstmt1.setString(1, account.getOwnerFirstName());
+            pstmt1.setString(2, account.getOwnerLastName());
+            pstmt1.setDouble(3, account.getBalance());  // Check if it's loan_balance() or another method
+            pstmt1.setString(4, account.getPin());
+            pstmt1.setInt(5, account.getBank().getID());
+            pstmt1.setString(6, account.getOwnerEmail());
+            pstmt1.setString(7, account.getAccountNumber());
+            pstmt1.executeUpdate();
+            pstmt1.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    public void saveStudentAccount(StudentAccount account) {
+        String s = "CREATE TABLE IF NOT EXISTS StudentAccounts ("
+                + "Account_Number TEXT NOT NULL, "
+                + "Program TEXT NOT NULL, "
+                + "First_Name TEXT NOT NULL, "
+                + "Last_Name TEXT NOT NULL, "
+                + "Loan_Statement REAL NOT NULL,"
+                + "Pin TEXT NOT NULL, "
+                + "Bank INTEGER NOT NULL, "
+                + "Email TEXT NOT NULL"
+                + ");";
+        String insertSqlCredit = "INSERT INTO StudentAccounts (Account_Number,Program, First_Name, Last_Name, Loan_Statement, Pin, Bank, Email) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn1 = BankDB.connect()) {
+            Statement stmt = conn1.createStatement();
+            stmt.execute(s);
+            if (account.getIsNew().equals("New")) {
+                PreparedStatement pstmt1 = conn1.prepareStatement(insertSqlCredit);  // Update CreditAccount
+                pstmt1.setString(1, account.getAccountNumber());
+                pstmt1.setString(1, account.getProgram());
+                pstmt1.setString(2, account.getOwnerFirstName());
+                pstmt1.setString(3, account.getOwnerLastName());
+                pstmt1.setDouble(4, account.getBalance());
+                pstmt1.setString(5, account.getPin());
+                pstmt1.setInt(6, account.getBank().getID());
+                pstmt1.setString(7, account.getOwnerEmail());
+                pstmt1.executeUpdate();
+                pstmt1.close();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        if (account.getIsNew().equals("Update") || account.getIsNew().equals("Old")) {
+            UpdateStudentAccount(account);
         }
     }
 
@@ -223,8 +338,7 @@ public class BankDB implements loadFromDB,saveToDB{
                             res1.getString("Description"));
                 }
             }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } catch (SQLException _) {
         }
     }
     @Override
@@ -242,8 +356,7 @@ public class BankDB implements loadFromDB,saveToDB{
                             res1.getString("Description"));
                 }
             }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } catch (SQLException _) {
         }
     }
     @Override
@@ -261,8 +374,8 @@ public class BankDB implements loadFromDB,saveToDB{
                             res1.getString("Description"));
                 }
             }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } catch (SQLException _) {
+
         }
     }
     @Override
@@ -280,8 +393,7 @@ public class BankDB implements loadFromDB,saveToDB{
                             res1.getString("Description"));
                 }
             }
-        }  catch (SQLException e) {
-            System.out.println(e.getMessage());
+        }  catch (SQLException _) {
         }
     }
 
@@ -300,26 +412,7 @@ public class BankDB implements loadFromDB,saveToDB{
                             res1.getString("Description"));
                 }
             }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    public void loadGetCreditTransaction(Account account){
-        try {
-            Connection conn = BankDB.connect();
-            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM GetCreditTransactions ");
-            ResultSet res1 = pstmt.executeQuery();  // Credit Accounts
-            while (res1.next()) {
-                if(res1.getString("AccountNumber").equals(account.getAccountNumber())) {
-                    Transaction.Transactions type = Transaction.Transactions.valueOf(res1.getObject("Type").toString());
-                    account.addNewTransaction(
-                            res1.getString("AccountNumber"),
-                            type,
-                            res1.getString("Description"));
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } catch (SQLException _) {
         }
     }
 
@@ -437,26 +530,5 @@ public class BankDB implements loadFromDB,saveToDB{
             System.out.println(e.getMessage());
         }
     }
-    @Override
-    public void saveGetCredit(Transaction transaction) {
-        String s = "CREATE TABLE IF NOT EXISTS GetCreditTransactions ("
-                + "AccountNumber TEXT NOT NULL, "
-                + "Type TEXT NOT NULL, "
-                + "Description TEXT NOT NULL "
-                + ");";
-        String insertSqlDeposit = "INSERT INTO GetCreditTransactions (AccountNumber, Type, Description) VALUES (?, ?, ?)";
-        try (Connection conn2 = BankDB.connect()) {
-            Statement stmt = conn2.createStatement();
-            stmt.execute(s);
-            PreparedStatement pstmt2 = conn2.prepareStatement(insertSqlDeposit);  // Update CreditAccount
-            pstmt2.setString(1, transaction.accountNumber);
-            pstmt2.setObject(2, transaction.transactionType);
-            pstmt2.setString(3, transaction.description);
-            pstmt2.executeUpdate();
-            pstmt2.close();
-            // Commit transaction
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
+
 }

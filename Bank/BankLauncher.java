@@ -2,11 +2,14 @@ package Bank;
 
 import Account.Account;
 import Accounts.Transaction;
+import BusinessAccount.BusinessAccount;
 import CreditAccount.CreditAccount;
 import Database.BankDB;
 import Main.Field.*;
 import Main.*;
 import SavingsAccount.SavingsAccount;
+import StudentAccount.StudentAccount;
+
 import java.sql.*;
 import java.util.*;
 
@@ -17,11 +20,6 @@ public class BankLauncher {
     Field<Integer, Integer> idField = new Field<Integer, Integer>("ID field", Integer.class, 0, new IntegerFieldValidator());
     Field<String, String> nameField = new Field<String, String>("Name field", String.class, "0", new StringFieldValidator());
     Field<String, String> passcodeField = new Field<String, String>("Passcode field", String.class, "0", new StringFieldValidator());
-    Field<Double, Double> depositLimitField = new Field<Double, Double>("Deposit limit field", Double.class,0.0, new DoubleFieldValidator());
-    Field<Double, Double> withdrawLimitField = new Field<Double, Double>("Withdraw limit field", Double.class, 0.0, new DoubleFieldValidator());
-    Field<Double, Double> creditLimitField = new Field<Double, Double>("Credit Limit field", Double.class, 0.0, new DoubleFieldValidator());
-    Field<Double, Double> processingFeeField = new Field<Double, Double>("ID field", Double.class, 0.0, new DoubleFieldValidator());
-    Bank.BankComparator bankComparator = new Bank.BankComparator();
     Bank.BankIdComparator bankIdComparator = new Bank.BankIdComparator();
     Bank.BankCredentialsComparator BankCredentials = new Bank.BankCredentialsComparator();
     //List of banks currently registered in this session.
@@ -118,15 +116,24 @@ public class BankLauncher {
             Main.showMenu(32, 1);
             user.setFieldValue("Enter option: ");
             for (Bank bank : this.banks) {
+                if(bank.bankAccountSize()==0){
+                    System.out.println("No Account Found...");
+                    return;
+                }
                 if (user.getFieldValue() == 1) {
                     bank.showAccount(CreditAccount.class);
                 } else if (user.getFieldValue() == 2) {
                     bank.showAccount(SavingsAccount.class);
                 } else if (user.getFieldValue() == 3) {
+                    bank.showAccount(BusinessAccount.class);
+                } else if (user.getFieldValue() == 4) {
+                    bank.showAccount(StudentAccount.class);
+
+                } else if (user.getFieldValue() == 5) {
                     for (Account accounts : bank.getBankAccounts()) {
                         System.out.println(accounts);
                     }
-                } else if (user.getFieldValue() == 4) {
+                } else if (user.getFieldValue() == 6) {
                     exit = true;
                 }
             }
@@ -139,9 +146,13 @@ public class BankLauncher {
         //Complete this method
         user.setFieldValue("Enter option: ");
         if (user.getFieldValue() == 1) {
-            this.loggedBank.createCreditAccount(this.loggedBank);
+            this.loggedBank.createCreditAccount();
         } else if (user.getFieldValue() == 2) {
-            this.loggedBank.createSavingsAccount(this.loggedBank);
+            this.loggedBank.createSavingsAccount();
+        }else if (user.getFieldValue() == 3) {
+            this.loggedBank.createBusinessAccount();
+        }else if (user.getFieldValue() == 4) {
+            this.loggedBank.createStudentAccount();
         }
     }
 
@@ -156,7 +167,7 @@ public class BankLauncher {
         Bank bank = new Bank(this.idField.getFieldValue(),this.nameField.getFieldValue(),this.passcodeField.getFieldValue());
         Bank searchBank= getBank(BankCredentials,bank);
         if (searchBank != null){
-            this.setLoggedBank(searchBank);
+            this.setLoggedSession(searchBank);
             System.out.println("Login successful! Welcome to " + searchBank.getName());
         }else {
             System.out.println("Login failed. Invalid credentials.");
@@ -375,7 +386,6 @@ public class BankLauncher {
                     bankdb.loadRecompenseTransaction(savingsAccount);
                     bankdb.loadDepositTransaction(savingsAccount);
                     bankdb.loadWithdrawTransaction(savingsAccount);
-                    bankdb.loadGetCreditTransaction(savingsAccount);
                     savingsAccount.setIsNew("Old");
                     search.addNewAccount(savingsAccount);
                 }
@@ -406,9 +416,68 @@ public class BankLauncher {
                     bankdb.loadRecompenseTransaction(creditAccount);
                     bankdb.loadDepositTransaction(creditAccount);
                     bankdb.loadWithdrawTransaction(creditAccount);
-                    bankdb.loadGetCreditTransaction(creditAccount);
                     creditAccount.setIsNew("Old");
                     search.addNewAccount(creditAccount);
+                }
+            }
+        } catch (SQLException _) {
+        }
+    }
+    public void loadBusinessFromDatabase() {
+        try {
+            Connection conn = BankDB.connect();
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM BusinessAccounts ");
+            ResultSet res1 = pstmt.executeQuery();  // Credit Accounts
+            while (res1.next()) {
+                Bank bank = new Bank(res1.getInt("Bank"),"","");
+                Bank search =  getBank(bankIdComparator,bank);
+                if(search != null) {
+                    BusinessAccount businessAccount = new BusinessAccount(
+                            search,
+                            res1.getString("Company"),
+                            res1.getString("Account_Number"),
+                            res1.getString("First_Name"),
+                            res1.getString("Last_Name"),
+                            res1.getString("Email"),
+                            res1.getString("Pin"),
+                            res1.getDouble("Loan_Statement"));
+                    bankdb.loadPaymentTransaction(businessAccount);
+                    bankdb.loadFundTransaction(businessAccount);
+                    bankdb.loadRecompenseTransaction(businessAccount);
+                    bankdb.loadDepositTransaction(businessAccount);
+                    bankdb.loadWithdrawTransaction(businessAccount);
+                    businessAccount.setIsNew("Old");
+                    search.addNewAccount(businessAccount);
+                }
+            }
+        } catch (SQLException _) {
+        }
+    }
+    public void loadStudentFromDatabase() {
+        try {
+            Connection conn = BankDB.connect();
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM StudentAccounts ");
+            ResultSet res1 = pstmt.executeQuery();  // Credit Accounts
+            while (res1.next()) {
+                Bank bank = new Bank(res1.getInt("Bank"),"","");
+                Bank search =  getBank(bankIdComparator,bank);
+                if(search != null) {
+                    StudentAccount studentAccount = new StudentAccount(
+                            search,
+                            res1.getString("Account_Number"),
+                            res1.getString("Account_Number"),
+                            res1.getString("First_Name"),
+                            res1.getString("Last_Name"),
+                            res1.getString("Email"),
+                            res1.getString("Pin"),
+                            res1.getDouble("Loan_Statement"));
+                    bankdb.loadPaymentTransaction(studentAccount);
+                    bankdb.loadFundTransaction(studentAccount);
+                    bankdb.loadRecompenseTransaction(studentAccount);
+                    bankdb.loadDepositTransaction(studentAccount);
+                    bankdb.loadWithdrawTransaction(studentAccount);
+                    studentAccount.setIsNew("Old");
+                    search.addNewAccount(studentAccount);
                 }
             }
         } catch (SQLException _) {
@@ -432,8 +501,6 @@ public class BankLauncher {
                             bankdb.saveRecompense(transaction);
                         } else if (transaction.transactionType.equals(Transaction.Transactions.Payment)) {
                             bankdb.savePayment(transaction);
-                        } else if (transaction.transactionType.equals(Transaction.Transactions.GetCredit)) {
-                            bankdb.saveGetCredit(transaction);
                         }
                     }
                 } else if(account instanceof SavingsAccount) {
@@ -449,8 +516,36 @@ public class BankLauncher {
                             bankdb.saveRecompense(transaction);
                         } else if (transaction.transactionType.equals(Transaction.Transactions.Payment)) {
                             bankdb.savePayment(transaction);
-                        } else if (transaction.transactionType.equals(Transaction.Transactions.GetCredit)) {
-                            bankdb.saveGetCredit(transaction);
+                        }
+                    }
+                } else if(account instanceof BusinessAccount) {
+                    bankdb.saveBusinessAccount(((BusinessAccount)account));
+                    for (Transaction transaction : account.getTransactionsInfo()) {
+                        if (transaction.transactionType.equals(Transaction.Transactions.Deposit)) {
+                            bankdb.save(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.FundTransfer)) {
+                            bankdb.saveFund(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.Withdraw)) {
+                            bankdb.saveWithdraw(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.Recompense)) {
+                            bankdb.saveRecompense(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.Payment)) {
+                            bankdb.savePayment(transaction);
+                        }
+                    }
+                } else if(account instanceof StudentAccount) {
+                    bankdb.saveStudentAccount(((StudentAccount)account));
+                    for (Transaction transaction : account.getTransactionsInfo()) {
+                        if (transaction.transactionType.equals(Transaction.Transactions.Deposit)) {
+                            bankdb.save(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.FundTransfer)) {
+                            bankdb.saveFund(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.Withdraw)) {
+                            bankdb.saveWithdraw(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.Recompense)) {
+                            bankdb.saveRecompense(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.Payment)) {
+                            bankdb.savePayment(transaction);
                         }
                     }
                 }

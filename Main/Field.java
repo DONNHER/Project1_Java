@@ -5,7 +5,8 @@ package Main;
  * to input something, like for example, Bank Name and Bank Passcode.
  * @param <T> Type of the field. Can be Double, String, Integer, and all other wrapper classes.
  */
-public class Field<T , E> {
+public class
+Field<T , E> {
 
     private final Class<T> fieldType;
     private final String fieldName;

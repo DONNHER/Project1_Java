@@ -5,6 +5,8 @@ import Accounts.*;
 import Bank.Bank;
 import SavingsAccount.SavingsAccount;
 
+import java.time.LocalDateTime;
+
 public class CreditAccount extends Account implements Payment, Recompense {
     private double loan = 0.0;
 
@@ -47,25 +49,6 @@ public class CreditAccount extends Account implements Payment, Recompense {
         adjustLoanAmount(amountAdjustment);
         return true;
     }
-
-    /*
-    Get credit to added loan
-    @Param amount to be credited
-     */
-    public synchronized boolean getCredit(double amount){
-        if (loan < getBank().getCreditLimit()){
-            if(canCredit(amount)){
-                addNewTransaction(getAccountNumber(), Transaction.Transactions.GetCredit, "Credit Successful: $"+amount);
-                System.out.println("Credit Successful: $"+amount);
-                return true;
-            }
-            System.out.println("Credit Unsuccessful: $"+amount+" exceeds bank credit limit.");
-            return false;
-        }
-        System.out.println("Credit Unsuccessful: $"+amount+" exceeds bank credit limit.");
-        return false;
-    }
-
     /*
     Adjust the owner’s current loan. Result of adjustment cannot be less than 0.
     @Param amountAdjustment – Amount to be adjusted to the loan of this credit account.
@@ -77,7 +60,7 @@ public class CreditAccount extends Account implements Payment, Recompense {
             this.loan = 0.0;
         }
     }
-
+//ISSUE HERE
     /*
     Pay an amount of money to a selected account. Such an account cannot be of type CreditAccount.
     @Param account – Target account to pay money into.
@@ -91,15 +74,11 @@ public class CreditAccount extends Account implements Payment, Recompense {
             // Throw an exception if it's a CreditAccount
             throw new IllegalAccountType("Credit Accounts cannot pay to other Credit Accounts as they do not hold account money balance.");
         }
-
-        // If it's a valid SavingsAccount (or other type), perform the payment
-        // Assuming there's a method to deposit the money in the account
-        SavingsAccount payed = (SavingsAccount) account;
-        boolean payment = payed.cashDeposit(amount);
-        if (payment){
-            addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Payment,"Payment successful: $"+amount+" to "+account.getOwnerFullName());
-            System.out.println("Payment successful: $"+amount+" to "+account.getOwnerFullName());
-            return true;
+        if (canCredit(amount)) {
+            // If it's a valid SavingsAccount (or other type), perform the payment
+            // Assuming there's a method to deposit the money in the account
+            SavingsAccount payed = (SavingsAccount) account;
+            return payed.cashDeposit(amount);
         }
         return false;
     }
@@ -115,8 +94,6 @@ public class CreditAccount extends Account implements Payment, Recompense {
             return false;
         }
         adjustLoanAmount(-amount);
-        addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Recompense, "Recompense successful: $" + amount );
-        System.out.println("Recompense successful: $" + amount );
         return true;
     }
 

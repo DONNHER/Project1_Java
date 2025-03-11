@@ -11,10 +11,12 @@ import java.util.Comparator;
 
 public class Bank {
     Field <String,String> accountNField = new Field<String, String>("Name field", String.class, "0", new Field.StringFieldValidator());
+    Field <String,String> program = new Field<String, String>("Program field", String.class, "0", new Field.StringFieldValidator());
+    Field <String,String> company = new Field<String, String>("Company field", String.class, "0", new Field.StringFieldValidator());
     Field <String,String> fnameField = new Field<String, String>("First name field", String.class, "0", new Field.StringFieldValidator());
     Field <String,String> lnameField = new Field<String, String>("Last name field", String.class, "0", new Field.StringFieldValidator());
     Field <String,String> emailField = new Field<String, String>("Email Address field", String.class, "0", new Field.StringFieldValidator());
-    Field <String,String> pinField = new Field<String, String>("Pin field", String.class, "0", new Field.StringFieldValidator());
+    Field <String,Integer> pinField = new Field<String, Integer>("Pin field", String.class, 4, new Field.StringFieldLengthValidator());
     Field <Double,Double> BalanceField = new Field<Double, Double>("Balance field", Double.class, 0.0, new Field.DoubleFieldValidator());
     Field <Double,Double> laonField = new Field<Double, Double>("Loan field", Double.class, 0.0, new Field.DoubleFieldValidator());
 
@@ -105,7 +107,7 @@ public class Bank {
 
     //Setters
     public void setID(int id){this.ID = id;}
-    public void setName(String name){
+    public void setNa(String name){
         this.name = name;
     }
     public void setPasscode(String pass) {this.passcode = pass; }
@@ -222,7 +224,7 @@ public class Bank {
         this.accountNField.setFieldValue("Enter account number: ",false);
         this.fnameField.setFieldValue("Enter first name: ",false);
         this.lnameField.setFieldValue("Enter last name: ",false);
-        this.pinField.setFieldValue("Enter pin password: ",false);
+        this.pinField.setFieldValue("Enter 4-digit PIN: ",false);
         this.emailField.setFieldValue("Enter email address: ",false);
 
 
@@ -238,12 +240,12 @@ public class Bank {
     Create a new savings account. Utilizes the createNewAccount() method.
     @Returns New savings account.
      */
-    public SavingsAccount createSavingsAccount(Bank bank) {
+    public SavingsAccount createSavingsAccount() {
         //Complete this method
         this.BalanceField.setFieldValue("Enter balance: ");
         createNewAccount();
         SavingsAccount newsavingsAccount = new SavingsAccount(
-                bank,
+                this,
                 this.accountNField.getFieldValue(),
                 this.fnameField.getFieldValue(),
                 this.lnameField.getFieldValue(),
@@ -260,11 +262,11 @@ public class Bank {
     @param logged Bank in this session
     @Returns New credit account.
      */
-    public CreditAccount createCreditAccount(Bank bank){
+    public CreditAccount createCreditAccount(){
         //Complete this method
         this.laonField.setFieldValue("Enter loan: ");
         createNewAccount();
-        CreditAccount newCreditAccount = new CreditAccount(bank,this.accountNField.getFieldValue(),this.fnameField.getFieldValue(),
+        CreditAccount newCreditAccount = new CreditAccount(this,this.accountNField.getFieldValue(),this.fnameField.getFieldValue(),
                 this.lnameField.getFieldValue(),this.emailField.getFieldValue(),this.pinField.getFieldValue(),this.laonField.getFieldValue());
         addNewAccount(newCreditAccount);
         c_count += 1;
@@ -274,11 +276,12 @@ public class Bank {
     Create a new credit account. Utilizes the createNewAccount() method.
     @Returns New Student account.
      */
-    public StudentAccount createStudentAccount(Bank bank){
+    public StudentAccount createStudentAccount(){
         //Complete this method
         this.BalanceField.setFieldValue("Enter balance: ");
+        this.program.setFieldValue("Enter Degree Program: ");
         createNewAccount();
-        StudentAccount newStudentAccount = new StudentAccount(bank,this.accountNField.getFieldValue(),this.fnameField.getFieldValue(),
+        StudentAccount newStudentAccount = new StudentAccount(this,program.getFieldValue(),this.accountNField.getFieldValue(),this.fnameField.getFieldValue(),
                 this.lnameField.getFieldValue(),this.emailField.getFieldValue(),this.pinField.getFieldValue(),this.BalanceField.getFieldValue());
         addNewAccount(newStudentAccount);
         return newStudentAccount;
@@ -287,11 +290,12 @@ public class Bank {
     Create a new credit account. Utilizes the createNewAccount() method.
     @Returns New Business account.
      */
-    public BusinessAccount createBusinessAccount(Bank bank){
+    public BusinessAccount createBusinessAccount(){
         //Complete this method
         this.BalanceField.setFieldValue("Enter balance: ");
+        this.company.setFieldValue("Enter Company Name: ");
         createNewAccount();
-        BusinessAccount newBusinessAccount = new BusinessAccount(bank,this.accountNField.getFieldValue(),this.fnameField.getFieldValue(),
+        BusinessAccount newBusinessAccount = new BusinessAccount(this,company.getFieldValue(),this.accountNField.getFieldValue(),this.fnameField.getFieldValue(),
                 this.lnameField.getFieldValue(),this.emailField.getFieldValue(),this.pinField.getFieldValue(),this.BalanceField.getFieldValue());
         addNewAccount(newBusinessAccount);
         return newBusinessAccount;
@@ -322,7 +326,7 @@ public class Bank {
      */
     public boolean accountExist(Bank bank, String accountNum){
         //Complete this method
-        return getBankAccount(bank,accountNum) != null;
+        return getBankAccount(bank,accountNum) == null;
     }
 
     /*
