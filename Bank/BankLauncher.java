@@ -48,12 +48,7 @@ public class BankLauncher {
     public Bank getLoggedBank() {
         return this.loggedBank;
     }
-    /*
-    Utilize for Creating account or interaction when bank is logged in
-     */
-    public void GetNewAccounts() {
-        this.newAccounts();
-    }
+
     public ArrayList<Integer> getBankids(){
         return this.bankids;
     }
@@ -100,8 +95,6 @@ public class BankLauncher {
                     this.newAccounts();
                     break;
                 case 3:
-                    return;  // Exit the method and break the loop
-                case 4:
                     System.out.println("Logging out...");
                     logout();
                     break;// Exit the method and break the loop
@@ -111,53 +104,7 @@ public class BankLauncher {
 
         }
     }
-    public void bankUpdateInit() {
-        //Complete this method
-        while (isLogged()) {
-            Main.showMenuHeader("Welcome to the Bank Update Portal!");
-            Main.showMenu(4, 2);
-            System.out.println("\n");
-            Main.setOption();
-            switch (Main.getOption()) {
-                case 1:
-                    this.nameField.setFieldValue("Enter bank name: ",false);
-                    getLoggedBank().setName(nameField.getFieldValue());
-                    getLoggedBank().setIsNew("Update");
-                    break;
-                case 2:
-                    this.passcodeField.setFieldValue("Enter bank passcode: ");
-                    getLoggedBank().setPasscode(passcodeField.getFieldValue());
-                    getLoggedBank().setIsNew("Update");
-                    break;
-                case 3:
-                    this.depositLimitField.setFieldValue("Enter deposit limit: ",false);
-                    getLoggedBank().setDepositLimit(depositLimitField.getFieldValue());
-                    getLoggedBank().setIsNew("Update");
-                    break;
-                case 4:
-                    this.withdrawLimitField.setFieldValue("Enter withdraw limit: ",false);
-                    getLoggedBank().setWithdrawLimit(withdrawLimitField.getFieldValue());
-                    getLoggedBank().setIsNew("Update");
-                    break;
-                case 5:
-                    this.creditLimitField.setFieldValue("Enter credit limit: ",false);
-                    getLoggedBank().setCreditLimit(creditLimitField.getFieldValue());
-                    getLoggedBank().setIsNew("Update");
-                    break;
-                case 6:
-                    this.processingFeeField.setFieldValue("Enter processing fee: ",false);
-                    getLoggedBank().setProcessingFee(processingFeeField.getFieldValue());
-                    getLoggedBank().setIsNew("Update");
-                    break;
-                case 7:
-                    System.out.println("Logging out...");
-                    logout();
-                    return;  // Exit the method and break the loop
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
-        }
-    }
+
 
     /*
     Show the accounts registered to this bank. Must prompt the user to select which type of
@@ -242,9 +189,9 @@ public class BankLauncher {
      */
     public void createNewBank () {
         //Complete this method
-        this.idField.setFieldValue("Enter bank ID: ");
+        this.idField.setFieldValue("Enter bank ID: ",false);
         this.nameField.setFieldValue("Enter bank name: ",false);
-        this.passcodeField.setFieldValue("Enter bank passcode: ");
+        this.passcodeField.setFieldValue("Enter bank passcode: ",false);
         Bank newbank = new Bank(this.idField.getFieldValue(), this.nameField.getFieldValue(), this.passcodeField.getFieldValue());
         addBank(newbank);
         this.size += 1;
@@ -422,7 +369,7 @@ public class BankLauncher {
                             res2.getString("Last_Name"),
                             res2.getString("Email"),
                             res2.getString("Pin"),
-                            res2.getDouble("Balance"));
+                            res2.getDouble("Balance_Statement"));
                     bankdb.loadPaymentTransaction(savingsAccount);
                     bankdb.loadFundTransaction(savingsAccount);
                     bankdb.loadRecompenseTransaction(savingsAccount);
@@ -431,7 +378,6 @@ public class BankLauncher {
                     bankdb.loadGetCreditTransaction(savingsAccount);
                     savingsAccount.setIsNew("Old");
                     search.addNewAccount(savingsAccount);
-                    search.addSavingsAccount(savingsAccount);
                 }
             }
         } catch (SQLException _) {
@@ -463,7 +409,6 @@ public class BankLauncher {
                     bankdb.loadGetCreditTransaction(creditAccount);
                     creditAccount.setIsNew("Old");
                     search.addNewAccount(creditAccount);
-                    search.addCreditAccount(creditAccount);
                 }
             }
         } catch (SQLException _) {
@@ -473,39 +418,40 @@ public class BankLauncher {
     public void savetoDB() throws Exception {
         for(Bank b : this.banks){
             bankdb.saveBanksToDatabase(b);
-            for (CreditAccount account: b.getCreditAccounts()){
-                bankdb.saveCreditsAccount(account);
-                for(Transaction transaction : account.getTransactionsInfo()){
-                    if(transaction.transactionType.equals(Transaction.Transactions.Deposit)){
-                        bankdb.save(transaction);
-                    }else if(transaction.transactionType.equals(Transaction.Transactions.FundTransfer)){
-                        bankdb.saveFund(transaction);
-                    }else if(transaction.transactionType.equals(Transaction.Transactions.Withdraw)){
-                        bankdb.saveWithdraw(transaction);
-                    }else if(transaction.transactionType.equals(Transaction.Transactions.Recompense)){
-                        bankdb.saveRecompense(transaction);
-                    }else if(transaction.transactionType.equals(Transaction.Transactions.Payment)){
-                        bankdb.savePayment(transaction);
-                    }else if(transaction.transactionType.equals(Transaction.Transactions.GetCredit)){
-                        bankdb.saveGetCredit(transaction);
+            for (Account account: b.getBankAccounts()){
+                if(account instanceof  CreditAccount) {
+                    bankdb.saveCreditsAccount(((CreditAccount) account));
+                    for (Transaction transaction : account.getTransactionsInfo()) {
+                        if (transaction.transactionType.equals(Transaction.Transactions.Deposit)) {
+                            bankdb.save(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.FundTransfer)) {
+                            bankdb.saveFund(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.Withdraw)) {
+                            bankdb.saveWithdraw(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.Recompense)) {
+                            bankdb.saveRecompense(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.Payment)) {
+                            bankdb.savePayment(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.GetCredit)) {
+                            bankdb.saveGetCredit(transaction);
+                        }
                     }
-                }
-            }
-            for (SavingsAccount account: b.getSavingsAccounts()){
-                bankdb.saveSavingsAccount(account);
-                for(Transaction transaction : account.getTransactionsInfo()){
-                    if(transaction.transactionType.equals(Transaction.Transactions.Deposit)){
-                        bankdb.save(transaction);
-                    }else if(transaction.transactionType.equals(Transaction.Transactions.FundTransfer)){
-                        bankdb.saveFund(transaction);
-                    }else if(transaction.transactionType.equals(Transaction.Transactions.Withdraw)){
-                        bankdb.saveWithdraw(transaction);
-                    }else if(transaction.transactionType.equals(Transaction.Transactions.Recompense)){
-                        bankdb.saveRecompense(transaction);
-                    }else if(transaction.transactionType.equals(Transaction.Transactions.Payment)){
-                        bankdb.savePayment(transaction);
-                    }else if(transaction.transactionType.equals(Transaction.Transactions.GetCredit)){
-                        bankdb.saveGetCredit(transaction);
+                } else if(account instanceof SavingsAccount) {
+                    bankdb.saveSavingsAccount(((SavingsAccount)account));
+                    for (Transaction transaction : account.getTransactionsInfo()) {
+                        if (transaction.transactionType.equals(Transaction.Transactions.Deposit)) {
+                            bankdb.save(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.FundTransfer)) {
+                            bankdb.saveFund(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.Withdraw)) {
+                            bankdb.saveWithdraw(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.Recompense)) {
+                            bankdb.saveRecompense(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.Payment)) {
+                            bankdb.savePayment(transaction);
+                        } else if (transaction.transactionType.equals(Transaction.Transactions.GetCredit)) {
+                            bankdb.saveGetCredit(transaction);
+                        }
                     }
                 }
             }

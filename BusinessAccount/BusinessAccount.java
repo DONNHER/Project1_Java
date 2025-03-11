@@ -13,7 +13,9 @@ public class BusinessAccount extends Account implements Deposit, Withdrawal, Fun
         super(bank, accountNumber, firstName, lastName, email, pin);
         this.balance = balance;
     }
-
+    public double getBalance(){
+        return this.balance;
+    }
     @Override
     public boolean cashDeposit(double amount) {
         return false;
@@ -37,11 +39,6 @@ public class BusinessAccount extends Account implements Deposit, Withdrawal, Fun
     @Override
     public void getAccountBalanceStatement() {
 
-    }
-
-    @Override
-    public double loan_balance() {
-        return this.balance;
     }
 
     public String toString(){

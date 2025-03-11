@@ -9,7 +9,7 @@ public enum Menu {
     /**
      * Main.Menu options for main menu. This is the root menu for the program.
      */
-    MainMenu(new String[]{ "Accounts Login", "Bank Login", "Create New Bank","Update Bank","Exit" }, 1),
+    MainMenu(new String[]{ "Accounts Login", "Bank Login", "Create New Bank","Exit" }, 1),
     /**
      * Account.Account.Account Login menu options.
      */
@@ -21,7 +21,7 @@ public enum Menu {
     /**
      * Bank.Bank menu options after logging in, assuming that it was successful.
      */
-    BankMenu(new String[]{ "Show Accounts", "New Accounts","Update Account","Log Out" }, 31),
+    BankMenu(new String[]{ "Show Accounts", "New Accounts","Log Out" }, 31),
     /**
      * Main.Menu option inside Bank.Bank module to show a particular set of accounts.
      */
@@ -39,20 +39,7 @@ public enum Menu {
      * SavingsAccount type selection menu. Used when logging in as a SavingsAccount.
      */
     SavingsAccountMenu(new String[]{ "Show Balance", "Deposit", "Withdraw", "Fund Transfer",
-            "Show Transactions", "Logout" }, 51),
-    /*
-    Update selection menu.
-     */
-    UpdateBankMenu(new String[] {"Bank Name", "Passcode", "Deposit Limit", "Withdrawal Limit",
-            "CreditLimit", "Processing Fee", "Log Out"},4),
-    /*
-    Fund transfer selection menu.
-    */
-    FundtransferMenu(new String[] {"Transfer Fund to other Account","Transfer Fund to other Bank Account"},5),
-    /*
-    Payment selection menu.
-    */
-    PaymentMenu(new String[] {"Pay to other Account","Pay to other Bank Account"},6);;
+            "Show Transactions", "Logout" }, 51);
 
     public final String[] menuOptions;
     public final int menuIdx;

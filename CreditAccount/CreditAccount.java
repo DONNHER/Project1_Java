@@ -29,9 +29,7 @@ public class CreditAccount extends Account implements Payment, Recompense {
          */
     public void getLoanStatement(){
         String s = "Account Number: "+getAccountNumber()+"\n";
-        for (Transaction transactions : this.getTransactionsInfo()){
-                s += transactions.description +"\n";
-            }
+        s += "Name: " +getOwnerFullName() +"\n";
         s += "Loan Statement: ₱" +this.loan;
         System.out.println(s);
     }
@@ -57,14 +55,14 @@ public class CreditAccount extends Account implements Payment, Recompense {
     public synchronized boolean getCredit(double amount){
         if (loan < getBank().getCreditLimit()){
             if(canCredit(amount)){
-                addNewTransaction(getAccountNumber(), Transaction.Transactions.GetCredit, "Credit Successful: $["+amount+"].Remaining loan balance: " + loan);
-                System.out.println("Credit Successful: $"+amount+".\nRemaining loan balance: " + loan);
+                addNewTransaction(getAccountNumber(), Transaction.Transactions.GetCredit, "Credit Successful: $"+amount);
+                System.out.println("Credit Successful: $"+amount);
                 return true;
             }
             System.out.println("Credit Unsuccessful: $"+amount+" exceeds bank credit limit.");
             return false;
         }
-        System.out.println("Credit Unsuccessful: $["+amount+"] exceeds bank credit limit.");
+        System.out.println("Credit Unsuccessful: $"+amount+" exceeds bank credit limit.");
         return false;
     }
 
@@ -99,8 +97,8 @@ public class CreditAccount extends Account implements Payment, Recompense {
         SavingsAccount payed = (SavingsAccount) account;
         boolean payment = payed.cashDeposit(amount);
         if (payment){
-            addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Payment,"Payment successful: $["+amount+"] transferred to ["+account.getOwnerFullName()+"].");
-            System.out.println("Payment successful: $["+amount+"] transferred to ["+account.getOwnerFullName()+"].");
+            addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Payment,"Payment successful: $"+amount+" to "+account.getOwnerFullName());
+            System.out.println("Payment successful: $"+amount+" to "+account.getOwnerFullName());
             return true;
         }
         return false;
@@ -117,14 +115,9 @@ public class CreditAccount extends Account implements Payment, Recompense {
             return false;
         }
         adjustLoanAmount(-amount);
-        addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Recompense, "Recompense successful: $" + amount + ".\n Remaining loan balance: " + loan);
-        System.out.println("Recompense successful: $" + amount + "\nRemaining loan balance: " + loan);
+        addNewTransaction(this.getAccountNumber(), Transaction.Transactions.Recompense, "Recompense successful: $" + amount );
+        System.out.println("Recompense successful: $" + amount );
         return true;
-    }
-
-    @Override
-    public double loan_balance() {
-        return this.loan;
     }
 
     public String toString(){

@@ -82,7 +82,7 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt1 = conn1.prepareStatement(updateSqlCredit);// New CreditAccount
             pstmt1.setString(1, account.getOwnerFirstName());
             pstmt1.setString(2, account.getOwnerLastName());
-            pstmt1.setDouble(3, account.loan_balance());  // Check if it's loan_balance() or another method
+            pstmt1.setDouble(3, account.getLoan());  // Check if it's loan_balance() or another method
             pstmt1.setString(4, account.getPin());
             pstmt1.setInt(5, account.getBank().getID());
             pstmt1.setString(6, account.getOwnerEmail());
@@ -114,7 +114,7 @@ public class BankDB implements loadFromDB,saveToDB{
                 pstmt1.setString(1, account.getAccountNumber());
                 pstmt1.setString(2, account.getOwnerFirstName());
                 pstmt1.setString(3, account.getOwnerLastName());
-                pstmt1.setDouble(4, account.loan_balance());
+                pstmt1.setDouble(4, account.getLoan());
                 pstmt1.setString(5, account.getPin());
                 pstmt1.setInt(6, account.getBank().getID());
                 pstmt1.setString(7, account.getOwnerEmail());
@@ -136,7 +136,7 @@ public class BankDB implements loadFromDB,saveToDB{
             pstmt2 = conn2.prepareStatement(updateSqlSavings);// New CreditAccount
             pstmt2.setString(1, account.getOwnerFirstName());
             pstmt2.setString(2, account.getOwnerLastName());
-            pstmt2.setDouble(3, account.loan_balance());  // Check if it's loan_balance() or another method
+            pstmt2.setDouble(3, account.getBalance());  // Check if it's loan_balance() or another method
             pstmt2.setString(4, account.getPin());
             pstmt2.setInt(5, account.getBank().getID());
             pstmt2.setString(6, account.getOwnerEmail());
@@ -153,12 +153,12 @@ public class BankDB implements loadFromDB,saveToDB{
                 + "Account_Number TEXT NOT NULL PRIMARY KEY, "
                 + "First_Name TEXT NOT NULL, "
                 + "Last_Name TEXT NOT NULL, "
-                + "Loan_Statement REAL NOT NULL, "
+                + "Balance_Statement REAL NOT NULL, "
                 + "Pin TEXT NOT NULL, "
                 + "Bank INTEGER NOT NULL, "
                 + "Email TEXT NOT NULL"
                 + ");";
-        String insertSqlSavings = "INSERT INTO SavingsAccount (Account_Number, First_Name, Last_Name, Loan_Statement, Pin, Bank, Email) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String insertSqlSavings = "INSERT INTO SavingsAccount (Account_Number, First_Name, Last_Name, Balance_Statement, Pin, Bank, Email) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn2 = BankDB.connect()) {
             Statement stmt = conn2.createStatement();
             stmt.execute(s);
@@ -167,7 +167,7 @@ public class BankDB implements loadFromDB,saveToDB{
                 pstmt2.setString(1, account.getAccountNumber());
                 pstmt2.setString(2, account.getOwnerFirstName());
                 pstmt2.setString(3, account.getOwnerLastName());
-                pstmt2.setDouble(4, account.loan_balance());
+                pstmt2.setDouble(4, account.getBalance());
                 pstmt2.setString(5, account.getPin());
                 pstmt2.setInt(6, account.getBank().getID());
                 pstmt2.setString(7, account.getOwnerEmail());

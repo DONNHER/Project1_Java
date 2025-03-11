@@ -72,9 +72,10 @@ public class AccountLauncher {
                     System.out.println("Login successful! Welcome, " + loggedAccount.getOwnerFullName() + ".");
                     if (getLoggedAccount() instanceof CreditAccount){
                         new CreditAccountLauncher(bankLauncher,this.loggedAccount).creditAccountInit();
+                        destroyLogSession();
                     }else if(getLoggedAccount() instanceof SavingsAccount){
-
                         new SavingsAccountLauncher(bankLauncher,this.loggedAccount).savingsAccountInit();
+                        destroyLogSession();
                     }
                 } else {
                     System.out.println("Login failed. Invalid credentials.");

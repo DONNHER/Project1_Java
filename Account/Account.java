@@ -76,9 +76,6 @@ public abstract class Account {
         this.isNew = newState;
     }
 
-    public abstract double loan_balance();
-
-
     /*
     @Return Fullname of owner
      */

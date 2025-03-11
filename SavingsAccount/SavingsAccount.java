@@ -13,7 +13,7 @@ public class SavingsAccount extends Account implements Withdrawal, Deposit, Fund
     public SavingsAccount(Bank bank, String accountNumber,
                           String firstname, String lastname, String email,String pin, double balance) {
         super(bank, accountNumber, firstname, lastname, email,pin);
-        this.balance = balance; // Ensure non-negative balance
+        this.balance = balance;
     }
 
     // Getters
@@ -34,9 +34,7 @@ String balance statement.
     public synchronized void getAccountBalanceStatement() {
         //Complete this method
         String s = "Account Number: "+getAccountNumber()+"\n";
-        for (Transaction transactions : this.getTransactionsInfo()){
-            s += transactions.description +"\n";
-        }
+        s += "Name: " +getOwnerFullName() +"\n";
         s += "Account Balance: " + this.balance;
         System.out.println(s);
     }
@@ -143,8 +141,8 @@ CreditAccount.
         //Complete this method
         if (amount < getBank().getDepositLimit()) {
             adjustAccountBalance(amount);
-            addNewTransaction(getAccountNumber(),Transaction.Transactions.Deposit,"Deposit Successful: $["+amount+"]. \nBalance: $"+this.balance);
-            System.out.println("Deposit Successful: $["+amount+"].\n Balance: $"+this.balance);
+            addNewTransaction(getAccountNumber(),Transaction.Transactions.Deposit,"Deposit Successful: $"+amount);
+            System.out.println("Deposit Successful: $"+amount);
             return true;
         }
         System.out.println("Deposit Failed. Amount exceeds bank deposit limit.");
@@ -161,18 +159,14 @@ CreditAccount.
         if (hasEnoughBalance(amount)) {
             if(amount <= this.getBank().getWithdrawLimit()) {
                 adjustAccountBalance(-amount);
-                addNewTransaction(getAccountNumber(), Transaction.Transactions.Withdraw, "Withdraw Successful: $[" + amount + "].");
-                System.out.println("Withdraw Successful: $[" + amount + "].");
+                addNewTransaction(getAccountNumber(), Transaction.Transactions.Withdraw, "Withdraw Successful: $" + amount);
+                System.out.println("Withdraw Successful: $" + amount);
                 return true;
             }
             System.out.println("Withdraw Failed: The amount to be withdraw exceeds to Bank withdrawal limit.");
         }
         insufficientBalance();
         return false;
-    }
-    @Override
-    public double loan_balance() {
-        return this.balance;
     }
 
     /*

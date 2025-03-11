@@ -87,7 +87,6 @@ public class CreditAccountLauncher extends AccountLauncher {
                     if (recipientAccount1 != null) {
                         bl.getFieldDouble().setFieldValue("Enter Amount: ");
                         if (this.getLoggedAccount().pay(getLoggedAccount(), bl.getFieldDouble().getFieldValue())) {
-                            System.out.println("Payment successful! Your remaining loan balance is: " + this.getLoggedAccount().getLoan());
                             return;
                         }
                         System.out.println("Payment failed. Please check the amount and try again.");

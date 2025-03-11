@@ -50,8 +50,6 @@ public class Bank {
     State of the Bank if updated or changed
      */
     private String isNew = "New";
-    private  ArrayList<CreditAccount> CreditAccounts = new ArrayList<>();
-    private  ArrayList<SavingsAccount> SavingsAccounts = new ArrayList<>();
 
 
     public Bank(int ID, String name , String passcode){
@@ -93,12 +91,6 @@ public class Bank {
     }
     public ArrayList<Account> getBankAccounts() {
         return bankAccounts;
-    }
-    public ArrayList<CreditAccount> getCreditAccounts() {
-        return CreditAccounts;
-    }
-    public ArrayList<SavingsAccount> getSavingsAccounts() {
-        return SavingsAccounts;
     }
     public String getIsNew(){
         return this.isNew;
@@ -227,11 +219,11 @@ public class Bank {
      */
     public ArrayList<Field<String, ?>> createNewAccount(){
         //Complete this code
-        this.accountNField.setFieldValue("Enter account number: ");
+        this.accountNField.setFieldValue("Enter account number: ",false);
         this.fnameField.setFieldValue("Enter first name: ",false);
         this.lnameField.setFieldValue("Enter last name: ",false);
-        this.pinField.setFieldValue("Enter pin password: ");
-        this.emailField.setFieldValue("Enter email address: ");
+        this.pinField.setFieldValue("Enter pin password: ",false);
+        this.emailField.setFieldValue("Enter email address: ",false);
 
 
         ArrayList<Field<String, ?>> fields = new ArrayList<>();
@@ -259,7 +251,6 @@ public class Bank {
                 this.pinField.getFieldValue(),
                 this.BalanceField.getFieldValue());
         addNewAccount(newsavingsAccount);
-        addSavingsAccount(newsavingsAccount);
         s_count += 1;
         return newsavingsAccount;
     }
@@ -276,7 +267,6 @@ public class Bank {
         CreditAccount newCreditAccount = new CreditAccount(bank,this.accountNField.getFieldValue(),this.fnameField.getFieldValue(),
                 this.lnameField.getFieldValue(),this.emailField.getFieldValue(),this.pinField.getFieldValue(),this.laonField.getFieldValue());
         addNewAccount(newCreditAccount);
-        addCreditAccount(newCreditAccount);
         c_count += 1;
         return newCreditAccount;
     }
@@ -313,16 +303,16 @@ public class Bank {
      */
     public void addNewAccount(Account account){
         //Complete this method
-
-        int index = findIndexInsertion(this.bankAccounts, account);
-        this.bankAccounts.add(index, account);
-    }
-
-    public void addCreditAccount(CreditAccount ca){
-        this.CreditAccounts.add(ca);
-    }
-    public void addSavingsAccount(SavingsAccount ca){
-        this.SavingsAccounts.add(ca);
+        if (accountExist(account.getBank(),account.getAccountNumber())){
+            if(account.getIsNew().equals("New")){
+                int index = findIndexInsertion(this.bankAccounts, account);
+                this.bankAccounts.add(index, account);
+                System.out.print(account.getOwnerFullName()+" is successfully added...\n");
+                return;
+            }
+            int index = findIndexInsertion(this.bankAccounts, account);
+            this.bankAccounts.add(index, account);
+        }
     }
 
     /*
@@ -332,7 +322,7 @@ public class Bank {
      */
     public boolean accountExist(Bank bank, String accountNum){
         //Complete this method
-        return getBankAccount(bank,accountNum) == null;
+        return getBankAccount(bank,accountNum) != null;
     }
 
     /*
