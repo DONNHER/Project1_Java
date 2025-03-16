@@ -2,9 +2,7 @@ package SavingsAccount;
 
 import Account.Account;
 import Account.AccountLauncher;
-import Accounts.IllegalAccountType;
 import Accounts.Transaction;
-import Bank.Bank;
 import Bank.BankLauncher;
 import Main.Main;
 
@@ -24,7 +22,7 @@ public class SavingsAccountLauncher extends AccountLauncher {
     /*
         Method that deals with all things about savings accounts. Mainly utilized for showing the main menu after Savings Account users log in to the application
          */
-    public void savingsAccountInit() throws IllegalAccountType {
+    public void savingsAccountInit() {
         while (true) {
             Main.showMenuHeader("Welcome to the Savings Account Portal!");
             Main.showMenu(51,2);
@@ -43,9 +41,7 @@ public class SavingsAccountLauncher extends AccountLauncher {
                     fundTransferProcess();
                     break;
                 case 5:
-                     for (Transaction t: getLoggedAccount().getTransactionsInfo()){
-                         System.out.print("Description: " + t.description +"\n");
-                         }
+                    System.out.println(getLoggedAccount().getTransactionsInfo());
                     break;
                 case 6:
                     System.out.println("Logging out...");

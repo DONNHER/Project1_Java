@@ -4,13 +4,12 @@ import Account.Account;
 import Account.AccountLauncher;
 import Accounts.IllegalAccountType;
 import Accounts.Transaction;
-import Bank.Bank;
 import Bank.BankLauncher;
 import Main.Main;
 
 public class CreditAccountLauncher extends AccountLauncher {
-    private  BankLauncher bl;
-    private CreditAccount account;
+    private final BankLauncher bl;
+    private final CreditAccount account;
 
     public CreditAccountLauncher(BankLauncher bankLauncher, Account logged) {
         super(bankLauncher);
@@ -39,9 +38,7 @@ public class CreditAccountLauncher extends AccountLauncher {
                     credRecompenseProcess();
                     break;
                 case 4:
-                    for (Transaction t: account.getTransactionsInfo()){
-                        System.out.print("Description: " + t.description +"\n");
-                    }
+                    System.out.println(getLoggedAccount().getTransactionsInfo());
                     break;
                 case 5:
                     System.out.println("Logging out...");
@@ -55,7 +52,7 @@ public class CreditAccountLauncher extends AccountLauncher {
     /*
     Method that is utilized to process the credit payment transaction.
      */
-    private void creditAccountProcess() throws IllegalAccountType {
+    private void creditAccountProcess() {
         //Complete this method
         try {
             Main.showMenuHeader("Payment Menu");

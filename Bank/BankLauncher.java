@@ -20,49 +20,28 @@ public class BankLauncher {
     Field<Integer, Integer> idField = new Field<Integer, Integer>("ID field", Integer.class, 0, new IntegerFieldValidator());
     Field<String, String> nameField = new Field<String, String>("Name field", String.class, "0", new StringFieldValidator());
     Field<String, String> passcodeField = new Field<String, String>("Passcode field", String.class, "0", new StringFieldValidator());
+    Field<Double, Double> depositLimitField = new Field<Double, Double>("Deposit limit field", Double.class,0.0, new DoubleFieldValidator());
+    Field<Double, Double> withdrawLimitField = new Field<Double, Double>("Withdraw limit field", Double.class, 0.0, new DoubleFieldValidator());
+    Field<Double, Double> creditLimitField = new Field<Double, Double>("Credit Limit field", Double.class, 0.0, new DoubleFieldValidator());
+    Field<Double, Double> processingFeeField = new Field<Double, Double>("ID field", Double.class, 0.0, new DoubleFieldValidator());
     Bank.BankIdComparator bankIdComparator = new Bank.BankIdComparator();
     Bank.BankCredentialsComparator BankCredentials = new Bank.BankCredentialsComparator();
     //List of banks currently registered in this session.
     private ArrayList<Bank> banks = new ArrayList<Bank>();
     //The Bank object currently logged in. Null by default, or when no bank is currently logged in.
     private Bank loggedBank = null;
-    //Counter
-    private int size = 0;
     //Ids of deleted Banks to update  database
     private ArrayList<Integer> bankids = new ArrayList<>();
 
     //Getters
     public Field<Double, Double> getFieldDouble(){return this.doubleField;}
-    public int getUser(){
-        return this.user.getFieldValue();
-    }
-    public Field<Integer, Integer> getIdField(){
-        return this.idField;
-    }
     public ArrayList<Bank> getBanks() {
         return banks;
-    }
-
-    public Bank getLoggedBank() {
-        return this.loggedBank;
-    }
-
-    public ArrayList<Integer> getBankids(){
-        return this.bankids;
     }
     public Bank.BankIdComparator getBankIdComparator(){
         return this.bankIdComparator;
     }
 
-    //Setters
-    public void setBanks(ArrayList<Bank> banks) {
-        this.banks = banks;
-    }
-
-    public void setLoggedBank( Bank newbank ) {
-
-        this.loggedBank = newbank;
-    }
 
     /*
     Return Flag that Check if there is bank currently logged in
@@ -159,11 +138,11 @@ public class BankLauncher {
     /*
     Bank interaction when attempting to log in to the banking module using a bank user’s credentials.
      */
-    public void bankLogin () {
+    public void bankLogin() {
         //Complete this method
-        this.idField.setFieldValue("Enter bank ID: ");
-        this.nameField.setFieldValue("Enter bank name: ",false);
-        this.passcodeField.setFieldValue("Enter bank passcode: ");
+        this.idField.setFieldValue("Enter Bank ID: ",false);
+        this.nameField.setFieldValue("Enter Bank Name: ",false);
+        this.passcodeField.setFieldValue("Enter Bank Passcode: ",false);
         Bank bank = new Bank(this.idField.getFieldValue(),this.nameField.getFieldValue(),this.passcodeField.getFieldValue());
         Bank searchBank= getBank(BankCredentials,bank);
         if (searchBank != null){
@@ -198,14 +177,18 @@ public class BankLauncher {
         NumberFormatException – May happen when inputting deposit, withdraw, and credit limit,
         and processing fee.
      */
-    public void createNewBank () {
+    public void createNewBank() {
         //Complete this method
         this.idField.setFieldValue("Enter bank ID: ",false);
         this.nameField.setFieldValue("Enter bank name: ",false);
         this.passcodeField.setFieldValue("Enter bank passcode: ",false);
-        Bank newbank = new Bank(this.idField.getFieldValue(), this.nameField.getFieldValue(), this.passcodeField.getFieldValue());
+        this.depositLimitField.setFieldValue("Enter Deposit Limit:");
+        this.withdrawLimitField.setFieldValue("Enter Withdraw Limit:");
+        this.creditLimitField.setFieldValue("Enter Credit Limit:");
+        this.passcodeField.setFieldValue("Enter Processing Limit:");
+        Bank newbank = new Bank(this.idField.getFieldValue(), this.nameField.getFieldValue(), this.passcodeField.getFieldValue(),this.depositLimitField.getFieldValue()
+                ,this.withdrawLimitField.getFieldValue(), this.creditLimitField.getFieldValue(),this.processingFeeField.getFieldValue());
         addBank(newbank);
-        this.size += 1;
     }
 
     /*
@@ -251,7 +234,7 @@ public class BankLauncher {
     Returns:
         Bank object if it passes the criteria. Null if none.
      */
-    public Bank getBank (Comparator < Bank > bankComparator, Bank bank ) {
+    public Bank getBank(Comparator<Bank> bankComparator, Bank bank) {
         //Complete this method
         int left = 0;
         int right = this.banks.size() - 1;
@@ -281,7 +264,7 @@ public class BankLauncher {
     Returns:
         Account object if it exists. Null if not found.
      */
-    public Account findAccount (String accountNum){
+    public Account findAccount(String accountNum){
         //Complete this method
         int l = 0;
         for (Bank bank : this.banks) {
@@ -304,7 +287,7 @@ public class BankLauncher {
     /*
     Get the number of currently registered banks.
      */
-    public int bankSize () {
+    public int bankSize() {
         //Complete this method
         return this.banks.size();
     }
@@ -490,7 +473,7 @@ public class BankLauncher {
             for (Account account: b.getBankAccounts()){
                 if(account instanceof  CreditAccount) {
                     bankdb.saveCreditsAccount(((CreditAccount) account));
-                    for (Transaction transaction : account.getTransactionsInfo()) {
+                    for (Transaction transaction : account.getTransactions()) {
                         if (transaction.transactionType.equals(Transaction.Transactions.Deposit)) {
                             bankdb.save(transaction);
                         } else if (transaction.transactionType.equals(Transaction.Transactions.FundTransfer)) {
@@ -505,7 +488,7 @@ public class BankLauncher {
                     }
                 } else if(account instanceof SavingsAccount) {
                     bankdb.saveSavingsAccount(((SavingsAccount)account));
-                    for (Transaction transaction : account.getTransactionsInfo()) {
+                    for (Transaction transaction : account.getTransactions()) {
                         if (transaction.transactionType.equals(Transaction.Transactions.Deposit)) {
                             bankdb.save(transaction);
                         } else if (transaction.transactionType.equals(Transaction.Transactions.FundTransfer)) {
@@ -520,7 +503,7 @@ public class BankLauncher {
                     }
                 } else if(account instanceof BusinessAccount) {
                     bankdb.saveBusinessAccount(((BusinessAccount)account));
-                    for (Transaction transaction : account.getTransactionsInfo()) {
+                    for (Transaction transaction : account.getTransactions()) {
                         if (transaction.transactionType.equals(Transaction.Transactions.Deposit)) {
                             bankdb.save(transaction);
                         } else if (transaction.transactionType.equals(Transaction.Transactions.FundTransfer)) {
@@ -535,7 +518,7 @@ public class BankLauncher {
                     }
                 } else if(account instanceof StudentAccount) {
                     bankdb.saveStudentAccount(((StudentAccount)account));
-                    for (Transaction transaction : account.getTransactionsInfo()) {
+                    for (Transaction transaction : account.getTransactions()) {
                         if (transaction.transactionType.equals(Transaction.Transactions.Deposit)) {
                             bankdb.save(transaction);
                         } else if (transaction.transactionType.equals(Transaction.Transactions.FundTransfer)) {

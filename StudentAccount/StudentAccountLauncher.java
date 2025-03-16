@@ -2,7 +2,6 @@ package StudentAccount;
 
 import Account.Account;
 import Account.AccountLauncher;
-import Accounts.IllegalAccountType;
 import Accounts.Transaction;
 import Bank.BankLauncher;
 import Main.Main;
@@ -21,7 +20,7 @@ public class StudentAccountLauncher extends AccountLauncher {
     /*
    Method that deals with all things about Student accounts. Mainly utilized for showing the main menu after Savings Account users log in to the application
     */
-    public void studentAccountInit() throws IllegalAccountType {
+    public void studentAccountInit(){
         while (true) {
             Main.showMenuHeader("Welcome to the Student Account Portal!");
             Main.showMenu(61,2);
@@ -37,9 +36,7 @@ public class StudentAccountLauncher extends AccountLauncher {
                     withdrawProcess();
                     break;
                 case 6:
-                    for (Transaction t: getLoggedAccount().getTransactionsInfo()){
-                        System.out.print("Description: " + t.description +"\n");
-                    }
+                    System.out.println(getLoggedAccount().getTransactionsInfo());
                     break;
                 case 7:
                     System.out.println("Logging out...");

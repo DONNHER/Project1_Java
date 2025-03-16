@@ -44,9 +44,7 @@ public class BusinessAccountLauncher extends AccountLauncher {
                     paymentProcess();
                     break;
                 case 6:
-                    for (Transaction t: getLoggedAccount().getTransactionsInfo()){
-                        System.out.print("Description: " + t.description +"\n");
-                    }
+                    System.out.println(getLoggedAccount().getTransactionsInfo());
                     break;
                 case 7:
                     System.out.println("Logging out...");

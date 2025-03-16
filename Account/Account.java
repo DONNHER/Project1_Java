@@ -38,7 +38,9 @@ public abstract class Account {
     }
 
     //Getters
-
+    public  ArrayList<Transaction> getTransactions(){
+        return transactions;
+    }
     public String getAccountNumber() {
         return accountNumber;
     }
@@ -97,8 +99,12 @@ public abstract class Account {
     /*
     Get all information for every transaction that has been logged into this account.
      */
-    public  ArrayList<Transaction> getTransactionsInfo(){
-        return transactions;
+    public  String getTransactionsInfo(){
+        String s = "";
+        for (Transaction t: this.transactions){
+            s += "Description: " + t.description +"\n";
+        }
+        return s;
     }
 
     public String toString(){
